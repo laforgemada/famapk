@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apokalypsy - Accueil</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* Styles légers pour économiser ta RAM */
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; }
+        .navbar { background: #1E3A8A; color: white; padding: 15px; position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .btn-add { background: #FFD700; color: #1E3A8A; border: none; padding: 10px 15px; border-radius: 50%; font-weight: bold; font-size: 20px; cursor: pointer; }
+        
+        .hero { background: white; padding: 40px 20px; text-align: center; border-bottom: 2px solid #1E3A8A; }
+        .feed { padding: 15px; display: grid; gap: 15px; }
+        .post-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .post-image { width: 100%; height: 200px; background: #ddd; object-fit: cover; }
+        .post-content { padding: 15px; }
+        .post-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; color: #1E3A8A; }
+        
+        /* Menu de navigation bas (style mobile) */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #ddd; }
+        .nav-item { color: #1E3A8A; text-decoration: none; font-size: 0.8rem; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <span>Apokalypsy</span>
+        <button class="btn-add" onclick="window.location.href='publier.html'">+</button>
+    </div>
+
+    <div class="hero">
+        <h2>Bienvenue sur l'App</h2>
+        <p>Découvrez les dernières actualités et messages.</p>
+    </div>
+
+    <div class="feed" id="postFeed">
+        <!-- Les articles s'afficheront ici -->
+        <div class="post-card">
+            <div class="post-image" style="background-image: url('[https://via.placeholder.com/400x200](https://via.placeholder.com/400x200)'); background-size: cover;"></div>
+            <div class="post-content">
+                <div class="post-title">Chargement des articles...</div>
+                <p>Connexion en cours à apokalypsy.com...</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 70px;"></div> <!-- Espace pour le menu bas -->
+
+    <div class="bottom-nav">
+        <a href="#" class="nav-item">🏠<br>Accueil</a>
+        <a href="#" class="nav-item">🔔<br>Notifications</a>
+        <a href="#" class="nav-item">👤<br>Profil</a>
+    </div>
+
+    <script>
+        // Enregistrement PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // Fonction pour récupérer tes articles réels depuis Symfony
+        async function chargerArticles() {
+            try {
+                const response = await fetch('[https://apokalypsy.com/api/articles](https://apokalypsy.com/api/articles)'); // Adapte l'URL de ton API
+                const articles = await response.json();
+                
+                let html = '';
+                articles.forEach(art => {
+                    html += `
+                        <div class="post-card">
+                            <img src="${art.image_url || '[https://via.placeholder.com/400x200](https://via.placeholder.com/400x200)'}" class="post-image">
+                            <div class="post-content">
+                                <div class="post-title">${art.titre}</div>
+                                <p>${art.contenu.substring(0, 100)}...</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('postFeed').innerHTML = html;
+            } catch (e) {
+                document.getElementById('postFeed').innerHTML = "<p style='text-align:center'>Impossible de charger les articles pour le moment.</p>";
+            }
+        }
+
+        chargerArticles();
+    </script>
+</body>
+</html>
