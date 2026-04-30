@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apokalypsy - Admin Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- On imagine que tu as déplacé ton CSS dans un fichier externe pour gagner en clarté -->
+    <link rel="stylesheet" href="../css/admin-style.css"> 
+</head>
+<body>
+
+    <!-- Conteneurs pour les Partials -->
+    <div id="sidebar-placeholder"></div>
+    <div id="header-placeholder"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="page-title">
+            <h1>Bienvenue, <span id="topUsername">Admin</span></h1>
+            <p>Voici le récapitulatif de votre profil professionnel.</p>
+        </div>
+
+        <section class="profile-card">
+            <img id="userPhoto" src="../icons/default-avatar.png" alt="Profile" class="avatar-img">
+            <div>
+                <h2 id="displayUsername" style="font-size: 1.4rem;">...</h2>
+                <div class="badge-group" id="roleList"></div>
+            </div>
+        </section>
+
+        <div class="grid-info">
+            <div class="info-box">
+                <label>Nom Complet</label>
+                <span id="fullName">-</span>
+            </div>
+            <div class="info-box">
+                <label>Email</label>
+                <span id="infoEmail">-</span>
+            </div>
+            <div class="info-box">
+                <label>Mobile</label>
+                <span id="infoTel">-</span>
+            </div>
+            <div class="info-box">
+                <label>Statut</label>
+                <span style="color: var(--success); display: flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-circle-check"></i> Compte Vérifié
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function loadComponents() {
+            // Chargement du Menu
+            const menuRes = await fetch('partials/menu.html');
+            document.getElementById('sidebar-placeholder').innerHTML = await menuRes.text();
+            
+            // Chargement du Header
+            const headerRes = await fetch('partials/header.html');
+            document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+
+            // Initialisation des données après chargement
+            initDashboard();
+            setActiveLink();
+        }
+
+        function initDashboard() {
+            // Date automatique
+            document.getElementById('headerDate').innerText = new Date().toLocaleDateString('fr-FR', { 
+                day: 'numeric', month: 'long', year: 'numeric' 
+            });
+
+            const userData = JSON.parse(localStorage.getItem('user_full_data'));
+            
+            if (!userData) {
+                window.location.replace('../login/connexion.html');
+                return;
+            }
+
+            document.getElementById('topUsername').textContent = userData.username;
+            document.getElementById('displayUsername').textContent = userData.username;
+            document.getElementById('fullName').textContent = (userData.prenom || '') + ' ' + (userData.nom || '');
+            document.getElementById('infoEmail').textContent = userData.email;
+            document.getElementById('infoTel').textContent = userData.telephone || 'Non renseigné';
+            
+            if (userData.photo && userData.photo !== 'NULL' && userData.photo !== '') {
+                document.getElementById('userPhoto').src = userData.photo;
+            }
+
+            const roleContainer = document.getElementById('roleList');
+            userData.roles.forEach(role => {
+                const span = document.createElement('span');
+                span.className = `badge ${role === 'ROLE_ADMIN' ? 'badge-admin' : 'badge-user'}`;
+                span.textContent = role.replace('ROLE_', '');
+                roleContainer.appendChild(span);
+            });
+        }
+
+        function setActiveLink() {
+            // Marque le lien dashboard comme actif
+            document.getElementById('link-dashboard').classList.add('active');
+        }
+
+        function deconnexion() {
+            if (confirm("Voulez-vous fermer votre session ?")) {
+                localStorage.clear();
+                window.location.replace('../login/connexion.html');
+            }
+        }
+
+        // Lancement au chargement de la page
+        window.onload = loadComponents;
+    </script>
+</body>
+</html>

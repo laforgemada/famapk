@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apokalypsy - Connexion</title>
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --bg: #f3f4f6;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background: var(--bg); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+        }
+
+        .login-card {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .logo-login {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        h2 { margin-bottom: 30px; color: #333; font-size: 1.2rem; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background: #f9f9f9;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .footer-links { margin-top: 25px; font-size: 0.9rem; color: #666; }
+        .footer-links a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        
+        .back-home { margin-top: 20px; display: block; color: #999; text-decoration: none; font-size: 0.8rem; }
+        
+        #error-msg { color: #dc2626; font-size: 0.9rem; margin-bottom: 15px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-login">APOKALYPSY</div>
+        <h2>Espace Membre</h2>
+
+        <div id="error-msg"></div>
+
+        <form id="loginForm">
+            <input type="text" id="identifier" placeholder="Email ou Pseudo" required>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+            
+            <button type="submit" id="btnSubmit">SE CONNECTER</button>
+        </form>
+
+        <div class="footer-links">
+            Pas encore membre ? <a href="inscription.html">S'inscrire</a>
+        </div>
+
+        <a href="/" class="back-home">← Retour à l'accueil</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnSubmit');
+            const errorDiv = document.getElementById('error-msg');
+            const identifier = document.getElementById('identifier').value;
+            const password = document.getElementById('password').value;
+
+            // Réinitialisation de l'affichage
+            errorDiv.style.display = "none";
+            btn.disabled = true;
+            btn.innerText = "CONNEXION EN COURS...";
+
+            try {
+                // Appel à ton contrôleur Symfony
+                const response = await fetch('https://apokalypsy.com/api/mobile/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: identifier, // Peut être l'email ou le pseudo
+                        password: password 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    // 1. Sauvegarde du pseudo simple (pour la compatibilité rapide)
+                    localStorage.setItem('user_name', data.userData.username);
+                    
+                    // 2. Sauvegarde de TOUT l'objet utilisateur (nom, tel, photo, etc.)
+                    // On transforme l'objet en texte pour le stocker
+                    localStorage.setItem('user_full_data', JSON.stringify(data.userData));
+                    
+                    // 3. Redirection selon les rôles
+                    const roles = data.userData.roles;
+
+                    if (roles.includes('ROLE_ADMIN') || roles.includes('ROLE_REDACTEUR')) {
+                        window.location.replace('../admin/dashboard_admin.html');
+                    } else {
+                        window.location.replace('../utilisateur/espace_personnel.html');
+                    }
+
+                } else {
+                    errorDiv.textContent = data.message || "Identifiants incorrects.";
+                    errorDiv.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "SE CONNECTER";
+                }
+            } catch (error) {
+                errorDiv.textContent = "Erreur de liaison avec le serveur.";
+                errorDiv.style.display = "block";
+                btn.disabled = false;
+                btn.innerText = "SE CONNECTER";
+            }
+        });
+    </script>
+
+</body>
+</html>
