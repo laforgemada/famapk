@@ -6,6 +6,7 @@
     <title>Apokalypsy | Pro Experience</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
+	<link rel="manifest" href="{{ asset('manifest.json') }}">
     <style>
         :root {
             --primary: #1E3A8A; 
@@ -128,6 +129,25 @@
         .nav-item.active i { background: var(--primary); color: white; border-radius: 10px; padding: 8px; width: 38px; height: 38px; margin-top: -15px; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+		
+		/* Style des infos de l'article */
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.card-author {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--primary);
+}
+.card-author i { width: 12px; height: 12px; }
     </style>
 </head>
 <body>
@@ -250,26 +270,41 @@
     }
 
     function renderArticles() {
-        const container = document.getElementById('articles-container');
-        container.innerHTML = '';
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
+    const container = document.getElementById('articles-container');
+    container.innerHTML = '';
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
 
-        pageItems.forEach(article => {
-            const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500';
-            container.insertAdjacentHTML('beforeend', `
-                <div class="bible-card">
-                    <div class="card-image" style="background-image: url('${img}');"></div>
-                    <div class="card-body">
-                        <div class="card-title">${escapeHTML(article.title)}</div>
-                        <div class="card-text">${escapeHTML(article.content).substring(0, 100)}...</div>
+    pageItems.forEach(article => {
+        const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500';
+        
+        // Formatage de la date (ex: 11 Mai 2026)
+        const dateObj = new Date(article.created_at);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', options);
+
+        container.insertAdjacentHTML('beforeend', `
+            <div class="bible-card">
+                <div class="card-image" style="background-image: url('${img}');"></div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <div class="card-author">
+                            <i data-feather="user"></i>
+                            <span>Admin Apokalypsy</span>
+                        </div>
+                        <div class="card-date">${formattedDate}</div>
                     </div>
+                    <div class="card-title">${escapeHTML(article.title)}</div>
+                    <div class="card-text">${escapeHTML(article.content).substring(0, 100)}...</div>
                 </div>
-            `);
-        });
-        updatePaginationControls();
-        observeElements();
-    }
+            </div>
+        `);
+    });
+    
+    updatePaginationControls();
+    observeElements();
+    feather.replace(); // Important pour afficher l'icône user
+}
 
     function updatePaginationControls() {
         const controls = document.getElementById('pagination-controls');
