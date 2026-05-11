@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apokalypsy Bible</title>
+
+<style>
+:root{
+    --blue:#2f4aa0;
+    --light:#f4f6fb;
+    --accent:#ffb300;
+    --text:#222;
+}
+
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:var(--light);
+    color:var(--text);
+    padding-bottom: 80px;
+}
+
+/* HEADER */
+.header{
+    background:var(--blue);
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.header h1{ font-size:16px; }
+
+/* SECTION */
+.section{ padding:20px; }
+.section h3{ margin-bottom:15px; }
+
+/* MENU PILLS */
+.menu{ display:flex; gap:10px; flex-wrap:wrap; }
+.menu button{
+    padding:8px 15px; border-radius:20px; border:none;
+    background:#e0e5f5; cursor:pointer;
+}
+.menu button.active{ background:var(--blue); color:white; }
+
+/* SEARCH */
+.search{padding:10px 20px;}
+.search input{
+    width:100%; padding:10px; border-radius:10px;
+    border:none; outline: none;
+}
+
+/* TITLE */
+.title{ margin:10px 20px; font-size:12px; color:#777; text-transform: uppercase; }
+
+/* BOOK */
+.book{ margin:10px 15px; border-radius:15px; background:white; overflow:hidden; }
+.book-header{ padding:15px; display:flex; justify-content:space-between; cursor:pointer; }
+.book-content{ max-height:0; overflow:hidden; transition:0.3s; }
+.book.open .book-content{ max-height:none; padding:10px; }
+.verse{ margin-bottom:10px; line-height: 1.4; }
+.num{ color:var(--blue); font-weight:bold; margin-right: 8px; }
+
+/* --- GRID OVERLAY --- */
+.overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: none; justify-content: center;
+    align-items: center; z-index: 200;
+}
+.selector-card {
+    background: white; width: 95%; max-width: 400px;
+    border-radius: 20px; overflow: hidden;
+}
+.selector-header {
+    padding: 15px; background: #eee; display: flex;
+    justify-content: space-between; align-items: center;
+}
+.grid-container {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 5px; padding: 15px; max-height: 300px; overflow-y: auto;
+}
+.grid-item {
+    background: #f0f2f8; padding: 12px 5px; text-align: center;
+    cursor: pointer; border-radius: 8px; font-weight: bold;
+}
+.grid-item.selected { background: var(--blue); color: white; }
+.grid-item.in-range { background: #d0d9ff; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+    position: fixed; bottom: 0; width: 100%; background: white;
+    display: flex; justify-content: space-around; padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100;
+}
+.nav-item { text-align: center; text-decoration: none; color: #777; font-size: 11px; }
+.nav-item.active { color: var(--blue); font-weight: bold; }
+.nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+</style>
+</head>
+
+<body>
+
+<div class="header"><h1>APOKALYPSY MOBILE</h1></div>
+
+<div class="section">
+    <h3>📚 Bible</h3>
+    <div class="menu">
+        <button class="active" onclick="changeLang('mg', this)">Malagasy</button>
+        <button onclick="changeLang('fr', this)">Français</button>
+        <button onclick="changeLang('en', this)">English</button>
+    </div>
+</div>
+
+<div class="search"><input type="text" id="search" placeholder="Hikaroka boky..."></div>
+
+<div id="container"></div>
+
+<!-- FENETRE DE SELECTION PAR PLAGE -->
+<div id="selectorOverlay" class="overlay">
+    <div class="selector-card">
+        <div class="selector-header">
+            <button onclick="closeSelector()" style="border:none; background:none; font-size:20px;">×</button>
+            <span id="selectedBookName" style="font-weight:bold;">Sélection</span>
+            <button id="applyFilter" onclick="applyFilter()" style="color:var(--blue); border:none; background:none; font-weight:bold; visibility:hidden;">OK</button>
+        </div>
+        <div style="padding: 10px; text-align: center; font-size: 12px; color: #666;" id="selectionInfo">
+            Cliquez sur le début et la fin de la plage
+        </div>
+        <div class="grid-container" id="gridContainer"></div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span>Accueil</a>
+    <a href="#" class="nav-item active"><span class="nav-icon">📖</span>Bible</a>
+    <a href="#" class="nav-item"><span class="nav-icon">💬</span>Chat</a>
+</div>
+
+<script>
+const data = {
+    mg: {
+        search: "Hikaroka boky...", at: "Testamenta Taloha", nt: "Testamenta Vaovao",
+        books: [
+            { name: "Genesisy", v: ["Verset 1...", "Verset 2...", "Verset 3...", "Verset 4...", "Verset 5...", "Verset 6...", "Verset 7...", "Verset 8...", "Verset 9...", "Verset 10..."] },
+            { name: "Eksodosy", v: ["Verset 1...", "Verset 2...", "Verset 3...", "Verset 4...", "Verset 5..."] },
+            { name: "Apokalypsy", v: ["Verset 1...", "Verset 2...", "Verset 3..."] }
+        ]
+    },
+    fr: {
+        search: "Chercher...", at: "Ancien Testament", nt: "Nouveau Testament",
+        books: [
+            { name: "Genèse", v: ["Verset 1...", "Verset 2...", "Verset 3...", "Verset 4...", "Verset 5...", "Verset 6...", "Verset 7...", "Verset 8...", "Verset 9...", "Verset 10..."] }
+        ]
+    }
+};
+
+let lang = "mg";
+let currentBookIdx = null;
+let startRange = null;
+let endRange = null;
+let activeFilters = {}; // Stocke les plages par livre
+
+function changeLang(l, btn) {
+    lang = l;
+    activeFilters = {}; 
+    document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+}
+
+function openSelector(index) {
+    currentBookIdx = index;
+    startRange = null;
+    endRange = null;
+    const book = data[lang].books[index];
+    document.getElementById('selectedBookName').innerText = book.name;
+    document.getElementById('applyFilter').style.visibility = 'hidden';
+    updateGrid();
+    document.getElementById('selectorOverlay').style.display = 'flex';
+}
+
+function updateGrid() {
+    const grid = document.getElementById('gridContainer');
+    grid.innerHTML = "";
+    const book = data[lang].books[currentBookIdx];
+    
+    book.v.forEach((_, i) => {
+        const item = document.createElement('div');
+        item.className = 'grid-item';
+        if (startRange !== null && endRange !== null) {
+            if (i >= Math.min(startRange, endRange) && i <= Math.max(startRange, endRange)) {
+                item.className += (i === startRange || i === endRange) ? ' selected' : ' in-range';
+            }
+        } else if (i === startRange) {
+            item.className += ' selected';
+        }
+        
+        item.innerText = i + 1;
+        item.onclick = () => handleSelect(i);
+        grid.appendChild(item);
+    });
+}
+
+function handleSelect(i) {
+    if (startRange === null || (startRange !== null && endRange !== null)) {
+        startRange = i;
+        endRange = null;
+        document.getElementById('applyFilter').style.visibility = 'hidden';
+    } else {
+        endRange = i;
+        document.getElementById('applyFilter').style.visibility = 'visible';
+    }
+    updateGrid();
+}
+
+function closeSelector() {
+    document.getElementById('selectorOverlay').style.display = 'none';
+}
+
+function applyFilter() {
+    const low = Math.min(startRange, endRange);
+    const high = Math.max(startRange, endRange);
+    activeFilters[currentBookIdx] = { start: low, end: high };
+    closeSelector();
+    render(currentBookIdx);
+}
+
+function render(openIdx = null){
+    const c=document.getElementById('container');
+    const d=data[lang];
+    document.getElementById('search').placeholder=d.search;
+
+    let html=`<div class="title">${d.at}</div>`;
+    d.books.forEach((b,i)=>{
+        if(i===d.books.length-1) html+=`<div class="title">${d.nt}</div>`;
+        
+        const filter = activeFilters[i];
+        const isFiltered = filter !== undefined;
+        
+        html+=`
+        <div class="book ${openIdx === i ? 'open' : ''}">
+            <div class="book-header" onclick="openSelector(${i})">
+                <div>${b.name} ${isFiltered ? `<small style="color:var(--accent); font-weight:bold;"> (v.${filter.start+1}-${filter.end+1})</small>` : ''}</div>
+                <span>▼</span>
+            </div>
+            <div class="book-content">
+                ${b.v.map((t,vi)=>{
+                    if(isFiltered && (vi < filter.start || vi > filter.end)) return '';
+                    return `<div class="verse"><span class="num">${vi+1}</span>${t}</div>`;
+                }).join('')}
+                ${isFiltered ? `<button onclick="resetFilter(${i})" style="width:100%; padding:10px; border:none; background:#eee; border-radius:10px; margin-top:10px;">Voir tout le livre</button>` : ''}
+            </div>
+        </div>`;
+    });
+    c.innerHTML=html;
+}
+
+function resetFilter(i) {
+    delete activeFilters[i];
+    render(i);
+}
+
+document.getElementById('search').addEventListener('input',e=>{
+    const val=e.target.value.toUpperCase();
+    document.querySelectorAll('.book').forEach(book=>{
+        const name=book.querySelector('.book-header').innerText;
+        book.style.display=name.toUpperCase().includes(val)?"block":"none";
+    });
+});
+
+render();
+</script>
+</body>
+</html>

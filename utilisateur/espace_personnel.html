@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Membre | Apokalypsy</title>
+    <style>
+        :root {
+            --bg-body: #f4f7f6;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary-cyan: #17a2b8;
+            --bg-impact-1: #ebf5ff;
+            --bg-impact-2: #fff9eb;
+            --bg-impact-3: #f0fdfa;
+            --church-blue: #1e293b;
+            --notification-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 70px; /* Espace pour le menu du bas */
+        }
+
+        /* --- HEADER STYLE FACEBOOK --- */
+        .top-nav {
+            width: 100%;
+            background: var(--church-blue);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left .welcome-msg { font-weight: 600; font-size: 0.9rem; }
+        .nav-left span { color: var(--primary-cyan); }
+
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+
+        .lang-select {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 0.75rem;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .notif-wrapper { position: relative; cursor: pointer; font-size: 1.2rem; }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--notification-red);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .btn-logout-top {
+            background: var(--notification-red);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* --- CONTENEUR --- */
+        .main-container {
+            width: 95%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding: 30px 0;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            display: flex;
+        }
+
+        /* --- IMPACT --- */
+        .impact-section { align-items: center; gap: 30px; }
+        .progress-circle-container { text-align: center; min-width: 100px; }
+        .circle-text { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin: 0; }
+        .circle-sub { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+
+        .impact-content { flex-grow: 1; }
+        .impact-header h2 { font-size: 1.2rem; margin: 0 0 5px 0; color: var(--text-dark); }
+        .impact-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; }
+
+        .impact-grid { display: flex; gap: 10px; }
+        .impact-box { flex: 1; padding: 15px 10px; border-radius: 16px; text-align: center; }
+        .box-blue { background: var(--bg-impact-1); color: #3182ce; }
+        .box-orange { background: var(--bg-impact-2); color: #dd6b20; }
+        .box-green { background: var(--bg-impact-3); color: #38b2ac; }
+        .box-value { font-size: 1.2rem; font-weight: 800; display: block; }
+        .box-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
+
+        /* --- TROPHÉES --- */
+        .trophy-section { flex-direction: column; }
+        .trophy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .trophy-header h2 { font-size: 1.2rem; margin: 0; display: flex; align-items: center; gap: 10px; color: var(--text-dark); }
+        
+        .btn-progression {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .trophy-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+        }
+
+        .trophy-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        .trophy-icon { padding: 20px 0; font-size: 2.2rem; }
+        .trophy-footer { background: #000000; color: white; padding: 10px 5px; }
+        .trophy-footer h4 { margin: 0; font-size: 0.75rem; font-weight: 800; }
+        .trophy-footer p { margin: 2px 0 0; font-size: 0.65rem; }
+        .locked { filter: grayscale(1); opacity: 0.6; border-style: dashed; }
+        .locked .trophy-footer { background: #a0aec0; }
+
+        /* --- NOUVEAU MENU BAS (MOBILE FIRST) --- */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--white);
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 101;
+        }
+
+        .bottom-item {
+            text-decoration: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .bottom-item.active { color: var(--primary-cyan); }
+        .bottom-item-icon { font-size: 1.4rem; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .impact-section { flex-direction: column; text-align: center; }
+            .impact-grid { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="top-nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="welcome-msg">Bonjour, <span>Alain José</span> 🙏</div>
+            </div>
+            <div class="nav-right">
+                <select class="lang-select">
+                    <option>FR</option>
+                    <option>MG</option>
+                </select>
+                <div class="notif-wrapper">
+                    🔔<span class="notif-badge">3</span>
+                </div>
+                <a href="#" class="btn-logout-top">Quitter</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- IMPACT -->
+        <div class="card impact-section">
+            <div class="progress-circle-container">
+                <p class="circle-text">12%</p>
+                <p class="circle-sub">Objectif</p>
+            </div>
+            <div class="impact-content">
+                <div class="impact-header"><h2>Ton Cheminement ✨</h2></div>
+                <p class="impact-desc">Tes sessions d'étude font une réelle différence.</p>
+                <div class="impact-grid">
+                    <div class="impact-box box-blue"><span class="box-value">450m</span><span class="box-label">Prière</span></div>
+                    <div class="impact-box box-orange"><span class="box-value">8.5</span><span class="box-label">Leçons</span></div>
+                    <div class="impact-box box-green"><span class="box-value">120</span><span class="box-label">Versets</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TROPHÉES -->
+        <div class="card trophy-section">
+            <div class="trophy-header">
+                <h2>🏆 Mes Trophées Apokalypsy ✨</h2>
+                <div class="btn-progression">Section Progression</div>
+            </div>
+            <div class="trophy-grid">
+                <div class="trophy-card">
+                    <div class="trophy-icon">🌱</div>
+                    <div class="trophy-footer"><h4>Graine de Foi</h4><p>Débloqué !</p></div>
+                </div>
+                <div class="trophy-card">
+                    <div class="trophy-icon">🕊️</div>
+                    <div class="trophy-footer"><h4>Messager de Paix</h4><p>Débloqué !</p></div>
+                </div>
+                <div class="trophy-card">
+                    <div class="trophy-icon">⛪</div>
+                    <div class="trophy-footer"><h4>Pilier d'Église</h4><p>Débloqué !</p></div>
+                </div>
+                <div class="trophy-card locked">
+                    <div class="trophy-icon">🔥</div>
+                    <div class="trophy-footer"><h4>Feu Sacré</h4><p>En cours...</p></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MENU BAS (CHAT, ARTICLES, PROFIL) -->
+    <nav class="bottom-bar">
+        <a href="../../" class="bottom-item active">
+            <span class="bottom-item-icon">🏠</span>
+            <span>Accueil</span>
+        </a>
+        <a href="#" class="bottom-item">
+            <span class="bottom-item-icon">💬</span>
+            <span>Chat</span>
+        </a>
+        <a href="#" class="bottom-item">
+            <span class="bottom-item-icon">📖</span>
+            <span>Articles</span>
+        </a>
+        <a href="#" class="bottom-item">
+            <span class="bottom-item-icon">👤</span>
+            <span>Profil</span>
+        </a>
+    </nav>
+
+</body>
+</html>

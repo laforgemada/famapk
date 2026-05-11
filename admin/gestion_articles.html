@@ -3,33 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apokalypsy - Publier un Article</title>
+    <title>Apokalypsy - Gestion des Articles</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chemin vers ton CSS partagé -->
     <link rel="stylesheet" href="../css/admin-style.css">
+    <style>
+        .image-mode-selector { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-mode { padding: 5px 12px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-size: 0.8rem; background: #fff; }
+        .btn-mode.active { background: #1e293b; color: white; border-color: #1e293b; }
+        
+        .crud-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-top: 40px; }
+        .article-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .article-table th, .article-table td { text-align: left; padding: 12px; border-bottom: 1px solid #edf2f7; }
+        .article-table th { background: #f8fafc; color: #64748b; font-weight: 600; }
+        
+        .actions { display: flex; gap: 8px; }
+        .btn-action { padding: 6px; border-radius: 6px; border: none; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-view { background: #3b82f6; }
+        .btn-edit { background: #10b981; }
+        .btn-delete { background: #ef4444; }
+        .btn-action:hover { opacity: 0.8; }
+
+        .thumbnail-list { width: 50px; height: 35px; object-fit: cover; border-radius: 4px; }
+        #fileInputContainer { display: none; }
+    </style>
 </head>
 <body>
 
-    <!-- Conteneurs pour les Partials -->
     <div id="sidebar-placeholder"></div>
     <div id="header-placeholder"></div>
 
     <main class="main-content">
         <div style="margin-bottom: 30px;">
-            <h1>Nouvel Article</h1>
-            <p style="color: #64748b;">Rédigez et publiez du contenu pour apokalypsy.com.</p>
+            <h1>Gestion des Articles</h1>
+            <p style="color: #64748b;">Rédigez, modifiez et gérez vos publications pour apokalypsy.com.</p>
         </div>
 
+        <!-- FORMULAIRE D'INSERTION -->
         <form class="editor-container" id="articleForm">
+            <input type="hidden" id="articleId"> <!-- Pour la modification -->
+            
             <div class="form-group">
                 <label>Titre de l'article</label>
                 <input type="text" id="title" placeholder="Ex: Les secrets de la tech à Madagascar..." required>
             </div>
 
             <div class="form-group">
-                <label>Image de couverture (URL)</label>
-                <input type="text" id="image_url" placeholder="https://lien-vers-image.jpg" oninput="previewImage()">
+                <label>Image de couverture</label>
+                <div class="image-mode-selector">
+                    <button type="button" class="btn-mode active" onclick="switchImageMode('url')">Lien URL</button>
+                    <button type="button" class="btn-mode" onclick="switchImageMode('file')">Parcourir fichier</button>
+                </div>
+                
+                <div id="urlInputContainer">
+                    <input type="text" id="image_url" placeholder="https://lien-vers-image.jpg" oninput="previewImage('url')">
+                </div>
+                
+                <div id="fileInputContainer">
+                    <input type="file" id="image_file" accept="image/*" onchange="previewImage('file')">
+                </div>
+
                 <img id="imagePreview" alt="Aperçu" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none;">
             </div>
 
@@ -42,88 +75,165 @@
                 <i class="fa-solid fa-paper-plane"></i> PUBLIER L'ARTICLE
             </button>
         </form>
+
+        <!-- LISTE CRUD DES ARTICLES -->
+        <div class="crud-container">
+            <h3>Mes Publications</h3>
+            <table class="article-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="articleTableBody">
+                    <!-- Les articles chargés s'afficheront ici -->
+                    <tr>
+                        <td colspan="4" style="text-align:center;">Chargement des articles...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <script>
+        // --- CONFIGURATION ---
+        const API_BASE = "https://apokalypsy.com/api/articles";
+
+        // --- CHARGEMENT DES COMPOSANTS ---
         async function loadComponents() {
-            // Chargement des partials depuis le dossier parent
-            const menuRes = await fetch('partials/menu.html');
-            document.getElementById('sidebar-placeholder').innerHTML = await menuRes.text();
-            
-            const headerRes = await fetch('partials/header.html');
-            document.getElementById('header-placeholder').innerHTML = await headerRes.text();
-
-            initPage();
+            try {
+                const menuRes = await fetch('partials/menu.html');
+                document.getElementById('sidebar-placeholder').innerHTML = await menuRes.text();
+                const headerRes = await fetch('partials/header.html');
+                document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+                initPage();
+                fetchArticles(); // Charger la liste au démarrage
+            } catch (error) { console.error("Erreur chargement:", error); }
         }
 
-        function initPage() {
-            // Mise à jour de la date dans le header
-            const dateEl = document.getElementById('headerDate');
-            if(dateEl) {
-                dateEl.innerText = new Date().toLocaleDateString('fr-FR', { 
-                    day: 'numeric', month: 'long', year: 'numeric' 
-                });
-            }
+        // --- GESTION IMAGE ---
+        function switchImageMode(mode) {
+            const urlCont = document.getElementById('urlInputContainer');
+            const fileCont = document.getElementById('fileInputContainer');
+            const btns = document.querySelectorAll('.btn-mode');
 
-            // Activer le lien "Articles" dans le menu
-            const link = document.getElementById('link-articles');
-            if(link) link.classList.add('active');
-
-            // Vérification de sécurité
-            if (!localStorage.getItem('user_full_data')) {
-                window.location.replace('../login/connexion.html');
+            if(mode === 'url') {
+                urlCont.style.display = 'block';
+                fileCont.style.display = 'none';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                urlCont.style.display = 'none';
+                fileCont.style.display = 'block';
+                btns[1].classList.add('active');
+                btns[0].classList.remove('active');
             }
         }
 
-        function previewImage() {
-            const url = document.getElementById('image_url').value;
+        function previewImage(mode) {
             const img = document.getElementById('imagePreview');
-            if(url) { img.src = url; img.style.display = 'block'; }
-            else { img.style.display = 'none'; }
+            if(mode === 'url') {
+                const url = document.getElementById('image_url').value;
+                if(url) { img.src = url; img.style.display = 'block'; }
+            } else {
+                const file = document.getElementById('image_file').files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => { img.src = e.target.result; img.style.display = 'block'; };
+                    reader.readAsDataURL(file);
+                }
+            }
         }
 
+        // --- CRUD : LIRE (FETCH) ---
+        async function fetchArticles() {
+            try {
+                const res = await fetch(`${API_BASE}/list`);
+                const data = await res.json();
+                renderArticles(data);
+            } catch (e) { document.getElementById('articleTableBody').innerHTML = "Erreur de chargement."; }
+        }
+		
+
+        function renderArticles(articles) {
+            const tbody = document.getElementById('articleTableBody');
+            tbody.innerHTML = articles.map(art => `
+                <tr>
+                    <td><img src="${art.image_url || 'https://via.placeholder.com/50'}" class="thumbnail-list"></td>
+                    <td><strong>${art.title}</strong></td>
+                    <td>${new Date(art.created_at).toLocaleDateString()}</td>
+                    <td class="actions">
+                        <button class="btn-action btn-view" onclick="viewArticle(${art.id})"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn-action btn-edit" onclick="editArticle(${JSON.stringify(art).replace(/"/g, '&quot;')})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteArticle(${art.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- CRUD : CRÉER / MODIFIER ---
         document.getElementById('articleForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const id = document.getElementById('articleId').value;
             const btn = document.getElementById('btnSubmit');
-            const userData = JSON.parse(localStorage.getItem('user_full_data'));
-
+            
             const articleData = {
                 title: document.getElementById('title').value,
                 content: document.getElementById('content').value,
-                image: document.getElementById('image_url').value,
-                author: userData.username
+                image_url: document.getElementById('image_url').value
             };
 
             btn.disabled = true;
-            btn.innerText = "PUBLICATION...";
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> TRAITEMENT...';
+
+            const url = id ? `${API_BASE}/update/${id}` : `${API_BASE}/add`;
+            const method = id ? 'PUT' : 'POST';
 
             try {
-                const response = await fetch('https://apokalypsy.com/api/articles/add', {
-                    method: 'POST',
+                const res = await fetch(url, {
+                    method: method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(articleData)
                 });
 
-                if (response.ok) {
-                    alert("Article publié avec succès !");
-                    window.location.reload();
-                } else {
-                    alert("Erreur lors de la publication.");
-                    btn.disabled = false;
-                    btn.innerText = "PUBLIER L'ARTICLE";
+                if(res.ok) {
+                    alert(id ? "Article mis à jour !" : "Article publié !");
+                    this.reset();
+                    document.getElementById('articleId').value = "";
+                    document.getElementById('imagePreview').style.display = 'none';
+                    fetchArticles();
                 }
-            } catch (error) {
-                alert("Erreur serveur.");
+            } catch (err) { alert("Erreur serveur."); }
+            finally {
                 btn.disabled = false;
-                btn.innerText = "PUBLIER L'ARTICLE";
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> PUBLIER L\'ARTICLE';
             }
         });
 
-        function deconnexion() {
-            if(confirm("Déconnexion ?")) { 
-                localStorage.clear(); 
-                window.location.replace('../login/connexion.html'); 
+        // --- CRUD : SUPPRIMER ---
+        async function deleteArticle(id) {
+            if(confirm("Supprimer cet article définitivement ?")) {
+                await fetch(`${API_BASE}/delete/${id}`, { method: 'DELETE' });
+                fetchArticles();
             }
+        }
+
+        // --- CRUD : CHARGER POUR MODIF ---
+        function editArticle(art) {
+            document.getElementById('articleId').value = art.id;
+            document.getElementById('title').value = art.title;
+            document.getElementById('content').value = art.content;
+            document.getElementById('image_url').value = art.image_url;
+            previewImage('url');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-save"></i> METTRE À JOUR';
+        }
+
+        function initPage() {
+            if (!localStorage.getItem('user_full_data')) window.location.replace('connexion.html');
         }
 
         window.onload = loadComponents;
