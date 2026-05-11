@@ -2,478 +2,325 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apokalypsy | Fiangonana</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Apokalypsy | Pro Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
         :root {
-            --primary: #1E3A8A; /* Bleu profond solennel */
-            --accent: #f59e0b;  /* Or pour le divin */
-            --bg: #fdfdfd;
+            --primary: #1E3A8A; 
+            --accent: #f59e0b;  
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --navbar-bg: rgba(30, 58, 138, 0.98);
             --gradient: linear-gradient(135deg, #1E3A8A 0%, #1e40af 100%);
-            --gold: #ffd700;
+            --gold: #fbbf24;
+            --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.05);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; 
-            background: var(--bg); 
-            padding-top: 75px; 
-            color: #1e293b;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; background: var(--bg); padding-top: 70px; 
+            color: var(--text-main);
         }
 
-        /* --- Navigation --- */
         .navbar-fixed {
             position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: var(--navbar-bg); backdrop-filter: blur(10px);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            background: var(--navbar-bg); backdrop-filter: blur(15px);
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .nav-top {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 20px; color: white;
-        }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; color: white; }
+        .logo { font-size: 0.9rem; font-weight: 900; letter-spacing: 2px; }
 
-        .logo-container { display: flex; align-items: center; gap: 8px; }
-        .logo { font-size: 1.1rem; font-weight: 900; letter-spacing: 1px; }
-
+        /* CORRECTIF : Visibilité du sélecteur de langue */
         .lang-select {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            outline: none;
-            margin-right: 10px;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.15); color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px;
+            padding: 6px 10px; font-size: 0.75rem; font-weight: 700; outline: none;
         }
-        .lang-select option { color: black; }
 
-        /* --- Hero --- */
+        .lang-select option {
+            background-color: white; 
+            color: #1E3A8A; 
+        }
+
         .hero {
-            background: var(--gradient);
-            padding: 35px 20px 55px 20px;
-            color: white; text-align: center;
-            border-radius: 0 0 35px 35px;
+            background: var(--gradient); padding: 40px 20px 70px 20px;
+            color: white; text-align: center; border-radius: 0 0 40px 40px; position: relative;
         }
 
-        .hero h1 { font-size: 1.5rem; margin: 0; font-weight: 800; }
-        .hero p { font-size: 0.9rem; opacity: 0.9; margin: 8px 0 18px 0; font-style: italic; }
+        .hero h1 { font-size: 1.5rem; margin: 0; font-weight: 800; line-height: 1.2; }
+        .hero p { font-size: 0.9rem; opacity: 0.85; margin: 15px 0; font-style: italic; }
 
         .live-badge {
-            background: #ef4444;
-            color: white;
-            padding: 6px 15px;
-            border-radius: 200px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            animation: blink 2s infinite;
+            background: #ef4444; color: white; padding: 8px 16px; border-radius: 100px;
+            font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;
+            animation: pulse 2s infinite;
         }
 
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .section-label { padding: 30px 20px 10px 20px; font-weight: 800; color: var(--primary); font-size: 1rem; }
 
-        /* --- Section Titles --- */
-        .section-label {
-            padding: 25px 20px 12px 20px;
-            font-weight: 800; font-size: 0.95rem;
-            color: var(--primary); display: flex; align-items: center; gap: 8px;
-        }
-
-        /* --- Podium --- */
-        .podium-box {
-            display: flex; justify-content: center; align-items: flex-end;
-            gap: 8px; padding: 20px 10px; margin: 10px 15px;
-        }
-
+        .podium-box { display: flex; justify-content: center; align-items: flex-end; gap: 10px; padding: 10px; margin-top: -30px; }
         .rank-card {
-            background: white; border-radius: 20px; padding: 15px 5px;
-            display: flex; flex-direction: column; align-items: center; width: 31%;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative;
-            border: 1px solid #f1f5f9;
+            background: var(--surface); border-radius: 24px; padding: 20px 5px;
+            display: flex; flex-direction: column; align-items: center; width: 32%;
+            box-shadow: var(--shadow-card); opacity: 0; transform: translateY(20px); transition: 0.5s;
         }
-
-        .rank-1 { transform: translateY(-15px) scale(1.1); border: 2px solid var(--gold) !important; z-index: 2; background: linear-gradient(to bottom, #ffffff, #fffdf0); }
+        .rank-card.animate { opacity: 1; transform: translateY(0); }
+        .rank-1 { transform: translateY(-10px); z-index: 2; border: 2px solid var(--gold); }
+        .rank-1.animate { transform: translateY(-10px); }
 
         .avatar {
-            width: 50px; height: 50px; border-radius: 50%; background: #f8fafc;
-            display: flex; align-items: center; justify-content: center; font-weight: 800;
-            position: relative; border: 3px solid #e2e8f0; margin-bottom: 8px; color: var(--primary);
+            width: 50px; height: 50px; border-radius: 18px; background: #f1f5f9;
+            display: flex; align-items: center; justify-content: center; font-weight: 900;
+            position: relative; border: 2px solid #e2e8f0; margin-bottom: 8px; color: var(--primary);
         }
-
+        .rank-1 .avatar { width: 70px; height: 70px; border-color: var(--gold); }
         .rank-badge {
-            position: absolute; bottom: -5px; right: -5px; width: 20px; height: 20px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 0.65rem; font-weight: bold; color: white; border: 2px solid white;
+            position: absolute; bottom: -5px; right: -5px; width: 22px; height: 22px;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 800; color: white;
         }
-
-        .rank-1 .avatar { width: 65px; height: 65px; border-color: var(--gold); }
         .rank-1 .rank-badge { background: var(--gold); }
-        .rank-2 .rank-badge { background: #cbd5e1; }
-        .rank-3 .rank-badge { background: #cd7f32; }
+        .rank-2 .rank-badge { background: #94a3b8; }
+        .rank-3 .rank-badge { background: #b45309; }
 
-        .name { font-size: 0.7rem; font-weight: 700; color: #334155; text-align: center; }
-        .role { font-size: 0.55rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
-        .user-pts { background: rgba(245, 158, 11, 0.1); color: var(--accent); font-size: 0.65rem; font-weight: 900; padding: 2px 8px; border-radius: 10px; margin-top: 6px; }
+        .name { font-size: 0.7rem; font-weight: 800; text-align: center; }
+        .user-pts { color: var(--accent); font-size: 0.6rem; font-weight: 800; margin-top: 4px; }
 
-        /* --- Categories --- */
-        .category-scroll {
-            display: flex; overflow-x: auto; gap: 10px; padding: 15px 20px; scrollbar-width: none;
-        }
+        .category-scroll { display: flex; overflow-x: auto; gap: 10px; padding: 20px; scrollbar-width: none; }
         .cat-badge {
-            background: white; padding: 10px 18px; border-radius: 14px;
-            white-space: nowrap; font-size: 0.8rem; font-weight: 600;
-            color: #475569; border: 1px solid #e2e8f0;
+            background: white; padding: 10px 16px; border-radius: 15px;
+            white-space: nowrap; font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 6px;
         }
+        .cat-badge i { width: 14px; }
         .cat-badge.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* --- Cards Articles --- */
-        .container { padding: 0 15px; max-width: 600px; margin-bottom: 20px; }
+        .container { padding: 0 20px; }
         .bible-card {
-            background: white; border-radius: 22px; margin-bottom: 20px;
-            overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border: 1px solid rgba(0,0,0,0.02);
+            background: var(--surface); border-radius: 25px; margin-bottom: 20px;
+            overflow: hidden; box-shadow: var(--shadow-card); opacity: 0; transform: translateY(20px); transition: 0.5s;
         }
-        .card-image { height: 170px; background-size: cover; background-position: center; position: relative; }
-        .card-type {
-            position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.6);
-            color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; backdrop-filter: blur(4px);
-        }
-        .card-body { padding: 18px; }
-        .card-title { font-weight: 800; font-size: 1.05rem; color: #0f172a; margin-bottom: 6px; }
-        .card-text { color: #475569; font-size: 0.85rem; line-height: 1.5; }
+        .bible-card.animate { opacity: 1; transform: translateY(0); }
+        .card-image { height: 180px; background-size: cover; background-position: center; }
+        .card-body { padding: 20px; }
+        .card-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; }
+        .card-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
 
-        /* --- Footer Menu --- */
+        #pagination-controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 120px; }
+        .page-btn { width: 45px; height: 45px; border-radius: 14px; border: none; background: white; box-shadow: var(--shadow-card); color: var(--primary); }
+
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            display: flex; justify-content: space-around; padding: 12px 0;
-            border-top: 1px solid #f1f5f9; box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
-            z-index: 1000;
+            position: fixed; bottom: 15px; left: 15px; right: 15px;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            border-radius: 25px; display: flex; justify-content: space-around;
+            padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; font-size: 0.65rem; font-weight: 700; }
         .nav-item.active { color: var(--primary); }
-        .nav-icon { font-size: 1.2rem; }
-        
-        /* Pagination Styling */
-        #pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 110px;
-            padding: 10px;
-        }
-		
-		/* === AUTH UI IMPROVED === */
-.auth-box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: 10px;
-}
+        .nav-item i { width: 20px; height: 20px; }
+        .nav-item.active i { background: var(--primary); color: white; border-radius: 10px; padding: 8px; width: 38px; height: 38px; margin-top: -15px; }
 
-.user-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 0.75rem;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-}
-
-.user-name {
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 800;
-}
-
-.user-status {
-    color: #22c55e;
-    font-size: 0.55rem;
-    font-weight: bold;
-}
-
-/* === BOUTON VERT MODERNE === */
-.logout-btn {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    border-radius: 50px;
-    font-weight: bold;
-    font-size: 0.65rem;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(34,197,94,0.3);
-    transition: all 0.2s ease;
-}
-
-.logout-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 14px rgba(34,197,94,0.4);
-}
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <header class="navbar-fixed">
-    <div class="nav-top">
-        <div class="logo-container"><div class="logo">APOKALYPSY MOBILE</div></div>
-        <div style="display: flex; align-items: center;">
-            <select class="lang-select" id="langSwitcher" onchange="changeLanguage()">
-                <option value="mg">MG</option>
-                <option value="fr">FR</option>
-                <option value="en">EN</option>
-            </select>
-            
-            <!-- Cette zone sera gérée par le script -->
-            <div id="auth-zone" style="display: flex; align-items: center;">
-                <a href="login/connexion.html" id="btn-connexion" style="text-decoration:none; background:var(--accent); color:var(--primary); padding:6px 14px; border-radius:10px; font-weight:bold; font-size:0.75rem;">Miditra</a>
+        <div class="nav-top">
+            <div class="logo">APOKALYPSY</div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <select class="lang-select" id="langSwitcher" onchange="changeLanguage()">
+                    <option value="mg">MG</option>
+                    <option value="fr">FR</option>
+                    <option value="en">EN</option>
+                </select>
+                <div id="auth-zone"></div>
             </div>
         </div>
-    </div>
-	</header>
+    </header>
 
     <section class="hero">
-        <div id="hero-tag" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; background: rgba(255, 255, 255, 0.15); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 15px;">Périkôpa androany</div>
-        <h1 id="hero-verse" style="font-style: italic; line-height: 1.3; margin-bottom: 10px;">"Samy manana ny fanomezam-pahasoavany avy..."</h1>
-        <p id="hero-ref" style="color: var(--accent); font-weight: 800; font-size: 0.85rem; opacity: 1;">1 KORINTIANA 12:4</p>
+        <div id="hero-tag" style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;">Périkôpa androany</div>
+        <h1 id="hero-verse">"Samy manana ny fanomezam-pahasoavany avy..."</h1>
+        <p id="hero-ref">1 KORINTIANA 12:4</p>
         <div class="live-badge">
-            <span style="width:8px; height:8px; background:white; border-radius:50%"></span>
-            <span id="txt-live">Zoma Manontolo mivantana</span>
+            <span id="txt-live">Mivantana izao</span>
         </div>
     </section>
-	
-	
 
-    <div class="section-label" id="label-mavitrika">⭐ Ireo mpikambana mavitrika indrindra</div>
-
+    <div class="section-label" id="label-mavitrika">⭐ Mpikambana mavitrika</div>
     <div class="podium-box">
         <div class="rank-card rank-2">
             <div class="avatar">DA<div class="rank-badge">2</div></div>
             <div class="name">Daniel A.</div>
-            <div class="role" data-key="role-mpiandry">Mpiandry</div>
             <div class="user-pts">950 PTS</div>
         </div>
         <div class="rank-card rank-1">
             <div class="avatar">PM<div class="rank-badge">1</div></div>
             <div class="name">Pastor Mailhol</div>
-            <div class="role" data-key="role-pastor">Mpitandrina</div>
             <div class="user-pts">1520 PTS</div>
         </div>
         <div class="rank-card rank-3">
             <div class="avatar">SM<div class="rank-badge">3</div></div>
             <div class="name">Sarah M.</div>
-            <div class="role" data-key="role-servant">Mpanompo</div>
             <div class="user-pts">780 PTS</div>
         </div>
     </div>
 
-    <div class="section-label" id="label-fampianarana">📚 Fampianarana & Tenin'Andriamanitra</div>
-    <div class="category-scroll">
-        <div class="cat-badge active" data-key="cat-all">Rehetra</div>
-        <div class="cat-badge" data-key="cat-sermon">Toriteny</div>
-        <div class="cat-badge" data-key="cat-prophecy">Faminaniana</div>
-        <div class="cat-badge" data-key="cat-worship">Hira & Dera</div>
-        <div class="cat-badge" data-key="cat-prayer">Vavaka</div>
-    </div>
+    <div class="section-label" id="label-fampianarana">📚 Fampianarana</div>
+    <div class="category-scroll" id="cat-list"></div>
 
-    <div class="container" id="articles-container">
-
-    <!-- MESSAGE OFFLINE -->
-    <div id="offline-message" class="offline-box" style="display:none;">
-        📡 Connexion interrompue <br>
-        <small>
-            Vous consultez actuellement le contenu disponible hors ligne.<br>
-            Vérifiez votre connexion pour accéder aux dernières mises à jour.
-        </small>
-    </div>
-
-		<!-- CONTENU -->
-		<div id="content">
-			<!-- ton contenu local ici -->
-		</div>
-
-	</div>
-
-    <!-- RECTIFICATION : Ajout du conteneur de pagination -->
+    <div class="container" id="articles-container"></div>
     <div id="pagination-controls"></div>
 
-   <nav class="bottom-nav">
-    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span id="menu-home">Accueil</span></a>
-    <!-- Lien vers la nouvelle page -->
-    <a href="bible.html" class="nav-item active"><span class="nav-icon">📖</span><span id="menu-bible">Bible</span></a>
-    <!--a href="#" class="nav-item"><span class="nav-icon">🔴</span><span id="menu-live">En direct</span></a-->
-    <a href="#" class="nav-item"><span class="nav-icon">👥</span><span id="menu-chat">Chat</span></a>
-</nav>
-
-
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active"><i data-feather="home"></i><span id="menu-home">Accueil</span></a>
+        <a href="bible.html" class="nav-item"><i data-feather="book"></i><span id="menu-bible">Bible</span></a>
+        <a href="#" class="nav-item"><i data-feather="message-circle"></i><span id="menu-chat">Chat</span></a>
+    </nav>
 
 <script>
-/* ===========================
-   🌍 TRADUCTIONS
-=========================== */
-const translations = {
-    mg: { connexion: "Miditra", logout: "Hivoaka", connected: "Mifandray", tag: "Périkôpa androany", verse: '"Samy manana ny fanomezam-pahasoavany avy..."', live: "Zoma Manontolo mivantana", labelMavitrika: "⭐ Ireo mpikambana mavitrika indrindra", labelFampianarana: "📚 Fampianarana & Tenin'Andriamanitra", catAll: "Rehetra", catSermon: "Toriteny", catProphecy: "Faminaniana", catWorship: "Hira & Dera", catPrayer: "Vavaka", home: "Trano", bible: "Baiboly", chat: "Tafatafa", roleMpiandry: "Mpiandry", rolePastor: "Mpitandrina", roleServant: "Mpanompo" },
-    fr: { connexion: "Connexion", logout: "Déconnexion", connected: "Connecté", tag: "Péricope du jour", verse: '"Chacun a son propre don..."', live: "Vendredi en direct", labelMavitrika: "⭐ Membres actifs", labelFampianarana: "📚 Enseignements", catAll: "Tous", catSermon: "Prédication", catProphecy: "Prophétie", catWorship: "Louange", catPrayer: "Prière", home: "Accueil", bible: "Bible", chat: "Chat", roleMpiandry: "Berger", rolePastor: "Pasteur", roleServant: "Serviteur" },
-    en: { connexion: "Login", logout: "Logout", connected: "Connected", tag: "Today's Pericope", verse: '"Each has his own gift..."', live: "Live Service", labelMavitrika: "⭐ Active members", labelFampianarana: "📚 Teachings", catAll: "All", catSermon: "Sermon", catProphecy: "Prophecy", catWorship: "Worship", catPrayer: "Prayer", home: "Home", bible: "Bible", chat: "Chat", roleMpiandry: "Shepherd", rolePastor: "Pastor", roleServant: "Servant" }
-};
-
-/* ===========================
-   🔐 AUTH DISPLAY
-=========================== */
-function updateAuthDisplay() {
-    const authZone = document.getElementById('auth-zone');
-    const lang = document.getElementById('langSwitcher').value;
-    const t = translations[lang];
-
-    const userName = localStorage.getItem('user_name');
-    const userRole = localStorage.getItem('user_role'); // 🔥 IMPORTANT
-
-    if (userName && userName.trim() !== "") {
-
-        let adminButton = "";
-
-        // 🔥 CONDITION ADMIN
-        if (userRole === "ROLE_ADMIN") {
-            adminButton = `
-                <a href="/admin/dashboard.html" class="admin-btn">
-                    ⚡ Admin
-                </a>
-            `;
+    const translations = {
+        mg: { 
+            connexion: "Miditra", logout: "Hivoaka", tag: "Périkôpa androany", 
+            verse: '"Samy manana ny fanomezam-pahasoavany avy..."', 
+            live: "Mivantana izao", labelMavitrika: "⭐ Mpikambana mavitrika", 
+            labelFampianarana: "📚 Fampianarana", home: "Trano", bible: "Baiboly", chat: "Tafatafa",
+            cats: ["Rehetra", "Toriteny", "Faminaniana", "Hira"]
+        },
+        fr: { 
+            connexion: "Connexion", logout: "Déconnexion", tag: "Péricope du jour", 
+            verse: '"Chacun a son don particulier..."', 
+            live: "En direct", labelMavitrika: "⭐ Membres Actifs", 
+            labelFampianarana: "📚 Enseignements", home: "Accueil", bible: "Bible", chat: "Chat",
+            cats: ["Tous", "Sermons", "Prophéties", "Chants"]
+        },
+        en: { 
+            connexion: "Login", logout: "Logout", tag: "Today's Verse", 
+            verse: '"Each has his own gift..."', 
+            live: "Live now", labelMavitrika: "⭐ Active Members", 
+            labelFampianarana: "📚 Teachings", home: "Home", bible: "Bible", chat: "Chat",
+            cats: ["All", "Sermons", "Prophecies", "Songs"]
         }
+    };
 
-        authZone.innerHTML = `
-            <div class="auth-box">
-                
-                <div class="user-avatar">
-                    ${userName.charAt(0).toUpperCase()}
-                </div>
+    const API_URL = 'https://apokalypsy.com/api/articles/list';
+    let allArticles = [];
+    let currentPage = 1;
+    const itemsPerPage = 5;
 
-                <div class="user-info">
-                    <span class="user-name">${userName}</span>
-                    <span class="user-status">${t.connected}</span>
-                </div>
+    function changeLanguage() {
+        const lang = document.getElementById('langSwitcher').value;
+        const t = translations[lang];
+        
+        document.getElementById('hero-tag').innerText = t.tag;
+        document.getElementById('hero-verse').innerText = t.verse;
+        document.getElementById('txt-live').innerText = t.live;
+        document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
+        document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
+        document.getElementById('menu-home').innerText = t.home;
+        document.getElementById('menu-bible').innerText = t.bible;
+        document.getElementById('menu-chat').innerText = t.chat;
 
-                ${adminButton}
-
-                <button onclick="logout()" class="logout-btn">
-                    ${t.logout}
-                </button>
+        const catList = document.getElementById('cat-list');
+        const icons = ['grid', 'book-open', 'zap', 'music'];
+        catList.innerHTML = t.cats.map((name, i) => `
+            <div class="cat-badge ${i===0?'active':''}">
+                <i data-feather="${icons[i]}"></i>${name}
             </div>
-        `;
-    } else {
-        authZone.innerHTML = `
-            <a href="login/connexion.html" style="text-decoration:none; background:var(--accent); color:var(--primary); padding:6px 14px; border-radius:10px; font-weight:bold; font-size:0.75rem;">
-                ${t.connexion}
-            </a>
-        `;
+        `).join('');
+        
+        updateAuthDisplay();
+        feather.replace();
     }
-}
 
-function logout() {
-    if(confirm("Se déconnecter ?")) {
-        localStorage.removeItem('user_name');
-        localStorage.removeItem('user_role');
-        location.reload();
+    async function fetchArticles() {
+        try {
+            const response = await fetch(`${API_URL}?t=${new Date().getTime()}`);
+            allArticles = await response.json();
+            renderArticles();
+        } catch (e) { console.log("Erreur API"); }
     }
-}
 
-/* ===========================
-   🌍 LANGUAGE
-=========================== */
-function changeLanguage() {
-    const lang = document.getElementById('langSwitcher').value;
-    const t = translations[lang];
+    function renderArticles() {
+        const container = document.getElementById('articles-container');
+        container.innerHTML = '';
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
 
-    document.getElementById('hero-tag').innerText = t.tag;
-    document.getElementById('hero-verse').innerText = t.verse;
-    document.getElementById('txt-live').innerText = t.live;
-    document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
-    document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
+        pageItems.forEach(article => {
+            const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500';
+            container.insertAdjacentHTML('beforeend', `
+                <div class="bible-card">
+                    <div class="card-image" style="background-image: url('${img}');"></div>
+                    <div class="card-body">
+                        <div class="card-title">${escapeHTML(article.title)}</div>
+                        <div class="card-text">${escapeHTML(article.content).substring(0, 100)}...</div>
+                    </div>
+                </div>
+            `);
+        });
+        updatePaginationControls();
+        observeElements();
+    }
 
-    document.querySelector('[data-key="cat-all"]').innerText = t.catAll;
-    document.querySelector('[data-key="cat-sermon"]').innerText = t.catSermon;
-    document.querySelector('[data-key="cat-prophecy"]').innerText = t.catProphecy;
-    document.querySelector('[data-key="cat-worship"]').innerText = t.catWorship;
-    document.querySelector('[data-key="cat-prayer"]').innerText = t.catPrayer;
+    function updatePaginationControls() {
+        const controls = document.getElementById('pagination-controls');
+        const totalPages = Math.ceil(allArticles.length / itemsPerPage);
+        if (totalPages <= 1) return;
+        controls.innerHTML = `
+            <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i data-feather="chevron-left"></i></button>
+            <span style="font-weight: 800;">${currentPage}</span>
+            <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i data-feather="chevron-right"></i></button>
+        `;
+        feather.replace();
+    }
 
-    document.getElementById('menu-home').innerText = t.home;
-    document.getElementById('menu-bible').innerText = t.bible;
-    document.getElementById('menu-chat').innerText = t.chat;
-
-    document.querySelector('[data-key="role-mpiandry"]').innerText = t.roleMpiandry;
-    document.querySelector('[data-key="role-pastor"]').innerText = t.rolePastor;
-    document.querySelector('[data-key="role-servant"]').innerText = t.roleServant;
-
-    updateAuthDisplay(); // 🔥 IMPORTANT
-}
-
-/* ===========================
-   📡 ARTICLES API
-=========================== */
-const API_URL = 'https://apokalypsy.com/api/articles/list';
-let allArticles = [];
-let currentPage = 1;
-const itemsPerPage = 5;
-
-async function fetchArticles() {
-    try {
-        const response = await fetch(API_URL);
-        allArticles = await response.json();
+    function changePage(page) {
+        currentPage = page;
         renderArticles();
-    } catch (e) {
-        console.log("Mode offline");
-        document.getElementById('offline-message').style.display = "block";
+        window.scrollTo({ top: 400, behavior: 'smooth' });
     }
-}
 
-function renderArticles() {
-    const container = document.getElementById('articles-container');
-    container.innerHTML = '';
+    function observeElements() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('animate');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.rank-card, .bible-card').forEach(el => observer.observe(el));
+    }
 
-    const start = (currentPage - 1) * itemsPerPage;
-    const pageItems = allArticles.slice(start, start + itemsPerPage);
+    function escapeHTML(str) {
+        return str ? str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)) : '';
+    }
 
-    pageItems.forEach(article => {
-        container.innerHTML += `
-            <div class="bible-card">
-                <div class="card-body">
-                    <div class="card-title">${escapeHTML(article.title)}</div>
-                    <div class="card-text">${escapeHTML(article.content).substring(0,100)}...</div>
-                </div>
-            </div>
-        `;
-    });
-}
+    function updateAuthDisplay() {
+        const authZone = document.getElementById('auth-zone');
+        const lang = document.getElementById('langSwitcher').value;
+        const userName = localStorage.getItem('user_name'); 
+        if (userName) {
+            authZone.innerHTML = `<button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem;">OUT</button>`;
+        } else {
+            authZone.innerHTML = `<a href="login/connexion.html" style="text-decoration:none; background:var(--accent); color:var(--primary); padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem;">${translations[lang].connexion}</a>`;
+        }
+    }
 
-function escapeHTML(str){
-    return str.replace(/[&<>'"]/g, t => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
-    }[t]));
-}
+    function logout() {
+        if(confirm("Hivoaka?")) { localStorage.removeItem('user_name'); window.location.reload(); }
+    }
 
-/* ===========================
-   🚀 INIT
-=========================== */
-window.onload = function(){
-    fetchArticles();
-    updateAuthDisplay(); // 🔥 CORRECTION PRINCIPALE
-};
+    window.onload = () => {
+        changeLanguage(); 
+        fetchArticles();
+    };
 </script>
 </body>
 </html>

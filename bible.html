@@ -1,158 +1,185 @@
 <!DOCTYPE html>
 <html lang="mg">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apokalypsy Bible</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Apokalypsy Bible | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        :root {
+            --primary: #1E3A8A; 
+            --accent: #f59e0b;  
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --navbar-bg: rgba(30, 58, 138, 0.98);
+            --gradient: linear-gradient(135deg, #1E3A8A 0%, #1e40af 100%);
+            --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
 
-<style>
-:root{
-    --blue:#2f4aa0;
-    --light:#f4f6fb;
-    --accent:#ffb300;
-    --text:#222;
-}
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-/* RESET */
-*{margin:0;padding:0;box-sizing:border-box;}
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; background: var(--bg); padding-top: 70px; padding-bottom: 90px;
+            color: var(--text-main);
+        }
 
-body{
-    font-family:'Segoe UI',sans-serif;
-    background:var(--light);
-    color:var(--text);
-    padding-bottom: 80px;
-}
+        /* HEADER */
+        .header-fixed {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: var(--navbar-bg); backdrop-filter: blur(15px);
+            padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center; color: white;
+        }
+        .logo { font-size: 0.9rem; font-weight: 900; letter-spacing: 2px; }
 
-/* HEADER */
-.header{
-    background:var(--blue);
-    color:white;
-    padding:15px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-.header h1{ font-size:16px; }
+        /* SECTION & SEARCH */
+        .section { padding: 20px 20px 10px 20px; }
+        .section h3 { font-weight: 800; color: var(--primary); margin-bottom: 15px; }
 
-/* SECTION */
-.section{ padding:20px; }
-.section h3{ margin-bottom:15px; }
+        .search-container { padding: 0 20px 15px 20px; }
+        .search-bar {
+            width: 100%; padding: 14px 20px; border-radius: 18px;
+            border: 1px solid #e2e8f0; background: white; outline: none;
+            font-family: inherit; font-size: 0.9rem; box-shadow: var(--shadow-card);
+        }
 
-/* MENU PILLS */
-.menu{ display:flex; gap:10px; flex-wrap:wrap; }
-.menu button{
-    padding:8px 15px; border-radius:20px; border:none;
-    background:#e0e5f5; cursor:pointer;
-}
-.menu button.active{ background:var(--blue); color:white; }
+        /* MENU PILLS */
+        .menu { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 10px; }
+        .menu button {
+            padding: 10px 20px; border-radius: 100px; border: 1px solid #e2e8f0;
+            background: white; cursor: pointer; font-family: inherit; font-weight: 700;
+            font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;
+            white-space: nowrap;
+        }
+        .menu button.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* SEARCH */
-.search{padding:10px 20px;}
-.search input{
-    width:100%; padding:10px; border-radius:10px;
-    border:none; outline: none;
-}
+        /* BIBLE CARDS */
+        .title-divider { margin: 25px 20px 10px; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .book { margin: 10px 20px; border-radius: 22px; background: white; overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
+        .book-header { 
+            padding: 20px; display: flex; justify-content: space-between; align-items: center; 
+            cursor: pointer; font-weight: 700; color: var(--text-main);
+        }
+        .book-header span i { width: 18px; color: var(--primary); }
+        .book-content { max-height: 0; overflow: hidden; transition: 0.4s ease-out; background: #fcfcfd; }
+        .book.open .book-content { max-height: 2000px; padding: 20px; border-top: 1px solid #f1f5f9; }
+        
+        .verse { margin-bottom: 12px; line-height: 1.6; font-size: 0.95rem; color: #334155; }
+        .num { color: var(--primary); font-weight: 800; margin-right: 10px; font-size: 0.8rem; }
 
-/* TITLE */
-.title{ margin:10px 20px; font-size:12px; color:#777; text-transform: uppercase; }
+        /* OVERLAY SELECTOR */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: flex-end; z-index: 2000;
+        }
+        .selector-card {
+            background: white; width: 100%; max-width: 500px;
+            border-radius: 30px 30px 0 0; overflow: hidden; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-/* BOOK */
-.book{ margin:10px 15px; border-radius:15px; background:white; overflow:hidden; }
-.book-header{ padding:15px; display:flex; justify-content:space-between; cursor:pointer; }
-.book-content{ max-height:0; overflow:hidden; transition:0.3s; }
-.book.open .book-content{ max-height:none; padding:10px; }
-.verse{ margin-bottom:10px; line-height: 1.4; }
-.num{ color:var(--blue); font-weight:bold; margin-right: 8px; }
+        .selector-header {
+            padding: 20px; background: white; display: flex;
+            justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9;
+        }
+        .grid-container {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 8px; padding: 20px; max-height: 350px; overflow-y: auto;
+        }
+        .grid-item {
+            background: #f8fafc; padding: 15px 5px; text-align: center;
+            cursor: pointer; border-radius: 12px; font-weight: 800; font-size: 0.9rem;
+            border: 1px solid #e2e8f0; transition: 0.2s;
+        }
+        .grid-item.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        .grid-item.in-range { background: #dbeafe; color: var(--primary); }
 
-/* --- GRID OVERLAY --- */
-.overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5); display: none; justify-content: center;
-    align-items: center; z-index: 200;
-}
-.selector-card {
-    background: white; width: 95%; max-width: 400px;
-    border-radius: 20px; overflow: hidden;
-}
-.selector-header {
-    padding: 15px; background: #eee; display: flex;
-    justify-content: space-between; align-items: center;
-}
-.grid-container {
-    display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 5px; padding: 15px; max-height: 300px; overflow-y: auto;
-}
-.grid-item {
-    background: #f0f2f8; padding: 12px 5px; text-align: center;
-    cursor: pointer; border-radius: 8px; font-weight: bold;
-}
-.grid-item.selected { background: var(--blue); color: white; }
-.grid-item.in-range { background: #d0d9ff; }
+        .btn-reset {
+            width: 100%; padding: 14px; border: none; background: #f1f5f9; 
+            border-radius: 14px; margin-top: 15px; font-weight: 800; color: var(--primary);
+            cursor: pointer; font-size: 0.85rem;
+        }
 
-/* BOTTOM NAV */
-.bottom-nav {
-    position: fixed; bottom: 0; width: 100%; background: white;
-    display: flex; justify-content: space-around; padding: 10px 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100;
-}
-.nav-item { text-align: center; text-decoration: none; color: #777; font-size: 11px; }
-.nav-item.active { color: var(--blue); font-weight: bold; }
-.nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
-</style>
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed; bottom: 15px; left: 15px; right: 15px;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            border-radius: 25px; display: flex; justify-content: space-around;
+            padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; font-size: 0.65rem; font-weight: 700; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { width: 20px; height: 20px; }
+    </style>
 </head>
-
 <body>
 
-<div class="header"><h1>APOKALYPSY MOBILE</h1></div>
+<header class="header-fixed">
+    <div class="logo">APOKALYPSY</div>
+    <i data-feather="user" style="width: 20px;"></i>
+</header>
 
 <div class="section">
     <h3>📚 Bible</h3>
-    <div class="menu">
+    <div class="menu" id="langMenu">
         <button class="active" onclick="changeLang('mg', this)">Malagasy</button>
         <button onclick="changeLang('fr', this)">Français</button>
         <button onclick="changeLang('en', this)">English</button>
     </div>
 </div>
 
-<div class="search"><input type="text" id="search" placeholder="Hikaroka boky..."></div>
+<div class="search-container">
+    <input type="text" id="search" class="search-bar" placeholder="Hikaroka boky...">
+</div>
 
 <div id="container"></div>
 
-<!-- FENETRE DE SELECTION PAR PLAGE -->
 <div id="selectorOverlay" class="overlay">
     <div class="selector-card">
         <div class="selector-header">
-            <button onclick="closeSelector()" style="border:none; background:none; font-size:20px;">×</button>
-            <span id="selectedBookName" style="font-weight:bold;">Sélection</span>
-            <button id="applyFilter" onclick="applyFilter()" style="color:var(--blue); border:none; background:none; font-weight:bold; visibility:hidden;">OK</button>
+            <button onclick="closeSelector()" style="border:none; background:none;"><i data-feather="x"></i></button>
+            <span id="selectedBookName" style="font-weight:800; color:var(--primary);">Sélection</span>
+            <button id="applyFilter" onclick="applyFilter()" style="color:var(--accent); border:none; background:none; font-weight:800; visibility:hidden;">OK</button>
         </div>
-        <div style="padding: 10px; text-align: center; font-size: 12px; color: #666;" id="selectionInfo">
-            Cliquez sur le début et la fin de la plage
+        <div style="padding: 15px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;" id="selectionInfo">
+            Fidiana ny voalohany sy ny farany
         </div>
         <div class="grid-container" id="gridContainer"></div>
     </div>
 </div>
 
-<div class="bottom-nav">
-    <a href="/" class="nav-item"><span class="nav-icon">🏠</span>Accueil</a>
-    <a href="#" class="nav-item active"><span class="nav-icon">📖</span>Bible</a>
-    <a href="#" class="nav-item"><span class="nav-icon">💬</span>Chat</a>
-</div>
+<nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i data-feather="home"></i>Accueil</a>
+    <a href="#" class="nav-item active"><i data-feather="book-open"></i>Bible</a>
+    <a href="#" class="nav-item"><i data-feather="message-circle"></i>Chat</a>
+</nav>
 
 <script>
 const data = {
     mg: {
         search: "Hikaroka boky...", at: "Testamenta Taloha", nt: "Testamenta Vaovao",
         books: [
-            { name: "Genesisy", v: ["Verset 1...", "Verset 2...", "Verset 3...", "Verset 4...", "Verset 5...", "Verset 6...", "Verset 7...", "Verset 8...", "Verset 9...", "Verset 10..."] },
+            { name: "Genesisy", v: ["Ao am-piandohana...", "Ny tany dia mbola tsy nisy endrika...", "Ary hoy Andriamanitra...", "Verset 4...", "Verset 5...", "Verset 6...", "Verset 7...", "Verset 8...", "Verset 9...", "Verset 10..."] },
             { name: "Eksodosy", v: ["Verset 1...", "Verset 2...", "Verset 3...", "Verset 4...", "Verset 5..."] },
             { name: "Apokalypsy", v: ["Verset 1...", "Verset 2...", "Verset 3..."] }
         ]
     },
     fr: {
-        search: "Chercher...", at: "Ancien Testament", nt: "Nouveau Testament",
+        search: "Rechercher un livre...", at: "Ancien Testament", nt: "Nouveau Testament",
         books: [
-            { name: "Genèse", v: ["Verset 1...", "Verset 2...", "Verset 3...", "Verset 4...", "Verset 5...", "Verset 6...", "Verset 7...", "Verset 8...", "Verset 9...", "Verset 10..."] }
+            { name: "Genèse", v: ["Au commencement...", "La terre était informe...", "Dieu dit...", "Verset 4...", "Verset 5..."] }
+        ]
+    },
+    en: {
+        search: "Search books...", at: "Old Testament", nt: "New Testament",
+        books: [
+            { name: "Genesis", v: ["In the beginning...", "The earth was without form...", "And God said...", "Verse 4...", "Verse 5..."] }
         ]
     }
 };
@@ -161,7 +188,7 @@ let lang = "mg";
 let currentBookIdx = null;
 let startRange = null;
 let endRange = null;
-let activeFilters = {}; // Stocke les plages par livre
+let activeFilters = {}; 
 
 function changeLang(l, btn) {
     lang = l;
@@ -197,7 +224,6 @@ function updateGrid() {
         } else if (i === startRange) {
             item.className += ' selected';
         }
-        
         item.innerText = i + 1;
         item.onclick = () => handleSelect(i);
         grid.appendChild(item);
@@ -233,9 +259,9 @@ function render(openIdx = null){
     const d=data[lang];
     document.getElementById('search').placeholder=d.search;
 
-    let html=`<div class="title">${d.at}</div>`;
+    let html=`<div class="title-divider">${d.at}</div>`;
     d.books.forEach((b,i)=>{
-        if(i===d.books.length-1) html+=`<div class="title">${d.nt}</div>`;
+        if(i===d.books.length-1 && d.books.length > 2) html+=`<div class="title-divider">${d.nt}</div>`;
         
         const filter = activeFilters[i];
         const isFiltered = filter !== undefined;
@@ -243,19 +269,20 @@ function render(openIdx = null){
         html+=`
         <div class="book ${openIdx === i ? 'open' : ''}">
             <div class="book-header" onclick="openSelector(${i})">
-                <div>${b.name} ${isFiltered ? `<small style="color:var(--accent); font-weight:bold;"> (v.${filter.start+1}-${filter.end+1})</small>` : ''}</div>
-                <span>▼</span>
+                <div>${b.name} ${isFiltered ? `<span style="color:var(--accent); font-size:0.7rem;"> (v.${filter.start+1}-${filter.end+1})</span>` : ''}</div>
+                <span><i data-feather="chevron-down"></i></span>
             </div>
             <div class="book-content">
                 ${b.v.map((t,vi)=>{
                     if(isFiltered && (vi < filter.start || vi > filter.end)) return '';
                     return `<div class="verse"><span class="num">${vi+1}</span>${t}</div>`;
                 }).join('')}
-                ${isFiltered ? `<button onclick="resetFilter(${i})" style="width:100%; padding:10px; border:none; background:#eee; border-radius:10px; margin-top:10px;">Voir tout le livre</button>` : ''}
+                ${isFiltered ? `<button class="btn-reset" onclick="resetFilter(${i})">Hita daholo</button>` : ''}
             </div>
         </div>`;
     });
     c.innerHTML=html;
+    feather.replace();
 }
 
 function resetFilter(i) {
@@ -271,7 +298,10 @@ document.getElementById('search').addEventListener('input',e=>{
     });
 });
 
-render();
+window.onload = () => {
+    render();
+    feather.replace();
+};
 </script>
 </body>
 </html>
