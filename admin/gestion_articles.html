@@ -4,239 +4,674 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apokalypsy - Gestion des Articles</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/admin-style.css">
-    <style>
-        .image-mode-selector { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn-mode { padding: 5px 12px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-size: 0.8rem; background: #fff; }
-        .btn-mode.active { background: #1e293b; color: white; border-color: #1e293b; }
-        
-        .crud-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-top: 40px; }
-        .article-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .article-table th, .article-table td { text-align: left; padding: 12px; border-bottom: 1px solid #edf2f7; }
-        .article-table th { background: #f8fafc; color: #64748b; font-weight: 600; }
-        
-        .actions { display: flex; gap: 8px; }
-        .btn-action { padding: 6px; border-radius: 6px; border: none; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-view { background: #3b82f6; }
-        .btn-edit { background: #10b981; }
-        .btn-delete { background: #ef4444; }
-        .btn-action:hover { opacity: 0.8; }
 
-        .thumbnail-list { width: 50px; height: 35px; object-fit: cover; border-radius: 4px; }
-        #fileInputContainer { display: none; }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/admin-style.css">
+
+    <style>
+
+        .image-mode-selector{
+            display:flex;
+            gap:10px;
+            margin-bottom:10px;
+        }
+
+        .btn-mode{
+            padding:5px 12px;
+            border-radius:6px;
+            border:1px solid #ddd;
+            cursor:pointer;
+            font-size:.8rem;
+            background:#fff;
+        }
+
+        .btn-mode.active{
+            background:#1e293b;
+            color:white;
+            border-color:#1e293b;
+        }
+
+        .crud-container{
+            background:white;
+            border-radius:12px;
+            padding:20px;
+            box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-top:40px;
+        }
+
+        .article-table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+        }
+
+        .article-table th,
+        .article-table td{
+            text-align:left;
+            padding:12px;
+            border-bottom:1px solid #edf2f7;
+        }
+
+        .article-table th{
+            background:#f8fafc;
+            color:#64748b;
+            font-weight:600;
+        }
+
+        .actions{
+            display:flex;
+            gap:8px;
+        }
+
+        .btn-action{
+            padding:8px;
+            border-radius:6px;
+            border:none;
+            cursor:pointer;
+            color:white;
+            transition:0.2s;
+        }
+
+        .btn-view{
+            background:#3b82f6;
+        }
+
+        .btn-edit{
+            background:#10b981;
+        }
+
+        .btn-delete{
+            background:#ef4444;
+        }
+
+        .btn-action:hover{
+            opacity:.8;
+        }
+
+        .thumbnail-list{
+            width:50px;
+            height:35px;
+            object-fit:cover;
+            border-radius:4px;
+        }
+
+        #fileInputContainer{
+            display:none;
+        }
+
+        .modal{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.7);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            z-index:9999;
+        }
+
+        .modal-content{
+            background:white;
+            width:90%;
+            max-width:700px;
+            border-radius:12px;
+            overflow:hidden;
+            max-height:90vh;
+            overflow-y:auto;
+        }
+
+        .modal img{
+            width:100%;
+            max-height:300px;
+            object-fit:cover;
+        }
+
+        .modal-body{
+            padding:20px;
+        }
+
+        .close-modal{
+            position:absolute;
+            top:20px;
+            right:20px;
+            background:red;
+            color:white;
+            border:none;
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            cursor:pointer;
+        }
+
     </style>
 </head>
+
 <body>
 
-    <div id="sidebar-placeholder"></div>
-    <div id="header-placeholder"></div>
+<div id="sidebar-placeholder"></div>
+<div id="header-placeholder"></div>
 
-    <main class="main-content">
-        <div style="margin-bottom: 30px;">
-            <h1>Gestion des Articles</h1>
-            <p style="color: #64748b;">Rédigez, modifiez et gérez vos publications pour apokalypsy.com.</p>
+<main class="main-content">
+
+    <div style="margin-bottom:30px;">
+        <h1>Gestion des Articles</h1>
+        <p style="color:#64748b;">
+            Rédigez, modifiez et gérez vos publications pour apokalypsy.com.
+        </p>
+    </div>
+
+    <!-- FORMULAIRE -->
+    <form class="editor-container" id="articleForm">
+
+        <input type="hidden" id="articleId">
+
+        <div class="form-group">
+            <label>Titre de l'article</label>
+
+            <input type="text"
+                   id="title"
+                   placeholder="Ex: Les secrets de la tech..."
+                   required>
         </div>
 
-        <!-- FORMULAIRE D'INSERTION -->
-        <form class="editor-container" id="articleForm">
-            <input type="hidden" id="articleId"> <!-- Pour la modification -->
-            
-            <div class="form-group">
-                <label>Titre de l'article</label>
-                <input type="text" id="title" placeholder="Ex: Les secrets de la tech à Madagascar..." required>
+        <div class="form-group">
+
+            <label>Image de couverture</label>
+
+            <div class="image-mode-selector">
+                <button type="button"
+                        class="btn-mode active"
+                        onclick="switchImageMode('url')">
+                    Lien URL
+                </button>
+
+                <button type="button"
+                        class="btn-mode"
+                        onclick="switchImageMode('file')">
+                    Parcourir fichier
+                </button>
             </div>
 
-            <div class="form-group">
-                <label>Image de couverture</label>
-                <div class="image-mode-selector">
-                    <button type="button" class="btn-mode active" onclick="switchImageMode('url')">Lien URL</button>
-                    <button type="button" class="btn-mode" onclick="switchImageMode('file')">Parcourir fichier</button>
-                </div>
-                
-                <div id="urlInputContainer">
-                    <input type="text" id="image_url" placeholder="https://lien-vers-image.jpg" oninput="previewImage('url')">
-                </div>
-                
-                <div id="fileInputContainer">
-                    <input type="file" id="image_file" accept="image/*" onchange="previewImage('file')">
-                </div>
-
-                <img id="imagePreview" alt="Aperçu" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none;">
+            <div id="urlInputContainer">
+                <input type="text"
+                       id="image_url"
+                       placeholder="https://image.jpg"
+                       oninput="previewImage('url')">
             </div>
 
-            <div class="form-group">
-                <label>Contenu de l'article</label>
-                <textarea id="content" rows="10" placeholder="Écrivez votre article ici..." required></textarea>
+            <div id="fileInputContainer">
+                <input type="file"
+                       id="image_file"
+                       accept="image/*"
+                       onchange="previewImage('file')">
             </div>
 
-            <button type="submit" class="btn-publish" id="btnSubmit">
-                <i class="fa-solid fa-paper-plane"></i> PUBLIER L'ARTICLE
-            </button>
-        </form>
-
-        <!-- LISTE CRUD DES ARTICLES -->
-        <div class="crud-container">
-            <h3>Mes Publications</h3>
-            <table class="article-table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Titre</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="articleTableBody">
-                    <!-- Les articles chargés s'afficheront ici -->
-                    <tr>
-                        <td colspan="4" style="text-align:center;">Chargement des articles...</td>
-                    </tr>
-                </tbody>
-            </table>
+            <img id="imagePreview"
+                 alt="Aperçu"
+                 style="width:100%;
+                        max-height:200px;
+                        object-fit:cover;
+                        border-radius:10px;
+                        margin-top:10px;
+                        display:none;">
         </div>
-    </main>
 
-    <script>
-        // --- CONFIGURATION ---
-        const API_BASE = "https://apokalypsy.com/api/articles";
+        <div class="form-group">
 
-        // --- CHARGEMENT DES COMPOSANTS ---
-        async function loadComponents() {
-            try {
-                const menuRes = await fetch('partials/menu.html');
-                document.getElementById('sidebar-placeholder').innerHTML = await menuRes.text();
-                const headerRes = await fetch('partials/header.html');
-                document.getElementById('header-placeholder').innerHTML = await headerRes.text();
-                initPage();
-                fetchArticles(); // Charger la liste au démarrage
-            } catch (error) { console.error("Erreur chargement:", error); }
+            <label>Contenu</label>
+
+            <textarea id="content"
+                      rows="10"
+                      placeholder="Écrivez ici..."
+                      required></textarea>
+        </div>
+
+        <button type="submit"
+                class="btn-publish"
+                id="btnSubmit">
+
+            <i class="fa-solid fa-paper-plane"></i>
+            PUBLIER L'ARTICLE
+        </button>
+
+    </form>
+
+    <!-- TABLE -->
+    <div class="crud-container">
+
+        <h3>Mes Publications</h3>
+
+        <table class="article-table">
+
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Titre</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody id="articleTableBody">
+
+            <tr>
+                <td colspan="4" style="text-align:center;">
+                    Chargement...
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="viewModal">
+
+    <button class="close-modal"
+            onclick="closeModal()">
+        X
+    </button>
+
+    <div class="modal-content">
+
+        <img id="modalImage">
+
+        <div class="modal-body">
+
+            <h2 id="modalTitle"></h2>
+
+            <p id="modalContent"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const API_BASE = "https://apokalypsy.com/api/articles";
+
+    let allArticles = [];
+
+    // =========================
+    // LOAD COMPONENTS
+    // =========================
+
+    async function loadComponents(){
+
+        try{
+
+            const menuRes = await fetch('partials/menu.html');
+            document.getElementById('sidebar-placeholder').innerHTML =
+                await menuRes.text();
+
+            const headerRes = await fetch('partials/header.html');
+            document.getElementById('header-placeholder').innerHTML =
+                await headerRes.text();
+
+            initPage();
+
+            fetchArticles();
+
+        }catch(error){
+
+            console.error(error);
+
         }
+    }
 
-        // --- GESTION IMAGE ---
-        function switchImageMode(mode) {
-            const urlCont = document.getElementById('urlInputContainer');
-            const fileCont = document.getElementById('fileInputContainer');
-            const btns = document.querySelectorAll('.btn-mode');
+    // =========================
+    // IMAGE MODE
+    // =========================
 
-            if(mode === 'url') {
-                urlCont.style.display = 'block';
-                fileCont.style.display = 'none';
-                btns[0].classList.add('active');
-                btns[1].classList.remove('active');
-            } else {
-                urlCont.style.display = 'none';
-                fileCont.style.display = 'block';
-                btns[1].classList.add('active');
-                btns[0].classList.remove('active');
+    function switchImageMode(mode){
+
+        const urlCont = document.getElementById('urlInputContainer');
+        const fileCont = document.getElementById('fileInputContainer');
+
+        const btns = document.querySelectorAll('.btn-mode');
+
+        if(mode === 'url'){
+
+            urlCont.style.display = 'block';
+            fileCont.style.display = 'none';
+
+            btns[0].classList.add('active');
+            btns[1].classList.remove('active');
+
+        }else{
+
+            urlCont.style.display = 'none';
+            fileCont.style.display = 'block';
+
+            btns[1].classList.add('active');
+            btns[0].classList.remove('active');
+        }
+    }
+
+    function previewImage(mode){
+
+        const img = document.getElementById('imagePreview');
+
+        if(mode === 'url'){
+
+            const url = document.getElementById('image_url').value;
+
+            if(url){
+
+                img.src = url;
+                img.style.display = 'block';
+            }
+
+        }else{
+
+            const file = document.getElementById('image_file').files[0];
+
+            if(file){
+
+                const reader = new FileReader();
+
+                reader.onload = (e)=>{
+
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
             }
         }
+    }
 
-        function previewImage(mode) {
-            const img = document.getElementById('imagePreview');
-            if(mode === 'url') {
-                const url = document.getElementById('image_url').value;
-                if(url) { img.src = url; img.style.display = 'block'; }
-            } else {
-                const file = document.getElementById('image_file').files[0];
-                if(file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => { img.src = e.target.result; img.style.display = 'block'; };
-                    reader.readAsDataURL(file);
-                }
-            }
-        }
+    // =========================
+    // FETCH ARTICLES
+    // =========================
 
-        // --- CRUD : LIRE (FETCH) ---
-        async function fetchArticles() {
-            try {
-                const res = await fetch(`${API_BASE}/list`);
-                const data = await res.json();
-                renderArticles(data);
-            } catch (e) { document.getElementById('articleTableBody').innerHTML = "Erreur de chargement."; }
-        }
-		
+    async function fetchArticles(){
 
-        function renderArticles(articles) {
-            const tbody = document.getElementById('articleTableBody');
-            tbody.innerHTML = articles.map(art => `
+        try{
+
+            const res = await fetch(`${API_BASE}/list`);
+
+            const data = await res.json();
+
+            allArticles = data;
+
+            renderArticles(data);
+
+        }catch(e){
+
+            console.error(e);
+
+            document.getElementById('articleTableBody').innerHTML = `
                 <tr>
-                    <td><img src="${art.image_url || 'https://via.placeholder.com/50'}" class="thumbnail-list"></td>
-                    <td><strong>${art.title}</strong></td>
-                    <td>${new Date(art.created_at).toLocaleDateString()}</td>
-                    <td class="actions">
-                        <button class="btn-action btn-view" onclick="viewArticle(${art.id})"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn-action btn-edit" onclick="editArticle(${JSON.stringify(art).replace(/"/g, '&quot;')})"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-action btn-delete" onclick="deleteArticle(${art.id})"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                    <td colspan="4">Erreur chargement.</td>
                 </tr>
-            `).join('');
+            `;
+        }
+    }
+
+    // =========================
+    // RENDER
+    // =========================
+
+    function renderArticles(articles){
+
+        const tbody = document.getElementById('articleTableBody');
+
+        if(!articles.length){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4">Aucun article.</td>
+                </tr>
+            `;
+
+            return;
         }
 
-        // --- CRUD : CRÉER / MODIFIER ---
-        document.getElementById('articleForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('articleId').value;
-            const btn = document.getElementById('btnSubmit');
-            
-            const articleData = {
-                title: document.getElementById('title').value,
-                content: document.getElementById('content').value,
-                image_url: document.getElementById('image_url').value
-            };
+        tbody.innerHTML = articles.map(art => `
 
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> TRAITEMENT...';
+            <tr>
 
-            const url = id ? `${API_BASE}/update/${id}` : `${API_BASE}/add`;
-            const method = id ? 'PUT' : 'POST';
+                <td>
+                    <img src="${art.image_url || 'https://via.placeholder.com/50'}"
+                         class="thumbnail-list">
+                </td>
 
-            try {
-                const res = await fetch(url, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(articleData)
-                });
+                <td>
+                    <strong>${art.title}</strong>
+                </td>
 
-                if(res.ok) {
-                    alert(id ? "Article mis à jour !" : "Article publié !");
-                    this.reset();
-                    document.getElementById('articleId').value = "";
-                    document.getElementById('imagePreview').style.display = 'none';
-                    fetchArticles();
-                }
-            } catch (err) { alert("Erreur serveur."); }
-            finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> PUBLIER L\'ARTICLE';
-            }
+                <td>
+                    ${new Date(art.created_at).toLocaleDateString()}
+                </td>
+
+                <td class="actions">
+
+                    <button class="btn-action btn-view"
+                            onclick="viewArticle(${art.id})">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                    </button>
+
+                    <button class="btn-action btn-edit"
+                            onclick="editArticle(${art.id})">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                    </button>
+
+                    <button class="btn-action btn-delete"
+                            onclick="deleteArticle(${art.id})">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `).join('');
+    }
+
+    // =========================
+    // VIEW ARTICLE
+    // =========================
+
+    function viewArticle(id){
+
+        const art = allArticles.find(a => a.id == id);
+
+        if(!art) return;
+
+        document.getElementById('modalTitle').innerText = art.title;
+
+        document.getElementById('modalContent').innerText = art.content;
+
+        document.getElementById('modalImage').src =
+            art.image_url || 'https://via.placeholder.com/600';
+
+        document.getElementById('viewModal').style.display = 'flex';
+    }
+
+    function closeModal(){
+
+        document.getElementById('viewModal').style.display = 'none';
+    }
+
+    // =========================
+    // EDIT ARTICLE
+    // =========================
+
+    function editArticle(id){
+
+        const art = allArticles.find(a => a.id == id);
+
+        if(!art) return;
+
+        document.getElementById('articleId').value = art.id;
+
+        document.getElementById('title').value = art.title;
+
+        document.getElementById('content').value = art.content;
+
+        document.getElementById('image_url').value =
+            art.image_url || '';
+
+        previewImage('url');
+
+        document.getElementById('btnSubmit').innerHTML = `
+            <i class="fa-solid fa-save"></i>
+            METTRE À JOUR
+        `;
+
+        window.scrollTo({
+            top:0,
+            behavior:'smooth'
         });
+    }
 
-        // --- CRUD : SUPPRIMER ---
-        async function deleteArticle(id) {
-            if(confirm("Supprimer cet article définitivement ?")) {
-                await fetch(`${API_BASE}/delete/${id}`, { method: 'DELETE' });
-                fetchArticles();
+    // =========================
+    // CREATE / UPDATE
+    // =========================
+
+    document.getElementById('articleForm')
+        .addEventListener('submit', async function(e){
+
+        e.preventDefault();
+
+        const id = document.getElementById('articleId').value;
+
+        const btn = document.getElementById('btnSubmit');
+
+        const articleData = {
+
+            title: document.getElementById('title').value,
+
+            content: document.getElementById('content').value,
+
+            image_url: document.getElementById('image_url').value
+        };
+
+        btn.disabled = true;
+
+        btn.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            TRAITEMENT...
+        `;
+
+        const url = id
+            ? `${API_BASE}/update/${id}`
+            : `${API_BASE}/add`;
+
+        const method = id ? 'PUT' : 'POST';
+
+        try{
+
+            const res = await fetch(url, {
+
+                method: method,
+
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body: JSON.stringify(articleData)
+            });
+
+            if(!res.ok){
+
+                throw new Error("Erreur API");
             }
-        }
 
-        // --- CRUD : CHARGER POUR MODIF ---
-        function editArticle(art) {
-            document.getElementById('articleId').value = art.id;
-            document.getElementById('title').value = art.title;
-            document.getElementById('content').value = art.content;
-            document.getElementById('image_url').value = art.image_url;
-            previewImage('url');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-save"></i> METTRE À JOUR';
-        }
+            alert(id
+                ? "Article mis à jour !"
+                : "Article publié !");
 
-        function initPage() {
-            if (!localStorage.getItem('user_full_data')) window.location.replace('connexion.html');
-        }
+            this.reset();
 
-        window.onload = loadComponents;
-    </script>
+            document.getElementById('articleId').value = '';
+
+            document.getElementById('imagePreview').style.display = 'none';
+
+            btn.innerHTML = `
+                <i class="fa-solid fa-paper-plane"></i>
+                PUBLIER L'ARTICLE
+            `;
+
+            fetchArticles();
+
+        }catch(err){
+
+            console.error(err);
+
+            alert("Erreur serveur.");
+
+        }finally{
+
+            btn.disabled = false;
+        }
+    });
+
+    // =========================
+    // DELETE
+    // =========================
+
+    async function deleteArticle(id){
+
+        if(!confirm("Supprimer cet article ?")) return;
+
+        try{
+
+            const res = await fetch(
+                `${API_BASE}/delete/${id}`,
+                {
+                    method:'DELETE'
+                }
+            );
+
+            if(!res.ok){
+
+                throw new Error("Erreur suppression");
+            }
+
+            alert("Article supprimé.");
+
+            fetchArticles();
+
+        }catch(err){
+
+            console.error(err);
+
+            alert("Erreur suppression.");
+        }
+    }
+
+    // =========================
+    // AUTH
+    // =========================
+
+    function initPage(){
+
+        if(!localStorage.getItem('user_full_data')){
+
+            window.location.replace('connexion.html');
+        }
+    }
+
+    window.onload = loadComponents;
+
+</script>
+
 </body>
 </html>

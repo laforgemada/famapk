@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no,
+                   viewport-fit=cover">
+
+    <title>Apokalypsy | Tafatafa</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <script src="https://unpkg.com/feather-icons"></script>
+
+<style>
+
+:root{
+
+    --primary:#1E3A8A;
+    --primary-light:#3155c7;
+
+    --accent:#f59e0b;
+
+    --bg:#eef2ff;
+
+    --surface:#ffffff;
+
+    --surface-glass:rgba(255,255,255,0.78);
+
+    --text-main:#0f172a;
+
+    --text-muted:#64748b;
+
+    --border:#e2e8f0;
+
+    --gradient:
+        linear-gradient(
+            135deg,
+            #1E3A8A 0%,
+            #3155c7 100%
+        );
+
+    --shadow:
+        0 15px 40px rgba(15,23,42,0.10);
+
+    --shadow-soft:
+        0 6px 20px rgba(15,23,42,0.06);
+
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+
+    margin:0;
+
+    font-family:'Plus Jakarta Sans',sans-serif;
+
+    background:
+
+        radial-gradient(
+            circle at top left,
+            rgba(49,85,199,0.20),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at bottom right,
+            rgba(245,158,11,0.12),
+            transparent 30%
+        ),
+
+        var(--bg);
+
+    height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.chat-header{
+
+    position:relative;
+
+    padding:
+        calc(env(safe-area-inset-top) + 18px)
+        18px
+        20px
+        18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30,58,138,0.96),
+            rgba(49,85,199,0.94)
+        );
+
+    overflow:hidden;
+
+    box-shadow:
+        0 12px 40px rgba(30,58,138,0.25);
+
+    z-index:20;
+}
+
+.chat-header::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+
+    height:220px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    top:-120px;
+
+    right:-60px;
+}
+
+.chat-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:140px;
+
+    height:140px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    bottom:-70px;
+
+    left:-30px;
+}
+
+.header-top{
+
+    position:relative;
+
+    z-index:2;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+}
+
+.back-btn{
+
+    min-width:46px;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+        rgba(255,255,255,0.16);
+
+    backdrop-filter:blur(10px);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+}
+
+.chat-avatar{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:20px;
+
+    background:
+        rgba(255,255,255,0.18);
+
+    backdrop-filter:blur(12px);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-size:1.4rem;
+
+    font-weight:800;
+
+    border:
+        1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.12);
+}
+
+.chat-info{
+    flex:1;
+}
+
+.chat-title{
+
+    color:white;
+
+    font-size:1.05rem;
+
+    font-weight:800;
+}
+
+.chat-status{
+
+    margin-top:5px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:
+        rgba(255,255,255,0.88);
+
+    font-size:0.78rem;
+
+    font-weight:700;
+}
+
+.live-dot{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    animation:pulse 1.5s infinite;
+}
+
+.online-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
+    padding:10px 14px;
+
+    border-radius:16px;
+
+    color:white;
+
+    font-size:0.78rem;
+
+    font-weight:700;
+
+    backdrop-filter:blur(10px);
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+    50%{
+        transform:scale(1.4);
+        opacity:0.5;
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+/* =========================
+   CHAT
+========================= */
+
+#chat-messages{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px 16px 170px 16px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+}
+
+#chat-messages::-webkit-scrollbar{
+    width:0;
+}
+
+.message-row{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:10px;
+}
+
+.message-row.sent{
+    justify-content:flex-end;
+}
+
+.user-avatar{
+
+    min-width:42px;
+
+    height:42px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1E3A8A,
+            #3155c7
+        );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-size:0.82rem;
+
+    font-weight:800;
+
+    box-shadow:
+        0 6px 18px rgba(30,58,138,0.18);
+}
+
+.msg{
+
+    max-width:78%;
+
+    padding:14px 16px;
+
+    border-radius:24px;
+
+    line-height:1.5;
+
+    animation:fadeIn .25s ease;
+
+    word-break:break-word;
+
+    box-shadow:var(--shadow-soft);
+}
+
+.received{
+
+    background:
+        rgba(255,255,255,0.88);
+
+    backdrop-filter:blur(14px);
+
+    border-bottom-left-radius:6px;
+
+    border:
+        1px solid rgba(255,255,255,0.5);
+
+    color:var(--text-main);
+}
+
+.sent .msg{
+
+    background:var(--gradient);
+
+    color:white;
+
+    border-bottom-right-radius:6px;
+}
+
+.msg-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    margin-bottom:6px;
+
+    font-size:0.72rem;
+
+    font-weight:800;
+
+    opacity:0.9;
+}
+
+.received .msg-info{
+    color:var(--primary);
+}
+
+.sent .msg-info{
+    color:rgba(255,255,255,0.92);
+    justify-content:flex-end;
+}
+
+.msg-time{
+
+    font-size:0.65rem;
+
+    opacity:0.75;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================
+   EMOJI PICKER
+========================= */
+
+.emoji-picker{
+
+    position:fixed;
+
+    bottom:95px;
+
+    left:16px;
+
+    right:16px;
+
+    background:
+        rgba(255,255,255,0.95);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:26px;
+
+    padding:18px;
+
+    display:none;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.12);
+
+    z-index:999;
+}
+
+.show-emojis{
+    display:flex;
+}
+
+.emoji-picker span{
+
+    font-size:1.7rem;
+
+    cursor:pointer;
+
+    transition:.15s;
+}
+
+.emoji-picker span:hover{
+
+    transform:scale(1.25);
+}
+
+/* =========================
+   INPUT AREA
+========================= */
+
+.chat-input-area{
+
+    position:fixed;
+
+    bottom:0;
+
+    left:0;
+
+    width:100%;
+
+    padding:
+        14px
+        16px
+        calc(14px + env(safe-area-inset-bottom))
+        16px;
+
+    background:
+        rgba(255,255,255,0.78);
+
+    backdrop-filter:blur(18px);
+
+    border-top:
+        1px solid rgba(255,255,255,0.4);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    z-index:30;
+}
+
+.emoji-btn{
+
+    min-width:54px;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:white;
+
+    font-size:1.4rem;
+
+    cursor:pointer;
+
+    box-shadow:var(--shadow-soft);
+
+    transition:.2s;
+}
+
+.emoji-btn:active{
+    transform:scale(.95);
+}
+
+#chat-input{
+
+    flex:1;
+
+    border:none;
+
+    background:white;
+
+    padding:16px 18px;
+
+    border-radius:22px;
+
+    outline:none;
+
+    font-size:0.95rem;
+
+    box-shadow:var(--shadow-soft);
+}
+
+.btn-send{
+
+    min-width:58px;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:var(--gradient);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 28px rgba(30,58,138,0.25);
+
+    transition:.2s;
+}
+
+.btn-send:active{
+    transform:scale(.95);
+}
+
+/* =========================
+   LOGIN BOX
+========================= */
+
+.login-required{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.login-text{
+
+    font-size:0.88rem;
+
+    font-weight:700;
+
+    color:var(--text-muted);
+}
+
+.login-btn{
+
+    border:none;
+
+    background:var(--gradient);
+
+    color:white;
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 28px rgba(30,58,138,0.20);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="chat-header">
+
+    <div class="header-top">
+
+        <button class="back-btn"
+                onclick="window.location.href='index.html'">
+
+            <i data-feather="arrow-left"></i>
+
+        </button>
+
+        <div class="chat-avatar">
+
+            <i data-feather="message-circle"></i>
+
+        </div>
+
+        <div class="chat-info">
+
+            <div class="chat-title"
+                 id="chat-title">
+
+                Tafatafa Public
+
+            </div>
+
+            <div class="chat-status"
+                 id="chat-status">
+
+                <span class="live-dot"></span>
+
+                Mivantana
+
+            </div>
+
+        </div>
+
+        <div class="online-box">
+
+            <span class="live-dot"></span>
+
+            LIVE
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MESSAGES -->
+
+<div id="chat-messages"></div>
+
+<!-- EMOJI PICKER -->
+
+<div class="emoji-picker"
+     id="emoji-picker">
+
+    <span onclick="addEmoji('😀')">😀</span>
+    <span onclick="addEmoji('😂')">😂</span>
+    <span onclick="addEmoji('😍')">😍</span>
+    <span onclick="addEmoji('🥰')">🥰</span>
+    <span onclick="addEmoji('😭')">😭</span>
+    <span onclick="addEmoji('🔥')">🔥</span>
+    <span onclick="addEmoji('❤️')">❤️</span>
+    <span onclick="addEmoji('👍')">👍</span>
+    <span onclick="addEmoji('🙏')">🙏</span>
+    <span onclick="addEmoji('🎵')">🎵</span>
+    <span onclick="addEmoji('✨')">✨</span>
+    <span onclick="addEmoji('😎')">😎</span>
+    <span onclick="addEmoji('🤩')">🤩</span>
+    <span onclick="addEmoji('😢')">😢</span>
+    <span onclick="addEmoji('😡')">😡</span>
+    <span onclick="addEmoji('😇')">😇</span>
+
+</div>
+
+<!-- INPUT -->
+
+<div class="chat-input-area"
+     id="chat-input-area">
+
+    <button class="emoji-btn"
+            onclick="openEmoji()">
+
+        😊
+
+    </button>
+
+    <input type="text"
+           id="chat-input"
+           placeholder="..."
+           autocomplete="off">
+
+    <button class="btn-send"
+            onclick="sendMessage()">
+
+        <i data-feather="send"></i>
+
+    </button>
+
+</div>
+
+<script>
+
+const translations = {
+
+    mg:{
+        title:"Tafatafa Public",
+        status:"Mivantana",
+        placeholder:"Hanoratra hafatra...",
+        loginRequired:"Mila connexion raha handefa hafatra.",
+        loginButton:"Hiditra",
+        error:"Tsy lasa ny hafatra!"
+    },
+
+    fr:{
+        title:"Chat Public",
+        status:"En direct",
+        placeholder:"Écrire un message...",
+        loginRequired:"Vous devez vous connecter pour envoyer un message.",
+        loginButton:"Connexion",
+        error:"Message non envoyé !"
+    },
+
+    en:{
+        title:"Public Chat",
+        status:"Live now",
+        placeholder:"Type a message...",
+        loginRequired:"You must login to send messages.",
+        loginButton:"Login",
+        error:"Message not sent!"
+    }
+};
+
+const currentLang =
+    localStorage.getItem('app_lang') || 'mg';
+
+const t =
+    translations[currentLang];
+
+const userName =
+    localStorage.getItem('user_name');
+
+document.getElementById('chat-title')
+    .innerText = t.title;
+
+document.getElementById('chat-status')
+    .innerHTML = `
+        <span class="live-dot"></span>
+        ${t.status}
+    `;
+
+const inputArea =
+    document.getElementById('chat-input-area');
+
+if(userName){
+
+    document.getElementById('chat-input')
+        .placeholder = t.placeholder;
+
+}else{
+
+    inputArea.innerHTML = `
+
+        <div class="login-required">
+
+            <div class="login-text">
+
+                ${t.loginRequired}
+
+            </div>
+
+            <button class="login-btn"
+                    onclick="window.location.href='login/connexion.html'">
+
+                ${t.loginButton}
+
+            </button>
+
+        </div>
+
+    `;
+}
+
+/* =========================
+   EMOJI SYSTEM
+========================= */
+
+function openEmoji(){
+
+    const picker =
+        document.getElementById('emoji-picker');
+
+    picker.classList.toggle('show-emojis');
+}
+
+function addEmoji(emoji){
+
+    const input =
+        document.getElementById('chat-input');
+
+    input.value += emoji;
+
+    input.focus();
+}
+
+/* =========================
+   FETCH MESSAGES
+========================= */
+
+async function fetchMessages(){
+
+    try{
+
+        const response =
+            await fetch(
+                `https://apokalypsy.com/api/chat/messages?t=${Date.now()}`
+            );
+
+        const messages =
+            await response.json();
+
+        const container =
+            document.getElementById('chat-messages');
+
+        container.innerHTML = messages.map(m => `
+
+            <div class="message-row ${m.author === userName ? 'sent' : ''}">
+
+                ${
+                    m.author !== userName
+                    ?
+
+                    `<div class="user-avatar">
+
+                        <i data-feather="user"></i>
+
+                    </div>`
+
+                    : ''
+                }
+
+                <div class="msg ${m.author === userName ? 'sent' : 'received'}">
+
+                    <div class="msg-info">
+
+                        ${escapeHTML(m.author)}
+
+                        <span class="msg-time">
+
+                            ${m.date || ''}
+
+                        </span>
+
+                    </div>
+
+                    ${escapeHTML(m.content)}
+
+                </div>
+
+                ${
+                    m.author === userName
+                    ?
+
+                    `<div class="user-avatar">
+
+                        <i data-feather="user"></i>
+
+                    </div>`
+
+                    : ''
+                }
+
+            </div>
+
+        `).join('');
+
+        feather.replace();
+
+        container.scrollTop =
+            container.scrollHeight;
+
+    }
+
+    catch(e){
+
+        console.log("Erreur API :", e);
+
+    }
+}
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+async function sendMessage(){
+
+    if(!userName) return;
+
+    const input =
+        document.getElementById('chat-input');
+
+    const content =
+        input.value.trim();
+
+    if(!content) return;
+
+    input.value = '';
+
+    document.getElementById('emoji-picker')
+        .classList.remove('show-emojis');
+
+    try{
+
+        await fetch(
+            'https://apokalypsy.com/api/chat/send',
+            {
+                method:'POST',
+
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body:JSON.stringify({
+                    author:userName,
+                    content:content
+                })
+            }
+        );
+
+        fetchMessages();
+
+    }
+
+    catch(e){
+
+        console.log(e);
+
+        alert(t.error);
+    }
+}
+
+/* =========================
+   SECURITY
+========================= */
+
+function escapeHTML(str){
+
+    return str.replace(/[&<>'"]/g, tag => ({
+
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        "'":'&#39;',
+        '"':'&quot;'
+
+    }[tag] || tag));
+}
+
+/* =========================
+   ENTER KEY
+========================= */
+
+document.addEventListener('keydown', function(e){
+
+    if(e.key === 'Enter'){
+
+        sendMessage();
+    }
+});
+
+feather.replace();
+
+fetchMessages();
+
+setInterval(fetchMessages, 3000);
+
+</script>
+
+</body>
+</html>

@@ -196,6 +196,11 @@
                 btn.innerText = "SE CONNECTER";
             }
         });
+		
+		
+		// Exemple à mettre dans ton script de login après succès de l'API
+localStorage.setItem('user_name', response.pseudo); 
+window.location.href = '../chat.html'; // Redirige directement vers le chat
     </script>
 
 </body>

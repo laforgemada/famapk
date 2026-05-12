@@ -38,7 +38,6 @@
         .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; color: white; }
         .logo { font-size: 0.9rem; font-weight: 900; letter-spacing: 2px; }
 
-        /* CORRECTIF : Visibilité du sélecteur de langue */
         .lang-select {
             background: rgba(255, 255, 255, 0.15); color: white;
             border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px;
@@ -48,20 +47,6 @@
         .lang-select option {
             background-color: white; 
             color: #1E3A8A; 
-        }
-
-        .hero {
-            background: var(--gradient); padding: 40px 20px 70px 20px;
-            color: white; text-align: center; border-radius: 0 0 40px 40px; position: relative;
-        }
-
-        .hero h1 { font-size: 1.5rem; margin: 0; font-weight: 800; line-height: 1.2; }
-        .hero p { font-size: 0.9rem; opacity: 0.85; margin: 15px 0; font-style: italic; }
-
-        .live-badge {
-            background: #ef4444; color: white; padding: 8px 16px; border-radius: 100px;
-            font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;
-            animation: pulse 2s infinite;
         }
 
         .section-label { padding: 30px 20px 10px 20px; font-weight: 800; color: var(--primary); font-size: 1rem; }
@@ -128,26 +113,18 @@
         .nav-item i { width: 20px; height: 20px; }
         .nav-item.active i { background: var(--primary); color: white; border-radius: 10px; padding: 8px; width: 38px; height: 38px; margin-top: -15px; }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-		
-		/* Style des infos de l'article */
-.card-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--accent);
-}
-.card-author {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--primary);
-}
-.card-author i { width: 12px; height: 12px; }
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .card-author { display: flex; align-items: center; gap: 5px; color: var(--primary); }
+        .card-author i { width: 12px; height: 12px; }
     </style>
 </head>
 <body>
@@ -166,16 +143,8 @@
         </div>
     </header>
 
-    <section class="hero">
-        <div id="hero-tag" style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;">Périkôpa androany</div>
-        <h1 id="hero-verse">"Samy manana ny fanomezam-pahasoavany avy..."</h1>
-        <p id="hero-ref">1 KORINTIANA 12:4</p>
-        <div class="live-badge">
-            <span id="txt-live">Mivantana izao</span>
-        </div>
-    </section>
-
     <div class="section-label" id="label-mavitrika">⭐ Mpikambana mavitrika</div>
+	<br/><br/>
     <div class="podium-box">
         <div class="rank-card rank-2">
             <div class="avatar">DA<div class="rank-badge">2</div></div>
@@ -203,32 +172,14 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active"><i data-feather="home"></i><span id="menu-home">Accueil</span></a>
         <a href="bible.html" class="nav-item"><i data-feather="book"></i><span id="menu-bible">Bible</span></a>
-        <a href="#" class="nav-item"><i data-feather="message-circle"></i><span id="menu-chat">Chat</span></a>
+        <a href="chat.html" class="nav-item"><i data-feather="message-circle"></i><span id="menu-chat">Chat</span></a>
     </nav>
 
 <script>
     const translations = {
-        mg: { 
-            connexion: "Miditra", logout: "Hivoaka", tag: "Périkôpa androany", 
-            verse: '"Samy manana ny fanomezam-pahasoavany avy..."', 
-            live: "Mivantana izao", labelMavitrika: "⭐ Mpikambana mavitrika", 
-            labelFampianarana: "📚 Fampianarana", home: "Trano", bible: "Baiboly", chat: "Tafatafa",
-            cats: ["Rehetra", "Toriteny", "Faminaniana", "Hira"]
-        },
-        fr: { 
-            connexion: "Connexion", logout: "Déconnexion", tag: "Péricope du jour", 
-            verse: '"Chacun a son don particulier..."', 
-            live: "En direct", labelMavitrika: "⭐ Membres Actifs", 
-            labelFampianarana: "📚 Enseignements", home: "Accueil", bible: "Bible", chat: "Chat",
-            cats: ["Tous", "Sermons", "Prophéties", "Chants"]
-        },
-        en: { 
-            connexion: "Login", logout: "Logout", tag: "Today's Verse", 
-            verse: '"Each has his own gift..."', 
-            live: "Live now", labelMavitrika: "⭐ Active Members", 
-            labelFampianarana: "📚 Teachings", home: "Home", bible: "Bible", chat: "Chat",
-            cats: ["All", "Sermons", "Prophecies", "Songs"]
-        }
+        mg: { connexion: "Miditra", logout: "Hivoaka", labelMavitrika: "⭐ Mpikambana mavitrika", labelFampianarana: "📚 Fampianarana", home: "Trano", bible: "Baiboly", chat: "Tafatafa", cats: ["Rehetra", "Toriteny", "Faminaniana", "Hira"]},
+        fr: { connexion: "Connexion", logout: "Déconnexion", labelMavitrika: "⭐ Membres Actifs", labelFampianarana: "📚 Enseignements", home: "Accueil", bible: "Bible", chat: "Chat", cats: ["Tous", "Sermons", "Prophéties", "Chants"]},
+        en: { connexion: "Login", logout: "Logout", labelMavitrika: "⭐ Active Members", labelFampianarana: "📚 Teachings", home: "Home", bible: "Bible", chat: "Chat", cats: ["All", "Sermons", "Prophecies", "Songs"]}
     };
 
     const API_URL = 'https://apokalypsy.com/api/articles/list';
@@ -236,13 +187,12 @@
     let currentPage = 1;
     const itemsPerPage = 5;
 
+    // --- MISE À JOUR UNIQUE DE LA LANGUE ET DE L'AUTH ---
     function changeLanguage() {
         const lang = document.getElementById('langSwitcher').value;
+        localStorage.setItem('app_lang', lang); 
         const t = translations[lang];
         
-        document.getElementById('hero-tag').innerText = t.tag;
-        document.getElementById('hero-verse').innerText = t.verse;
-        document.getElementById('txt-live').innerText = t.live;
         document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
         document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
         document.getElementById('menu-home').innerText = t.home;
@@ -270,41 +220,34 @@
     }
 
     function renderArticles() {
-    const container = document.getElementById('articles-container');
-    container.innerHTML = '';
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
+        const container = document.getElementById('articles-container');
+        container.innerHTML = '';
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
 
-    pageItems.forEach(article => {
-        const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500';
-        
-        // Formatage de la date (ex: 11 Mai 2026)
-        const dateObj = new Date(article.created_at);
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const formattedDate = dateObj.toLocaleDateString('fr-FR', options);
+        pageItems.forEach(article => {
+            const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500';
+            const dateObj = new Date(article.created_at);
+            const formattedDate = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-        container.insertAdjacentHTML('beforeend', `
-            <div class="bible-card">
-                <div class="card-image" style="background-image: url('${img}');"></div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <div class="card-author">
-                            <i data-feather="user"></i>
-                            <span>Admin Apokalypsy</span>
+            container.insertAdjacentHTML('beforeend', `
+                <div class="bible-card">
+                    <div class="card-image" style="background-image: url('${img}');"></div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <div class="card-author"><i data-feather="user"></i><span>Admin Apokalypsy</span></div>
+                            <div class="card-date">${formattedDate}</div>
                         </div>
-                        <div class="card-date">${formattedDate}</div>
+                        <div class="card-title">${escapeHTML(article.title)}</div>
+                        <div class="card-text">${escapeHTML(article.content).substring(0, 100)}...</div>
                     </div>
-                    <div class="card-title">${escapeHTML(article.title)}</div>
-                    <div class="card-text">${escapeHTML(article.content).substring(0, 100)}...</div>
                 </div>
-            </div>
-        `);
-    });
-    
-    updatePaginationControls();
-    observeElements();
-    feather.replace(); // Important pour afficher l'icône user
-}
+            `);
+        });
+        updatePaginationControls();
+        observeElements();
+        feather.replace();
+    }
 
     function updatePaginationControls() {
         const controls = document.getElementById('pagination-controls');
@@ -342,7 +285,7 @@
         const lang = document.getElementById('langSwitcher').value;
         const userName = localStorage.getItem('user_name'); 
         if (userName) {
-            authZone.innerHTML = `<button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem;">OUT</button>`;
+            authZone.innerHTML = `<button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem; cursor:pointer;">OUT</button>`;
         } else {
             authZone.innerHTML = `<a href="login/connexion.html" style="text-decoration:none; background:var(--accent); color:var(--primary); padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem;">${translations[lang].connexion}</a>`;
         }
@@ -353,6 +296,9 @@
     }
 
     window.onload = () => {
+        // Restaurer la langue si déjà choisie
+        const savedLang = localStorage.getItem('app_lang');
+        if(savedLang) document.getElementById('langSwitcher').value = savedLang;
         changeLanguage(); 
         fetchArticles();
     };
