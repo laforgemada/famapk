@@ -1,283 +1,1032 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Membre | Apokalypsy</title>
-    <style>
-        :root {
-            --bg-body: #f4f7f6;
-            --white: #ffffff;
-            --text-dark: #2c3e50;
-            --text-muted: #7f8c8d;
-            --primary-cyan: #17a2b8;
-            --bg-impact-1: #ebf5ff;
-            --bg-impact-2: #fff9eb;
-            --bg-impact-3: #f0fdfa;
-            --church-blue: #1e293b;
-            --notification-red: #ef4444;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Espace Membre | Apokalypsy Premium</title>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-bottom: 70px; /* Espace pour le menu du bas */
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/feather-icons"></script>
 
-        /* --- HEADER STYLE FACEBOOK --- */
-        .top-nav {
-            width: 100%;
-            background: var(--church-blue);
-            color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+<style>
 
-        .nav-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+:root{
+    --primary:#1E3A8A;
+    --secondary:#7c3aed;
+    --accent:#f59e0b;
+    --pink:#ec4899;
+    --success:#22c55e;
+    --danger:#ef4444;
+    --bg:#f1f5f9;
+    --surface:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --glass:rgba(255,255,255,0.75);
 
-        .nav-left .welcome-msg { font-weight: 600; font-size: 0.9rem; }
-        .nav-left span { color: var(--primary-cyan); }
+    --gradient:
+    linear-gradient(
+        135deg,
+        #1E3A8A 0%,
+        #4338ca 50%,
+        #7c3aed 100%
+    );
 
-        .nav-right { display: flex; align-items: center; gap: 15px; }
+    --hero:
+    linear-gradient(135deg, #1E3A8A 0%, #3a4bed 50%, #488aec 100%);
 
-        .lang-select {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            font-size: 0.75rem;
-            padding: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    --shadow:
+    0 15px 35px rgba(15,23,42,0.08);
+}
 
-        .notif-wrapper { position: relative; cursor: pointer; font-size: 1.2rem; }
-        .notif-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--notification-red);
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 5px;
-            border-radius: 10px;
-            font-weight: bold;
-        }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        .btn-logout-top {
-            background: var(--notification-red);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
+body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-top:85px;
+    padding-bottom:120px;
+}
 
-        /* --- CONTENEUR --- */
-        .main-container {
-            width: 95%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            padding: 30px 0;
-        }
+/* =========================
+HEADER PREMIUM
+========================= */
 
-        .card {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            display: flex;
-        }
+.top-nav{
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:1000;
+    background:rgba(15,23,42,0.92);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
 
-        /* --- IMPACT --- */
-        .impact-section { align-items: center; gap: 30px; }
-        .progress-circle-container { text-align: center; min-width: 100px; }
-        .circle-text { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin: 0; }
-        .circle-sub { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+.nav-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 18px;
+}
 
-        .impact-content { flex-grow: 1; }
-        .impact-header h2 { font-size: 1.2rem; margin: 0 0 5px 0; color: var(--text-dark); }
-        .impact-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; }
+.logo-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
 
-        .impact-grid { display: flex; gap: 10px; }
-        .impact-box { flex: 1; padding: 15px 10px; border-radius: 16px; text-align: center; }
-        .box-blue { background: var(--bg-impact-1); color: #3182ce; }
-        .box-orange { background: var(--bg-impact-2); color: #dd6b20; }
-        .box-green { background: var(--bg-impact-3); color: #38b2ac; }
-        .box-value { font-size: 1.2rem; font-weight: 800; display: block; }
-        .box-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
+.logo-icon{
+    width:45px;
+    height:45px;
+    border-radius:16px;
+    background:var(--hero);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    box-shadow:0 10px 20px rgba(124,58,237,0.35);
+}
 
-        /* --- TROPHÉES --- */
-        .trophy-section { flex-direction: column; }
-        .trophy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .trophy-header h2 { font-size: 1.2rem; margin: 0; display: flex; align-items: center; gap: 10px; color: var(--text-dark); }
-        
-        .btn-progression {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+.logo-icon i{
+    width:20px;
+    height:20px;
+}
 
-        .trophy-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; 
-        }
+.logo-text{
+    color:white;
+}
 
-        .trophy-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            overflow: hidden;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
-        .trophy-icon { padding: 20px 0; font-size: 2.2rem; }
-        .trophy-footer { background: #000000; color: white; padding: 10px 5px; }
-        .trophy-footer h4 { margin: 0; font-size: 0.75rem; font-weight: 800; }
-        .trophy-footer p { margin: 2px 0 0; font-size: 0.65rem; }
-        .locked { filter: grayscale(1); opacity: 0.6; border-style: dashed; }
-        .locked .trophy-footer { background: #a0aec0; }
+.logo-title{
+    font-weight:900;
+    letter-spacing:1px;
+    font-size:0.95rem;
+}
 
-        /* --- NOUVEAU MENU BAS (MOBILE FIRST) --- */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--white);
-            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 101;
-        }
+.logo-sub{
+    font-size:0.7rem;
+    color:rgba(255,255,255,0.65);
+}
 
-        .bottom-item {
-            text-decoration: none;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
-        .bottom-item.active { color: var(--primary-cyan); }
-        .bottom-item-icon { font-size: 1.4rem; }
+.nav-btn{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    border:none;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    cursor:pointer;
+}
 
-        /* --- RESPONSIVE --- */
-        @media (max-width: 600px) {
-            .impact-section { flex-direction: column; text-align: center; }
-            .impact-grid { flex-direction: column; }
-        }
-    </style>
+.nav-btn i{
+    width:18px;
+    height:18px;
+}
+
+.notif-badge{
+    position:absolute;
+    top:-2px;
+    right:-2px;
+    background:var(--danger);
+    color:white;
+    font-size:0.6rem;
+    font-weight:800;
+    min-width:18px;
+    height:18px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* =========================
+WELCOME HERO
+========================= */
+
+.hero-card{
+    margin:18px;
+    border-radius:30px;
+    padding:28px;
+    background:var(--hero);
+    color:white;
+    position:relative;
+    overflow:hidden;
+    box-shadow:
+    0 25px 50px rgba(124,58,237,0.28);
+}
+
+.hero-card::before{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-100px;
+    right:-60px;
+}
+
+.hero-card::after{
+    content:"";
+    position:absolute;
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    bottom:-70px;
+    left:-30px;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+}
+
+.hero-mini{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.12);
+    padding:8px 14px;
+    border-radius:100px;
+    font-size:0.75rem;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.hero-title{
+    font-size:1.8rem;
+    font-weight:900;
+    line-height:1.2;
+    margin-bottom:12px;
+}
+
+.hero-text{
+    color:rgba(255,255,255,0.85);
+    line-height:1.6;
+    font-size:0.92rem;
+    margin-bottom:25px;
+}
+
+.hero-actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.hero-btn{
+    border:none;
+    border-radius:16px;
+    padding:14px 18px;
+    font-weight:800;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:0.2s;
+}
+
+.hero-btn i{
+    width:18px;
+    height:18px;
+}
+
+.hero-btn:active{
+    transform:scale(0.95);
+}
+
+.primary-btn{
+    background:white;
+    color:var(--primary);
+}
+
+.secondary-btn{
+    background:rgba(255,255,255,0.12);
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
+}
+
+/* =========================
+CONTAINER
+========================= */
+
+.main-container{
+    padding:0 18px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* =========================
+CARDS
+========================= */
+
+.card{
+    background:var(--surface);
+    border-radius:28px;
+    padding:24px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+}
+
+/* =========================
+IMPACT
+========================= */
+
+.impact-section{
+    display:flex;
+    gap:24px;
+    align-items:center;
+}
+
+.progress-circle{
+    min-width:120px;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:
+    conic-gradient(#ff0f0f 0% 72%, #e2e8f0 72% 100%);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+.progress-circle::before{
+    content:"";
+    position:absolute;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:white;
+}
+
+.progress-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+}
+
+.circle-text{
+    font-size:1.6rem;
+    font-weight:900;
+    color:var(--primary);
+}
+
+.circle-sub{
+    font-size:0.65rem;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+}
+
+.impact-content{
+    flex:1;
+}
+
+.section-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#ede9fe;
+    color:#7c3aed;
+    padding:7px 12px;
+    border-radius:100px;
+    font-size:0.7rem;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.impact-title{
+    font-size:1.25rem;
+    font-weight:900;
+    margin-bottom:10px;
+}
+
+.impact-desc{
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:18px;
+    font-size:0.9rem;
+}
+
+.impact-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.impact-box{
+    border-radius:20px;
+    padding:18px 12px;
+    text-align:center;
+}
+
+.box-blue{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.box-orange{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.box-green{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.box-value{
+    display:block;
+    font-size:1.3rem;
+    font-weight:900;
+}
+
+.box-label{
+    font-size:0.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+/* =========================
+ACTIVITY
+========================= */
+
+.activity-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-top:20px;
+}
+
+.activity-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px;
+    border-radius:18px;
+    background:#f8fafc;
+}
+
+.activity-icon{
+    width:48px;
+    height:48px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    flex-shrink:0;
+}
+
+.icon-blue{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+
+.icon-purple{
+    background:linear-gradient(135deg,#7c3aed,#6d28d9);
+}
+
+.icon-pink{
+    background:linear-gradient(135deg,#ec4899,#db2777);
+}
+
+.activity-icon i{
+    width:20px;
+    height:20px;
+}
+
+.activity-content{
+    flex:1;
+}
+
+.activity-title{
+    font-weight:800;
+    margin-bottom:5px;
+}
+
+.activity-text{
+    font-size:0.82rem;
+    color:var(--muted);
+}
+
+/* =========================
+TROPHIES
+========================= */
+
+.trophy-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.trophy-title{
+    font-size:1.2rem;
+    font-weight:900;
+}
+
+.progress-btn{
+    background:#eff6ff;
+    color:#2563eb;
+    padding:10px 14px;
+    border-radius:14px;
+    font-size:0.75rem;
+    font-weight:800;
+}
+
+.trophy-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.trophy-card{
+    border-radius:24px;
+    overflow:hidden;
+    background:white;
+    border:1px solid #e2e8f0;
+    transition:0.3s;
+}
+
+.trophy-card:hover{
+    transform:translateY(-4px);
+}
+
+.trophy-top{
+    padding:28px 10px;
+    text-align:center;
+    font-size:2.8rem;
+}
+
+.trophy-footer{
+    padding:14px;
+    text-align:center;
+    background:#0f172a;
+    color:white;
+}
+
+.trophy-footer h4{
+    font-size:0.82rem;
+    margin-bottom:4px;
+}
+
+.trophy-footer p{
+    font-size:0.7rem;
+    opacity:0.85;
+}
+
+.locked{
+    opacity:0.55;
+    filter:grayscale(1);
+}
+
+.locked .trophy-footer{
+    background:#94a3b8;
+}
+
+/* =========================
+PREMIUM CARD
+========================= */
+
+.premium-card{
+    background:var(--gradient);
+    color:white;
+}
+
+.premium-title{
+    font-size:1.3rem;
+    font-weight:900;
+    margin-bottom:12px;
+}
+
+.premium-text{
+    color:rgba(255,255,255,0.82);
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+.premium-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.premium-badge{
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:12px 16px;
+    border-radius:16px;
+    font-size:0.75rem;
+    font-weight:800;
+}
+
+/* =========================
+BOTTOM NAV
+========================= */
+
+.bottom-bar{
+    position:fixed;
+    left:15px;
+    right:15px;
+    bottom:15px;
+    background:rgba(255,255,255,0.96);
+    backdrop-filter:blur(15px);
+    border-radius:28px;
+    display:flex;
+    justify-content:space-around;
+    padding:14px 10px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.12);
+    z-index:1000;
+}
+
+.bottom-item{
+    text-decoration:none;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    font-size:0.68rem;
+    font-weight:700;
+    position:relative;
+}
+
+.bottom-item i{
+    width:20px;
+    height:20px;
+}
+
+.bottom-item.active{
+    color:var(--primary);
+}
+
+.bottom-item.active .nav-icon{
+    width:46px;
+    height:46px;
+    border-radius:16px;
+    background:var(--hero);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:-28px;
+    box-shadow:0 12px 24px rgba(124,58,237,0.35);
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:700px){
+
+    .impact-section{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .impact-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero-title{
+        font-size:1.5rem;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
 
-    <!-- HEADER -->
-    <header class="top-nav">
-        <div class="nav-content">
-            <div class="nav-left">
-                <div class="welcome-msg">Bonjour, <span>Alain José</span> 🙏</div>
-            </div>
-            <div class="nav-right">
-                <select class="lang-select">
-                    <option>FR</option>
-                    <option>MG</option>
-                </select>
-                <div class="notif-wrapper">
-                    🔔<span class="notif-badge">3</span>
-                </div>
-                <a href="#" class="btn-logout-top">Quitter</a>
-            </div>
-        </div>
-    </header>
+<!-- HEADER -->
 
-    <main class="main-container">
-        <!-- IMPACT -->
-        <div class="card impact-section">
-            <div class="progress-circle-container">
-                <p class="circle-text">12%</p>
-                <p class="circle-sub">Objectif</p>
+<header class="top-nav">
+
+    <div class="nav-content">
+
+        <div class="logo-box">
+
+            <div class="logo-icon">
+                <i data-feather="shield"></i>
             </div>
-            <div class="impact-content">
-                <div class="impact-header"><h2>Ton Cheminement ✨</h2></div>
-                <p class="impact-desc">Tes sessions d'étude font une réelle différence.</p>
-                <div class="impact-grid">
-                    <div class="impact-box box-blue"><span class="box-value">450m</span><span class="box-label">Prière</span></div>
-                    <div class="impact-box box-orange"><span class="box-value">8.5</span><span class="box-label">Leçons</span></div>
-                    <div class="impact-box box-green"><span class="box-value">120</span><span class="box-label">Versets</span></div>
-                </div>
+
+            <div class="logo-text">
+                <div class="logo-title">APOKALYPSY</div>
+                <div class="logo-sub">Espace membre premium</div>
             </div>
+
         </div>
 
-        <!-- TROPHÉES -->
-        <div class="card trophy-section">
-            <div class="trophy-header">
-                <h2>🏆 Mes Trophées Apokalypsy ✨</h2>
-                <div class="btn-progression">Section Progression</div>
-            </div>
-            <div class="trophy-grid">
-                <div class="trophy-card">
-                    <div class="trophy-icon">🌱</div>
-                    <div class="trophy-footer"><h4>Graine de Foi</h4><p>Débloqué !</p></div>
-                </div>
-                <div class="trophy-card">
-                    <div class="trophy-icon">🕊️</div>
-                    <div class="trophy-footer"><h4>Messager de Paix</h4><p>Débloqué !</p></div>
-                </div>
-                <div class="trophy-card">
-                    <div class="trophy-icon">⛪</div>
-                    <div class="trophy-footer"><h4>Pilier d'Église</h4><p>Débloqué !</p></div>
-                </div>
-                <div class="trophy-card locked">
-                    <div class="trophy-icon">🔥</div>
-                    <div class="trophy-footer"><h4>Feu Sacré</h4><p>En cours...</p></div>
-                </div>
-            </div>
-        </div>
-    </main>
+        <div class="nav-right">
 
-    <!-- MENU BAS (CHAT, ARTICLES, PROFIL) -->
-    <nav class="bottom-bar">
-        <a href="../../" class="bottom-item active">
-            <span class="bottom-item-icon">🏠</span>
-            <span>Accueil</span>
-        </a>
-        <a href="#" class="bottom-item">
-            <span class="bottom-item-icon">💬</span>
-            <span>Chat</span>
-        </a>
-        <a href="#" class="bottom-item">
-            <span class="bottom-item-icon">📖</span>
-            <span>Articles</span>
-        </a>
-        <a href="#" class="bottom-item">
-            <span class="bottom-item-icon">👤</span>
-            <span>Profil</span>
-        </a>
-    </nav>
+            <button class="nav-btn">
+                <i data-feather="search"></i>
+            </button>
+
+            <button class="nav-btn">
+
+                <i data-feather="bell"></i>
+
+                <span class="notif-badge">3</span>
+
+            </button>
+
+            <button class="nav-btn" onclick="logout()">
+                <i data-feather="log-out"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- HERO -->
+
+<section class="hero-card">
+
+    <div class="hero-content">
+
+        <div class="hero-mini">
+            ✨ Bienvenue sur Apokalypsy
+        </div>
+
+        <h1 class="hero-title">
+            Bonjour Alain José 🙏
+        </h1>
+
+        <p class="hero-text">
+            Continuez votre progression spirituelle avec
+            les enseignements bibliques, les discussions
+            chrétiennes et les contenus exclusifs.
+        </p>
+
+        <div class="hero-actions">
+
+            <button class="hero-btn primary-btn"
+                    onclick="window.location.href='../../index.html'">
+
+                <i data-feather="home"></i>
+                Accueil
+
+            </button>
+
+            <button class="hero-btn secondary-btn"
+                    onclick="window.location.href='../../chat.html'">
+
+                <i data-feather="message-circle"></i>
+                Ouvrir le Chat
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+
+<main class="main-container">
+
+    <!-- IMPACT -->
+
+    <section class="card impact-section">
+
+        <div class="progress-circle">
+
+            <div class="progress-content">
+
+                <div class="circle-text">72%</div>
+                <div class="circle-sub">Progression</div>
+
+            </div>
+
+        </div>
+
+        <div class="impact-content">
+
+            <div class="section-badge">
+                📈 Votre activité
+            </div>
+
+            <div class="impact-title">
+                Ton Cheminement Spirituel
+            </div>
+
+            <div class="impact-desc">
+                Tes lectures bibliques, prières et discussions
+                font grandir ta progression sur la plateforme.
+            </div>
+
+            <div class="impact-grid">
+
+                <div class="impact-box box-blue">
+                    <span class="box-value">450m</span>
+                    <span class="box-label">Prière</span>
+                </div>
+
+                <div class="impact-box box-orange">
+                    <span class="box-value">8.5</span>
+                    <span class="box-label">Leçons</span>
+                </div>
+
+                <div class="impact-box box-green">
+                    <span class="box-value">120</span>
+                    <span class="box-label">Versets</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ACTIVITY -->
+
+    <section class="card">
+
+        <div class="section-badge">
+            ⚡ Activités récentes
+        </div>
+
+        <div class="impact-title">
+            Votre activité récente
+        </div>
+
+        <div class="activity-list">
+
+            <div class="activity-item">
+
+                <div class="activity-icon icon-blue">
+                    <i data-feather="book-open"></i>
+                </div>
+
+                <div class="activity-content">
+
+                    <div class="activity-title">
+                        Lecture Biblique
+                    </div>
+
+                    <div class="activity-text">
+                        Vous avez terminé Genèse chapitre 3.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="activity-item">
+
+                <div class="activity-icon icon-purple">
+                    <i data-feather="message-circle"></i>
+                </div>
+
+                <div class="activity-content">
+
+                    <div class="activity-title">
+                        Nouveau message
+                    </div>
+
+                    <div class="activity-text">
+                        La communauté vous a répondu dans le chat.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="activity-item">
+
+                <div class="activity-icon icon-pink">
+                    <i data-feather="award"></i>
+                </div>
+
+                <div class="activity-content">
+
+                    <div class="activity-title">
+                        Trophée débloqué
+                    </div>
+
+                    <div class="activity-text">
+                        Vous avez gagné le badge "Messager".
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- TROPHIES -->
+
+    <section class="card">
+
+        <div class="trophy-header">
+
+            <div class="trophy-title">
+                🏆 Mes Trophées
+            </div>
+
+            <div class="progress-btn">
+                Niveau 8
+            </div>
+
+        </div>
+
+        <div class="trophy-grid">
+
+            <div class="trophy-card">
+
+                <div class="trophy-top">
+                    🌱
+                </div>
+
+                <div class="trophy-footer">
+
+                    <h4>Graine de Foi</h4>
+                    <p>Débloqué</p>
+
+                </div>
+
+            </div>
+
+            <div class="trophy-card">
+
+                <div class="trophy-top">
+                    🕊️
+                </div>
+
+                <div class="trophy-footer">
+
+                    <h4>Messager de Paix</h4>
+                    <p>Débloqué</p>
+
+                </div>
+
+            </div>
+
+            <div class="trophy-card">
+
+                <div class="trophy-top">
+                    ⛪
+                </div>
+
+                <div class="trophy-footer">
+
+                    <h4>Pilier d'Église</h4>
+                    <p>Débloqué</p>
+
+                </div>
+
+            </div>
+
+            <div class="trophy-card locked">
+
+                <div class="trophy-top">
+                    🔥
+                </div>
+
+                <div class="trophy-footer">
+
+                    <h4>Feu Sacré</h4>
+                    <p>En cours...</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    
+
+    
+
+</main>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-bar">
+
+    <a href="../../index.html"
+       class="bottom-item active">
+
+        <div class="nav-icon">
+            <i data-feather="home"></i>
+        </div>
+
+        <span>Accueil</span>
+
+    </a>
+
+    <a href="../../bible.html"
+       class="bottom-item">
+
+        <i data-feather="book-open"></i>
+
+        <span>Bible</span>
+
+    </a>
+
+    <a href="../../chat.html"
+       class="bottom-item">
+
+        <i data-feather="message-circle"></i>
+
+        <span>Chat</span>
+
+    </a>
+
+    <a href="#"
+       class="bottom-item">
+
+        <i data-feather="user"></i>
+
+        <span>Profil</span>
+
+    </a>
+
+</nav>
+
+<script>
+
+feather.replace();
+
+function logout(){
+
+    if(confirm("Voulez-vous quitter votre session ?")){
+
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_role');
+
+        window.location.href='../../index.html';
+    }
+}
+
+</script>
 
 </body>
 </html>

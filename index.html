@@ -1,307 +1,1897 @@
 <!DOCTYPE html>
 <html lang="mg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Apokalypsy | Pro Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons"></script>
-	<link rel="manifest" href="{{ asset('manifest.json') }}">
-    <style>
-        :root {
-            --primary: #1E3A8A; 
-            --accent: #f59e0b;  
-            --bg: #f3f4f6;
-            --surface: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --navbar-bg: rgba(30, 58, 138, 0.98);
-            --gradient: linear-gradient(135deg, #1E3A8A 0%, #1e40af 100%);
-            --gold: #fbbf24;
-            --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.05);
-        }
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no,
+               viewport-fit=cover">
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+<title>Apokalypsy | Premium Experience</title>
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0; background: var(--bg); padding-top: 70px; 
-            color: var(--text-main);
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        .navbar-fixed {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: var(--navbar-bg); backdrop-filter: blur(15px);
-            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+<script src="https://unpkg.com/feather-icons"></script>
 
-        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; color: white; }
-        .logo { font-size: 0.9rem; font-weight: 900; letter-spacing: 2px; }
+<link rel="manifest" href="{{ asset('manifest.json') }}">
 
-        .lang-select {
-            background: rgba(255, 255, 255, 0.15); color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px;
-            padding: 6px 10px; font-size: 0.75rem; font-weight: 700; outline: none;
-        }
+<style>
 
-        .lang-select option {
-            background-color: white; 
-            color: #1E3A8A; 
-        }
+:root{
 
-        .section-label { padding: 30px 20px 10px 20px; font-weight: 800; color: var(--primary); font-size: 1rem; }
+    --primary:#1E3A8A;
+    --primary-light:#3155c7;
 
-        .podium-box { display: flex; justify-content: center; align-items: flex-end; gap: 10px; padding: 10px; margin-top: -30px; }
-        .rank-card {
-            background: var(--surface); border-radius: 24px; padding: 20px 5px;
-            display: flex; flex-direction: column; align-items: center; width: 32%;
-            box-shadow: var(--shadow-card); opacity: 0; transform: translateY(20px); transition: 0.5s;
-        }
-        .rank-card.animate { opacity: 1; transform: translateY(0); }
-        .rank-1 { transform: translateY(-10px); z-index: 2; border: 2px solid var(--gold); }
-        .rank-1.animate { transform: translateY(-10px); }
+    --secondary:#7c3aed;
 
-        .avatar {
-            width: 50px; height: 50px; border-radius: 18px; background: #f1f5f9;
-            display: flex; align-items: center; justify-content: center; font-weight: 900;
-            position: relative; border: 2px solid #e2e8f0; margin-bottom: 8px; color: var(--primary);
-        }
-        .rank-1 .avatar { width: 70px; height: 70px; border-color: var(--gold); }
-        .rank-badge {
-            position: absolute; bottom: -5px; right: -5px; width: 22px; height: 22px;
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; font-weight: 800; color: white;
-        }
-        .rank-1 .rank-badge { background: var(--gold); }
-        .rank-2 .rank-badge { background: #94a3b8; }
-        .rank-3 .rank-badge { background: #b45309; }
+    --accent:#f59e0b;
 
-        .name { font-size: 0.7rem; font-weight: 800; text-align: center; }
-        .user-pts { color: var(--accent); font-size: 0.6rem; font-weight: 800; margin-top: 4px; }
+    --pink:#ec4899;
 
-        .category-scroll { display: flex; overflow-x: auto; gap: 10px; padding: 20px; scrollbar-width: none; }
-        .cat-badge {
-            background: white; padding: 10px 16px; border-radius: 15px;
-            white-space: nowrap; font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
-            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 6px;
-        }
-        .cat-badge i { width: 14px; }
-        .cat-badge.active { background: var(--primary); color: white; border-color: var(--primary); }
+    --success:#22c55e;
 
-        .container { padding: 0 20px; }
-        .bible-card {
-            background: var(--surface); border-radius: 25px; margin-bottom: 20px;
-            overflow: hidden; box-shadow: var(--shadow-card); opacity: 0; transform: translateY(20px); transition: 0.5s;
-        }
-        .bible-card.animate { opacity: 1; transform: translateY(0); }
-        .card-image { height: 180px; background-size: cover; background-position: center; }
-        .card-body { padding: 20px; }
-        .card-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; }
-        .card-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+    --danger:#ef4444;
 
-        #pagination-controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 120px; }
-        .page-btn { width: 45px; height: 45px; border-radius: 14px; border: none; background: white; box-shadow: var(--shadow-card); color: var(--primary); }
+    --bg:#eef2ff;
 
-        .bottom-nav {
-            position: fixed; bottom: 15px; left: 15px; right: 15px;
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            border-radius: 25px; display: flex; justify-content: space-around;
-            padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; font-size: 0.65rem; font-weight: 700; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item i { width: 20px; height: 20px; }
-        .nav-item.active i { background: var(--primary); color: white; border-radius: 10px; padding: 8px; width: 38px; height: 38px; margin-top: -15px; }
+    --surface:#ffffff;
 
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--accent);
-        }
-        .card-author { display: flex; align-items: center; gap: 5px; color: var(--primary); }
-        .card-author i { width: 12px; height: 12px; }
-    </style>
+    --glass:rgba(255,255,255,0.72);
+
+    --text-main:#0f172a;
+
+    --text-muted:#64748b;
+
+    --border:#e2e8f0;
+
+    --gradient:
+        linear-gradient(135deg, #1E3A8A 0%, #035de3 55%, #122997 100%);
+
+    --shadow:
+        0 20px 60px rgba(15,23,42,0.12);
+
+    --shadow-soft:
+        0 10px 30px rgba(15,23,42,0.08);
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+
+    margin:0;
+
+    font-family:'Plus Jakarta Sans',sans-serif;
+
+    background:
+
+        radial-gradient(
+            circle at top left,
+            rgba(124,58,237,0.18),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at bottom right,
+            rgba(236,72,153,0.12),
+            transparent 30%
+        ),
+
+        var(--bg);
+
+    color:var(--text-main);
+
+    padding-top:90px;
+
+    overflow-x:hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar-fixed{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    z-index:9999;
+
+    backdrop-filter:blur(16px);
+
+    background:
+        rgba(15,23,42,0.82);
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+
+    padding:14px 0;
+}
+
+.nav-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 16px;
+}
+
+.logo-area{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.logo-icon{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:18px;
+
+    background:var(--gradient);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    box-shadow:
+        0 10px 25px rgba(124,58,237,0.35);
+}
+
+.logo-icon i{
+
+    width:24px;
+
+    height:24px;
+}
+
+.logo-text{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.logo{
+
+    color:white;
+
+    font-size:0.95rem;
+
+    font-weight:900;
+
+    letter-spacing:2px;
+}
+
+.logo-sub{
+
+    color:rgba(255,255,255,0.7);
+
+    font-size:0.68rem;
+
+    font-weight:700;
+}
+
+.right-zone{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.lang-select{
+
+    background:
+        rgba(255,255,255,0.12);
+
+    color:white;
+
+    border:
+        1px solid rgba(255,255,255,0.16);
+
+    border-radius:14px;
+
+    padding:8px 10px;
+
+    font-size:0.74rem;
+
+    font-weight:800;
+
+    outline:none;
+}
+
+.lang-select option{
+
+    color:#1E3A8A;
+}
+
+.auth-buttons{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+}
+
+.top-btn{
+
+    border:none;
+
+    border-radius:15px;
+
+    padding:10px 14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:0.72rem;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+    box-shadow:var(--shadow-soft);
+}
+
+.top-btn:active{
+
+    transform:scale(.95);
+}
+
+.top-btn i{
+
+    width:15px;
+
+    height:15px;
+}
+
+.btn-login{
+
+    background:var(--accent);
+
+    color:#1E3A8A;
+}
+
+.btn-user{
+
+    background:#dbeafe;
+
+    color:#1E3A8A;
+}
+
+.btn-dashboard{
+
+    background:#ede9fe;
+
+    color:#5b21b6;
+}
+
+.btn-logout{
+
+    background:var(--danger);
+
+    color:white;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+
+    margin:0 18px 24px;
+
+    border-radius:34px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    background:var(--gradient);
+
+    padding:34px 26px;
+
+    box-shadow:
+        0 30px 60px rgba(124,58,237,0.22);
+}
+
+.hero::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    top:-140px;
+
+    right:-70px;
+}
+
+.hero::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,0.06);
+
+    bottom:-80px;
+
+    left:-40px;
+}
+
+.hero-content{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.hero-mini{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:
+        rgba(255,255,255,0.16);
+
+    padding:10px 14px;
+
+    border-radius:999px;
+
+    color:white;
+
+    font-size:0.74rem;
+
+    font-weight:800;
+
+    margin-bottom:18px;
+
+    backdrop-filter:blur(12px);
+}
+
+.hero-title{
+
+    font-size:2rem;
+
+    line-height:1.15;
+
+    color:white;
+
+    font-weight:900;
+
+    margin-bottom:14px;
+}
+
+.hero-text{
+
+    color:rgba(255,255,255,0.84);
+
+    line-height:1.7;
+
+    font-size:0.95rem;
+}
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    margin-top:24px;
+}
+
+.hero-btn{
+
+    border:none;
+
+    border-radius:18px;
+
+    padding:14px 18px;
+
+    font-weight:800;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    cursor:pointer;
+}
+
+.primary-btn{
+
+    background:white;
+
+    color:#1E3A8A;
+}
+
+.secondary-btn{
+
+    background:
+        rgba(255,255,255,0.14);
+
+    color:white;
+
+    border:
+        1px solid rgba(255,255,255,0.18);
+}
+
+.hero-stats{
+
+    margin-top:28px;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:12px;
+}
+
+.stat-box{
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius:22px;
+
+    padding:16px;
+
+    text-align:center;
+
+    backdrop-filter:blur(10px);
+}
+
+.stat-number{
+
+    color:white;
+
+    font-size:1.2rem;
+
+    font-weight:900;
+}
+
+.stat-label{
+
+    color:rgba(255,255,255,0.75);
+
+    font-size:0.72rem;
+
+    margin-top:4px;
+
+    font-weight:700;
+}
+
+/* =========================
+   LABEL
+========================= */
+
+.section-label{
+
+    padding:10px 22px;
+
+    color:var(--primary);
+
+    font-size:1rem;
+
+    font-weight:900;
+}
+
+/* =========================
+   PODIUM
+========================= */
+
+.podium-box{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-end;
+
+    gap:12px;
+
+    padding:12px 16px;
+}
+
+.rank-card{
+
+    background:var(--glass);
+
+    backdrop-filter:blur(16px);
+
+    border-radius:28px;
+
+    padding:20px 10px;
+
+    width:32%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    box-shadow:var(--shadow-soft);
+
+    border:
+        1px solid rgba(255,255,255,0.4);
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    transition:0.5s;
+}
+
+.rank-card.animate{
+
+    opacity:1;
+
+    transform:translateY(0);
+}
+
+.rank-1{
+
+    transform:translateY(-10px);
+
+    border:
+        2px solid var(--gold,#fbbf24);
+}
+
+.avatar{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:22px;
+
+    background:var(--gradient);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-weight:900;
+
+    position:relative;
+
+    margin-bottom:10px;
+}
+
+.rank-1 .avatar{
+
+    width:74px;
+
+    height:74px;
+}
+
+.rank-badge{
+
+    position:absolute;
+
+    right:-6px;
+
+    bottom:-6px;
+
+    width:24px;
+
+    height:24px;
+
+    border-radius:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:var(--accent);
+
+    color:white;
+
+    font-size:0.7rem;
+
+    font-weight:900;
+}
+
+.name{
+
+    font-size:0.78rem;
+
+    font-weight:800;
+
+    text-align:center;
+}
+
+.user-pts{
+
+    margin-top:6px;
+
+    color:var(--accent);
+
+    font-size:0.7rem;
+
+    font-weight:900;
+}
+
+/* =========================
+   FEATURES
+========================= */
+
+.features-section{
+
+    display:grid;
+
+    grid-template-columns:1fr;
+
+    gap:16px;
+
+    padding:20px;
+}
+
+.feature-card{
+
+    background:var(--card-gradient);
+
+    border-radius:28px;
+
+    padding:22px;
+
+    box-shadow:var(--shadow-soft);
+
+    backdrop-filter:blur(20px);
+
+    border:
+        1px solid rgba(255,255,255,0.45);
+
+    transition:0.25s;
+}
+
+.feature-card:hover{
+
+    transform:translateY(-4px);
+}
+
+.feature-icon{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-bottom:16px;
+
+    color:white;
+}
+
+.feature-icon.blue{
+    background:linear-gradient(135deg,#1E3A8A,#3155c7);
+}
+
+.feature-icon.purple{
+    background:linear-gradient(135deg,#7c3aed,#8b5cf6);
+}
+
+.feature-icon.pink{
+    background:linear-gradient(135deg,#ec4899,#f472b6);
+}
+
+.feature-title{
+
+    font-size:1rem;
+
+    font-weight:900;
+
+    margin-bottom:8px;
+}
+
+.feature-text{
+
+    color:var(--text-muted);
+
+    line-height:1.6;
+
+    font-size:0.88rem;
+}
+
+/* =========================
+   CATEGORY
+========================= */
+
+.category-scroll{
+
+    display:flex;
+
+    overflow-x:auto;
+
+    gap:10px;
+
+    padding:0 20px 18px;
+
+    scrollbar-width:none;
+}
+
+.cat-badge{
+
+    background:white;
+
+    border:
+        1px solid #e2e8f0;
+
+    padding:12px 16px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    white-space:nowrap;
+
+    font-size:0.82rem;
+
+    font-weight:800;
+
+    color:var(--text-muted);
+}
+
+.cat-badge.active{
+
+    background:var(--gradient);
+
+    color:white;
+
+    border:none;
+}
+
+/* =========================
+   PREMIUM
+========================= */
+
+.premium-banner{
+
+    margin:0 20px 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #1e1b4b
+        );
+
+    border-radius:30px;
+
+    padding:26px;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    overflow:hidden;
+
+    position:relative;
+}
+
+.premium-banner::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    top:-80px;
+
+    right:-50px;
+}
+
+.premium-left{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.premium-mini-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    padding:10px 14px;
+
+    border-radius:999px;
+
+    font-size:0.72rem;
+
+    font-weight:800;
+
+    margin-bottom:16px;
+}
+
+.premium-title{
+
+    font-size:1.3rem;
+
+    font-weight:900;
+
+    margin-bottom:10px;
+}
+
+.premium-text{
+
+    color:rgba(255,255,255,0.74);
+
+    line-height:1.6;
+
+    font-size:0.88rem;
+}
+
+.premium-right{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.premium-right i{
+
+    width:46px;
+
+    height:46px;
+
+    color:#fbbf24;
+}
+
+/* =========================
+   ARTICLES
+========================= */
+
+.container{
+
+    padding:0 20px;
+}
+
+.bible-card{
+
+    background:var(--surface);
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    margin-bottom:22px;
+
+    box-shadow:var(--shadow-soft);
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    transition:0.5s;
+}
+
+.bible-card.animate{
+
+    opacity:1;
+
+    transform:translateY(0);
+}
+
+.card-image{
+
+    height:200px;
+
+    background-size:cover;
+
+    background-position:center;
+}
+
+.card-body{
+
+    padding:22px;
+}
+
+.card-meta{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:14px;
+
+    font-size:0.72rem;
+
+    font-weight:800;
+}
+
+.card-author{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    color:var(--primary);
+}
+
+.card-date{
+
+    color:var(--text-muted);
+}
+
+.card-title{
+
+    font-size:1.1rem;
+
+    font-weight:900;
+
+    margin-bottom:10px;
+}
+
+.card-text{
+
+    color:var(--text-muted);
+
+    line-height:1.7;
+
+    font-size:0.92rem;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+#pagination-controls{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:16px;
+
+    margin:10px 0 120px;
+}
+
+.page-btn{
+
+    width:50px;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:white;
+
+    box-shadow:var(--shadow-soft);
+
+    color:var(--primary);
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav{
+
+    position:fixed;
+
+    bottom:14px;
+
+    left:14px;
+
+    right:14px;
+
+    background:
+        rgba(255,255,255,0.92);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:28px;
+
+    padding:14px;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    box-shadow:
+        0 18px 50px rgba(0,0,0,0.16);
+
+    z-index:999;
+}
+
+.nav-item{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:6px;
+
+    text-decoration:none;
+
+    color:var(--text-muted);
+
+    font-size:0.68rem;
+
+    font-weight:800;
+}
+
+.nav-item i{
+
+    width:20px;
+
+    height:20px;
+}
+
+.nav-item.active{
+
+    color:var(--primary);
+}
+
+.nav-item.active i{
+
+    width:42px;
+
+    height:42px;
+
+    padding:10px;
+
+    border-radius:16px;
+
+    background:var(--gradient);
+
+    color:white;
+
+    margin-top:-24px;
+
+    box-shadow:
+        0 14px 30px rgba(124,58,237,0.35);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(min-width:768px){
+
+    .features-section{
+
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .hero-title{
+
+        font-size:3rem;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-    <header class="navbar-fixed">
-        <div class="nav-top">
-            <div class="logo">APOKALYPSY</div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <select class="lang-select" id="langSwitcher" onchange="changeLanguage()">
-                    <option value="mg">MG</option>
-                    <option value="fr">FR</option>
-                    <option value="en">EN</option>
-                </select>
-                <div id="auth-zone"></div>
-            </div>
-        </div>
-    </header>
+<!-- NAVBAR -->
 
-    <div class="section-label" id="label-mavitrika">⭐ Mpikambana mavitrika</div>
-	<br/><br/>
-    <div class="podium-box">
-        <div class="rank-card rank-2">
-            <div class="avatar">DA<div class="rank-badge">2</div></div>
-            <div class="name">Daniel A.</div>
-            <div class="user-pts">950 PTS</div>
+<header class="navbar-fixed">
+
+    <div class="nav-top">
+
+        <div class="logo-area">
+
+            <div class="logo-icon">
+
+                <i data-feather="book-open"></i>
+
+            </div>
+
+            <div class="logo-text">
+
+                <div class="logo">
+                    APOKALYPSY
+                </div>
+
+                <div class="logo-sub">
+                    Bible • Chat • Enseignements
+                </div>
+
+            </div>
+
         </div>
-        <div class="rank-card rank-1">
-            <div class="avatar">PM<div class="rank-badge">1</div></div>
-            <div class="name">Pastor Mailhol</div>
-            <div class="user-pts">1520 PTS</div>
+
+        <div class="right-zone">
+
+            <select class="lang-select"
+                    id="langSwitcher"
+                    onchange="changeLanguage()">
+
+                <option value="mg">MG</option>
+                <option value="fr">FR</option>
+                <option value="en">EN</option>
+
+            </select>
+
+            <div class="auth-buttons"
+                 id="auth-zone"></div>
+
         </div>
-        <div class="rank-card rank-3">
-            <div class="avatar">SM<div class="rank-badge">3</div></div>
-            <div class="name">Sarah M.</div>
-            <div class="user-pts">780 PTS</div>
-        </div>
+
     </div>
 
-    <div class="section-label" id="label-fampianarana">📚 Fampianarana</div>
-    <div class="category-scroll" id="cat-list"></div>
+</header>
 
-    <div class="container" id="articles-container"></div>
-    <div id="pagination-controls"></div>
+<!-- HERO -->
 
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active"><i data-feather="home"></i><span id="menu-home">Accueil</span></a>
-        <a href="bible.html" class="nav-item"><i data-feather="book"></i><span id="menu-bible">Bible</span></a>
-        <a href="chat.html" class="nav-item"><i data-feather="message-circle"></i><span id="menu-chat">Chat</span></a>
-    </nav>
+<section class="hero">
+
+    <div class="hero-content">
+
+       
+
+        
+
+        <div class="hero-buttons">
+
+            <button class="hero-btn primary-btn"
+                    onclick="window.location.href='bible.html'">
+
+                <i data-feather="book-open"></i>
+
+                Explorer la Bible
+
+            </button>
+
+            <button class="hero-btn secondary-btn"
+                    onclick="window.location.href='chat.html'">
+
+                <i data-feather="message-circle"></i>
+
+                Rejoindre le Chat
+
+            </button>
+
+        </div>
+
+        <div class="hero-stats">
+
+            <div class="stat-box">
+
+                <div class="stat-number">
+                    +12K
+                </div>
+
+                <div class="stat-label">
+                    Membres
+                </div>
+
+            </div>
+
+            <div class="stat-box">
+
+                <div class="stat-number">
+                    +580
+                </div>
+
+                <div class="stat-label">
+                    Articles
+                </div>
+
+            </div>
+
+            <div class="stat-box">
+
+                <div class="stat-number">
+                    24/7
+                </div>
+
+                <div class="stat-label">
+                    Live Chat
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- PODIUM -->
+
+<div class="section-label"
+     id="label-mavitrika">
+
+    ⭐ Mpikambana mavitrika
+
+</div>
+
+<div class="podium-box">
+
+    <div class="rank-card rank-2">
+
+        <div class="avatar">
+
+            DA
+
+            <div class="rank-badge">
+                2
+            </div>
+
+        </div>
+
+        <div class="name">
+            Daniel A.
+        </div>
+
+        <div class="user-pts">
+            950 PTS
+        </div>
+
+    </div>
+
+    <div class="rank-card rank-1">
+
+        <div class="avatar">
+
+            PM
+
+            <div class="rank-badge">
+                1
+            </div>
+
+        </div>
+
+        <div class="name">
+            Pastor Mailhol
+        </div>
+
+        <div class="user-pts">
+            1520 PTS
+        </div>
+
+    </div>
+
+    <div class="rank-card rank-3">
+
+        <div class="avatar">
+
+            SM
+
+            <div class="rank-badge">
+                3
+            </div>
+
+        </div>
+
+        <div class="name">
+            Sarah M.
+        </div>
+
+        <div class="user-pts">
+            780 PTS
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FEATURES -->
+
+
+
+<!-- CATEGORIES -->
+
+<div class="section-label"
+     id="label-fampianarana">
+
+    📚 Fampianarana
+
+</div>
+
+<div class="category-scroll"
+     id="cat-list"></div>
+
+<!-- PREMIUM -->
+
+
+
+<!-- ARTICLES -->
+
+<div class="container"
+     id="articles-container"></div>
+
+<div id="pagination-controls"></div>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+    <a href="index.html"
+       class="nav-item active">
+
+        <i data-feather="home"></i>
+
+        <span id="menu-home">
+            Accueil
+        </span>
+
+    </a>
+
+    <a href="bible.html"
+       class="nav-item">
+
+        <i data-feather="book"></i>
+
+        <span id="menu-bible">
+            Bible
+        </span>
+
+    </a>
+
+    <a href="chat.html"
+       class="nav-item">
+
+        <i data-feather="message-circle"></i>
+
+        <span id="menu-chat">
+            Chat
+        </span>
+
+    </a>
+
+</nav>
 
 <script>
-    const translations = {
-        mg: { connexion: "Miditra", logout: "Hivoaka", labelMavitrika: "⭐ Mpikambana mavitrika", labelFampianarana: "📚 Fampianarana", home: "Trano", bible: "Baiboly", chat: "Tafatafa", cats: ["Rehetra", "Toriteny", "Faminaniana", "Hira"]},
-        fr: { connexion: "Connexion", logout: "Déconnexion", labelMavitrika: "⭐ Membres Actifs", labelFampianarana: "📚 Enseignements", home: "Accueil", bible: "Bible", chat: "Chat", cats: ["Tous", "Sermons", "Prophéties", "Chants"]},
-        en: { connexion: "Login", logout: "Logout", labelMavitrika: "⭐ Active Members", labelFampianarana: "📚 Teachings", home: "Home", bible: "Bible", chat: "Chat", cats: ["All", "Sermons", "Prophecies", "Songs"]}
-    };
 
-    const API_URL = 'https://apokalypsy.com/api/articles/list';
-    let allArticles = [];
-    let currentPage = 1;
-    const itemsPerPage = 5;
+const translations = {
 
-    // --- MISE À JOUR UNIQUE DE LA LANGUE ET DE L'AUTH ---
-    function changeLanguage() {
-        const lang = document.getElementById('langSwitcher').value;
-        localStorage.setItem('app_lang', lang); 
-        const t = translations[lang];
-        
-        document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
-        document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
-        document.getElementById('menu-home').innerText = t.home;
-        document.getElementById('menu-bible').innerText = t.bible;
-        document.getElementById('menu-chat').innerText = t.chat;
+    mg:{
+        connexion:"Miditra",
+        logout:"Hivoaka",
+        dashboard:"Dashboard",
+        espace:"Espace",
+        labelMavitrika:"⭐ Mpikambana mavitrika",
+        labelFampianarana:"📚 Fampianarana",
+        home:"Trano",
+        bible:"Baiboly",
+        chat:"Tafatafa",
+        cats:["Rehetra","Toriteny","Faminaniana","Hira"]
+    },
 
-        const catList = document.getElementById('cat-list');
-        const icons = ['grid', 'book-open', 'zap', 'music'];
-        catList.innerHTML = t.cats.map((name, i) => `
-            <div class="cat-badge ${i===0?'active':''}">
-                <i data-feather="${icons[i]}"></i>${name}
-            </div>
-        `).join('');
-        
-        updateAuthDisplay();
-        feather.replace();
+    fr:{
+        connexion:"Connexion",
+        logout:"Déconnexion",
+        dashboard:"Dashboard",
+        espace:"Mon espace",
+        labelMavitrika:"⭐ Membres Actifs",
+        labelFampianarana:"📚 Enseignements",
+        home:"Accueil",
+        bible:"Bible",
+        chat:"Chat",
+        cats:["Tous","Sermons","Prophéties","Chants"]
+    },
+
+    en:{
+        connexion:"Login",
+        logout:"Logout",
+        dashboard:"Dashboard",
+        espace:"My Space",
+        labelMavitrika:"⭐ Active Members",
+        labelFampianarana:"📚 Teachings",
+        home:"Home",
+        bible:"Bible",
+        chat:"Chat",
+        cats:["All","Sermons","Prophecies","Songs"]
     }
+};
 
-    async function fetchArticles() {
-        try {
-            const response = await fetch(`${API_URL}?t=${new Date().getTime()}`);
-            allArticles = await response.json();
-            renderArticles();
-        } catch (e) { console.log("Erreur API"); }
-    }
+const API_URL =
+    'https://apokalypsy.com/api/articles/list';
 
-    function renderArticles() {
-        const container = document.getElementById('articles-container');
-        container.innerHTML = '';
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
+let allArticles = [];
 
-        pageItems.forEach(article => {
-            const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500';
-            const dateObj = new Date(article.created_at);
-            const formattedDate = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+let currentPage = 1;
 
-            container.insertAdjacentHTML('beforeend', `
-                <div class="bible-card">
-                    <div class="card-image" style="background-image: url('${img}');"></div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <div class="card-author"><i data-feather="user"></i><span>Admin Apokalypsy</span></div>
-                            <div class="card-date">${formattedDate}</div>
-                        </div>
-                        <div class="card-title">${escapeHTML(article.title)}</div>
-                        <div class="card-text">${escapeHTML(article.content).substring(0, 100)}...</div>
-                    </div>
-                </div>
-            `);
-        });
-        updatePaginationControls();
-        observeElements();
-        feather.replace();
-    }
+const itemsPerPage = 5;
 
-    function updatePaginationControls() {
-        const controls = document.getElementById('pagination-controls');
-        const totalPages = Math.ceil(allArticles.length / itemsPerPage);
-        if (totalPages <= 1) return;
-        controls.innerHTML = `
-            <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i data-feather="chevron-left"></i></button>
-            <span style="font-weight: 800;">${currentPage}</span>
-            <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i data-feather="chevron-right"></i></button>
-        `;
-        feather.replace();
-    }
+/* =========================
+   LANG
+========================= */
 
-    function changePage(page) {
-        currentPage = page;
+function changeLanguage(){
+
+    const lang =
+        document.getElementById('langSwitcher').value;
+
+    localStorage.setItem('app_lang', lang);
+
+    const t =
+        translations[lang];
+
+    document.getElementById('label-mavitrika')
+        .innerText = t.labelMavitrika;
+
+    document.getElementById('label-fampianarana')
+        .innerText = t.labelFampianarana;
+
+    document.getElementById('menu-home')
+        .innerText = t.home;
+
+    document.getElementById('menu-bible')
+        .innerText = t.bible;
+
+    document.getElementById('menu-chat')
+        .innerText = t.chat;
+
+    const catList =
+        document.getElementById('cat-list');
+
+    const icons =
+        ['grid','book-open','zap','music'];
+
+    catList.innerHTML = t.cats.map((name,i)=>`
+
+        <div class="cat-badge ${i===0?'active':''}">
+
+            <i data-feather="${icons[i]}"></i>
+
+            ${name}
+
+        </div>
+
+    `).join('');
+
+    updateAuthDisplay();
+
+    feather.replace();
+}
+
+/* =========================
+   ARTICLES
+========================= */
+
+async function fetchArticles(){
+
+    try{
+
+        const response =
+            await fetch(`${API_URL}?t=${Date.now()}`);
+
+        allArticles =
+            await response.json();
+
         renderArticles();
-        window.scrollTo({ top: 400, behavior: 'smooth' });
+
+    }catch(e){
+
+        console.log("Erreur API");
+    }
+}
+
+function renderArticles(){
+
+    const container =
+        document.getElementById('articles-container');
+
+    container.innerHTML = '';
+
+    const startIndex =
+        (currentPage - 1) * itemsPerPage;
+
+    const pageItems =
+        allArticles.slice(
+            startIndex,
+            startIndex + itemsPerPage
+        );
+
+    pageItems.forEach(article => {
+
+        const img =
+            article.image_url ||
+            'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=800';
+
+        const dateObj =
+            new Date(article.created_at);
+
+        const formattedDate =
+            dateObj.toLocaleDateString(
+                'fr-FR',
+                {
+                    day:'numeric',
+                    month:'long',
+                    year:'numeric'
+                }
+            );
+
+        container.insertAdjacentHTML('beforeend',`
+
+            <div class="bible-card">
+
+                <div class="card-image"
+                     style="background-image:url('${img}')">
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="card-meta">
+
+                        <div class="card-author">
+
+                            <i data-feather="user"></i>
+
+                            <span>Admin Apokalypsy</span>
+
+                        </div>
+
+                        <div class="card-date">
+
+                            ${formattedDate}
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-title">
+
+                        ${escapeHTML(article.title)}
+
+                    </div>
+
+                    <div class="card-text">
+
+                        ${escapeHTML(article.content).substring(0,110)}...
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `);
+    });
+
+    updatePaginationControls();
+
+    observeElements();
+
+    feather.replace();
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+function updatePaginationControls(){
+
+    const controls =
+        document.getElementById('pagination-controls');
+
+    const totalPages =
+        Math.ceil(allArticles.length / itemsPerPage);
+
+    if(totalPages <= 1){
+
+        controls.innerHTML = '';
+
+        return;
     }
 
-    function observeElements() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('animate');
+    controls.innerHTML = `
+
+        <button class="page-btn"
+                onclick="changePage(${currentPage - 1})"
+                ${currentPage === 1 ? 'disabled' : ''}>
+
+            <i data-feather="chevron-left"></i>
+
+        </button>
+
+        <span style="font-weight:900;">
+
+            ${currentPage}
+
+        </span>
+
+        <button class="page-btn"
+                onclick="changePage(${currentPage + 1})"
+                ${currentPage === totalPages ? 'disabled' : ''}>
+
+            <i data-feather="chevron-right"></i>
+
+        </button>
+
+    `;
+
+    feather.replace();
+}
+
+function changePage(page){
+
+    currentPage = page;
+
+    renderArticles();
+
+    window.scrollTo({
+        top:450,
+        behavior:'smooth'
+    });
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+function observeElements(){
+
+    const observer =
+        new IntersectionObserver((entries)=>{
+
+            entries.forEach(entry=>{
+
+                if(entry.isIntersecting){
+
+                    entry.target.classList.add('animate');
+                }
             });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.rank-card, .bible-card').forEach(el => observer.observe(el));
-    }
 
-    function escapeHTML(str) {
-        return str ? str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)) : '';
-    }
+        },{ threshold:0.1 });
 
-    function updateAuthDisplay() {
-        const authZone = document.getElementById('auth-zone');
-        const lang = document.getElementById('langSwitcher').value;
-        const userName = localStorage.getItem('user_name'); 
-        if (userName) {
-            authZone.innerHTML = `<button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem; cursor:pointer;">OUT</button>`;
-        } else {
-            authZone.innerHTML = `<a href="login/connexion.html" style="text-decoration:none; background:var(--accent); color:var(--primary); padding:8px 12px; border-radius:10px; font-weight:800; font-size:0.7rem;">${translations[lang].connexion}</a>`;
+    document.querySelectorAll('.rank-card, .bible-card')
+        .forEach(el=>observer.observe(el));
+}
+
+/* =========================
+   SECURITY
+========================= */
+
+function escapeHTML(str){
+
+    return str
+        ? str.replace(/[&<>'"]/g, tag => ({
+
+            '&':'&amp;',
+            '<':'&lt;',
+            '>':'&gt;',
+            "'":'&#39;',
+            '"':'&quot;'
+
+        }[tag] || tag))
+        : '';
+}
+
+/* =========================
+   AUTH
+========================= */
+
+function updateAuthDisplay(){
+
+    const authZone =
+        document.getElementById('auth-zone');
+
+    const lang =
+        document.getElementById('langSwitcher').value;
+
+    const t =
+        translations[lang];
+
+    const userName =
+        localStorage.getItem('user_name');
+
+    const userRole =
+        localStorage.getItem('user_role');
+
+    if(userName){
+
+        let menuButton = '';
+
+        if(userRole === 'ROLE_ADMIN'){
+
+            menuButton = `
+
+                <button class="top-btn btn-dashboard"
+                        onclick="window.location.href='admin/dashboard_admin.html'">
+
+                    <i data-feather="layout"></i>
+
+                    ${t.dashboard}
+
+                </button>
+
+            `;
+
+        }else{
+
+            menuButton = `
+
+                <button class="top-btn btn-user"
+                        onclick="window.location.href='utilisateur/espace_personnel.html'">
+
+                    <i data-feather="user"></i>
+
+                    ${t.espace}
+
+                </button>
+
+            `;
         }
+
+        authZone.innerHTML = `
+
+            ${menuButton}
+
+            <button class="top-btn btn-logout"
+                    onclick="logout()">
+
+                <i data-feather="log-out"></i>
+
+                OUT
+
+            </button>
+
+        `;
+
+    }else{
+
+        authZone.innerHTML = `
+
+            <a href="login/connexion.html"
+               style="text-decoration:none;">
+
+                <button class="top-btn btn-login">
+
+                    <i data-feather="log-in"></i>
+
+                    ${t.connexion}
+
+                </button>
+
+            </a>
+
+        `;
     }
 
-    function logout() {
-        if(confirm("Hivoaka?")) { localStorage.removeItem('user_name'); window.location.reload(); }
+    feather.replace();
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+
+    if(confirm("Hivoaka ?")){
+
+        localStorage.removeItem('user_name');
+
+        localStorage.removeItem('user_role');
+
+        window.location.reload();
+    }
+}
+
+/* =========================
+   INIT
+========================= */
+
+window.onload = () => {
+
+    const savedLang =
+        localStorage.getItem('app_lang');
+
+    if(savedLang){
+
+        document.getElementById('langSwitcher').value =
+            savedLang;
     }
 
-    window.onload = () => {
-        // Restaurer la langue si déjà choisie
-        const savedLang = localStorage.getItem('app_lang');
-        if(savedLang) document.getElementById('langSwitcher').value = savedLang;
-        changeLanguage(); 
-        fetchArticles();
-    };
+    changeLanguage();
+
+    fetchArticles();
+
+    feather.replace();
+};
+
 </script>
+
 </body>
 </html>
