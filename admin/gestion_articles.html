@@ -574,7 +574,7 @@
             ? `${API_BASE}/update/${id}`
             : `${API_BASE}/add`;
 
-        const method = id ? 'PUT' : 'POST';
+        const method = 'POST';
 
         try{
 
@@ -629,33 +629,28 @@
 
     async function deleteArticle(id){
 
-        if(!confirm("Supprimer cet article ?")) return;
+    if(!confirm("Supprimer cet article ?")) return;
 
-        try{
+    try{
 
-            const res = await fetch(
-                `${API_BASE}/delete/${id}`,
-                {
-                    method:'DELETE'
-                }
-            );
+        const res = await fetch(`${API_BASE}/delete/${id}`, {
+            method:'POST'
+        });
 
-            if(!res.ok){
-
-                throw new Error("Erreur suppression");
-            }
-
-            alert("Article supprimé.");
-
-            fetchArticles();
-
-        }catch(err){
-
-            console.error(err);
-
-            alert("Erreur suppression.");
+        if(!res.ok){
+            throw new Error("Erreur suppression");
         }
+
+        alert("Article supprimé.");
+
+        fetchArticles();
+
+    }catch(err){
+
+        console.error(err);
+        alert("Erreur suppression.");
     }
+}
 
     // =========================
     // AUTH
