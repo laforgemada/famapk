@@ -1,19 +1,40 @@
 {
   "name": "Fam Apokalypsy",
   "short_name": "FamApok",
-  "start_url": "index.html",
+  "description": "Plateforme chrétienne Apokalypsy : Bible, enseignements et communauté en ligne.",
+
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
+
   "background_color": "#ffffff",
   "theme_color": "#1E3A8A",
+  "orientation": "portrait-primary",
+
+  "lang": "fr",
+  "dir": "ltr",
+
+  "categories": ["education", "lifestyle", "religion"],
+
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "/icons/screenshot1.png",
+      "sizes": "1280x720",
       "type": "image/png"
     }
   ]
