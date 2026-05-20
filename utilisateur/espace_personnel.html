@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Espace Membre | Apokalypsy Premium</title>
+<title>Espace Membre</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/feather-icons"></script>
@@ -631,6 +631,70 @@ BOTTOM NAV
     box-shadow:0 12px 24px rgba(124,58,237,0.35);
 }
 
+/* =====================================
+AJOUT DU STYLE COMPATIBLE POUR LE BONUS 
+===================================== */
+.loyalty-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+}
+.loyalty-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.loyalty-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background: #fef3c7;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loyalty-icon-box i {
+    width: 24px;
+    height: 24px;
+}
+.loyalty-score h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+}
+.loyalty-score p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+.loyalty-action-btn {
+    border: none;
+    background: var(--gradient);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(67, 56, 192, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+.loyalty-action-btn:active {
+    transform: scale(0.95);
+}
+.loyalty-action-btn:disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
 /* =========================
 RESPONSIVE
 ========================= */
@@ -650,14 +714,26 @@ RESPONSIVE
         font-size:1.5rem;
     }
 
+    .loyalty-section {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    .loyalty-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .loyalty-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
 }
 
 </style>
 </head>
 
 <body>
-
-<!-- HEADER -->
 
 <header class="top-nav">
 
@@ -671,7 +747,7 @@ RESPONSIVE
 
             <div class="logo-text">
                 <div class="logo-title">APOKALYPSY</div>
-                <div class="logo-sub">Espace membre premium</div>
+                <div class="logo-sub">Espace membre</div>
             </div>
 
         </div>
@@ -700,8 +776,6 @@ RESPONSIVE
 
 </header>
 
-<!-- HERO -->
-
 <section class="hero-card">
 
     <div class="hero-content">
@@ -710,9 +784,9 @@ RESPONSIVE
             ✨ Bienvenue sur Apokalypsy
         </div>
 
-        <h1 class="hero-title">
-            Bonjour Alain José 🙏
-        </h1>
+        <h1 class="hero-title" id="welcome-user-title">
+			Bonjour 🙏
+		</h1>
 
         <p class="hero-text">
             Continuez votre progression spirituelle avec
@@ -744,11 +818,24 @@ RESPONSIVE
 
 </section>
 
-<!-- MAIN -->
-
 <main class="main-container">
 
-    <!-- IMPACT -->
+    <section class="card loyalty-section">
+        <div class="loyalty-info">
+            <div class="loyalty-icon-box">
+                <i data-feather="gift"></i>
+            </div>
+            <div class="loyalty-score">
+                <h3 id="loyalty-points-display">-- Points</h3>
+                <p>Votre solde de fidélité</p>
+            </div>
+        </div>
+        <div id="loyalty-action-container">
+            <button class="loyalty-action-btn" disabled>
+                <i data-feather="loader"></i> Chargement...
+            </button>
+        </div>
+    </section>
 
     <section class="card impact-section">
 
@@ -756,7 +843,7 @@ RESPONSIVE
 
             <div class="progress-content">
 
-                <div class="circle-text">72%</div>
+                <div class="circle-text">...</div>
                 <div class="circle-sub">Progression</div>
 
             </div>
@@ -779,29 +866,23 @@ RESPONSIVE
             </div>
 
             <div class="impact-grid">
-
-                <div class="impact-box box-blue">
-                    <span class="box-value">450m</span>
-                    <span class="box-label">Prière</span>
-                </div>
-
-                <div class="impact-box box-orange">
-                    <span class="box-value">8.5</span>
-                    <span class="box-label">Leçons</span>
-                </div>
-
-                <div class="impact-box box-green">
-                    <span class="box-value">120</span>
-                    <span class="box-label">Versets</span>
-                </div>
-
-            </div>
+				<div class="impact-box box-blue">
+					<span class="box-value" id="stats-priere">0m</span>
+					<span class="box-label">Prière</span>
+				</div>
+				<div class="impact-box box-orange">
+					<span class="box-value" id="stats-lecons">0</span>
+					<span class="box-label">Leçons</span>
+				</div>
+				<div class="impact-box box-green">
+					<span class="box-value" id="stats-versets">0</span>
+					<span class="box-label">Versets</span>
+				</div>
+			</div>
 
         </div>
 
     </section>
-
-    <!-- ACTIVITY -->
 
     <section class="card">
 
@@ -878,8 +959,6 @@ RESPONSIVE
         </div>
 
     </section>
-
-    <!-- TROPHIES -->
 
     <section class="card">
 
@@ -961,13 +1040,7 @@ RESPONSIVE
 
     </section>
 
-    
-
-    
-
 </main>
-
-<!-- BOTTOM NAV -->
 
 <nav class="bottom-bar">
 
@@ -1013,20 +1086,343 @@ RESPONSIVE
 
 <script>
 
-feather.replace();
+const API_BASE_URL = 'https://apokalypsy.com';
 
+let currentUsername = null;
+let loyaltyData = null;
+let bonusTimer = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    feather.replace();
+
+    // Récupère l'utilisateur connecté ou null s'il n'existe pas
+    currentUsername = localStorage.getItem('user_name');
+
+    const welcomeTitle = document.getElementById('welcome-user-title');
+    if (welcomeTitle) {
+        welcomeTitle.innerText = `Bonjour ${currentUsername || 'Invité'} 🙏`;
+    }
+
+    // On ne charge les données que si un vrai utilisateur est connecté
+    if (currentUsername) {
+        loadLoyaltyData();
+    } else {
+        console.warn("Mode invité : Récupération des points désactivée.");
+        setText('loyalty-points-display', '0 Points');
+    }
+});
+
+/**
+ * =========================
+ * LOGOUT
+ * =========================
+ */
 function logout(){
-
     if(confirm("Voulez-vous quitter votre session ?")){
-
         localStorage.removeItem('user_name');
         localStorage.removeItem('user_role');
-
+        localStorage.removeItem('token');
         window.location.href='../../index.html';
     }
 }
 
-</script>
+/**
+ * =========================
+ * LOAD LOYALTY (FIXED VIA USERNAME)
+ * =========================
+ */
+async function loadLoyaltyData(){
+    if (!currentUsername) return;
 
+    try{
+        // Passage du username en paramètre d'URL (?username=josealain2) pour éviter le problème de 401
+        const response = await fetch(
+            `${API_BASE_URL}/api/user/loyalty-status?username=${encodeURIComponent(currentUsername)}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if(!response.ok){
+            throw new Error("Erreur récupération fidélité");
+        }
+
+        loyaltyData = await response.json();
+        updateLoyaltyUI(loyaltyData);
+
+    }catch(error){
+        console.error("LOYALTY ERROR:", error);
+        setText('loyalty-points-display', '0 Points');
+    }
+}
+
+/**
+ * =========================
+ * UPDATE UI (SAFE)
+ * =========================
+ */
+function updateLoyaltyUI(data){
+
+    const points = Number(data?.points || 0);
+
+    setText('loyalty-points-display', `${points} Points`);
+
+    const level = calculateLevel(points);
+    const progress = calculateProgress(points);
+
+    const levelBtn = document.querySelector('.progress-btn');
+    if (levelBtn) levelBtn.innerText = `Niveau ${level}`;
+
+    const circleText = document.querySelector('.circle-text');
+    if (circleText) circleText.innerText = `${progress}%`;
+
+    const progressCircle = document.querySelector('.progress-circle');
+    if (progressCircle) {
+        progressCircle.style.background =
+            `conic-gradient(#7c3aed 0% ${progress}%, #e2e8f0 ${progress}% 100%)`;
+    }
+
+    updateBonusButton(data);
+    generateTrophies(points);
+    updateStats(points);
+
+    feather.replace();
+}
+
+/**
+ * =========================
+ * BONUS SYSTEM (STABLE TIMER)
+ * =========================
+ */
+function updateBonusButton(data){
+
+    const container = document.getElementById('loyalty-action-container');
+    if (!container) return;
+
+    if (bonusTimer) {
+        clearInterval(bonusTimer);
+        bonusTimer = null;
+    }
+
+    let timeLeft = Number(data?.nextBonusIn || 0);
+
+    if (timeLeft > 0) {
+
+        const render = () => {
+
+            if (timeLeft <= 0) {
+                clearInterval(bonusTimer);
+
+                container.innerHTML = `
+                    <button class="loyalty-action-btn" id="claim-bonus-btn" onclick="claimDailyBonus()">
+                        <i data-feather="gift"></i>
+                        Bonus quotidien +10 pts
+                    </button>
+                `;
+
+                feather.replace();
+                return;
+            }
+
+            const h = Math.floor(timeLeft / 3600);
+            const m = Math.floor((timeLeft % 3600) / 60);
+            const s = timeLeft % 60;
+
+            container.innerHTML = `
+                <button class="loyalty-action-btn" disabled>
+                    <i data-feather="clock"></i>
+                    Bonus dans ${h}h ${m}m ${s}s
+                </button>
+            `;
+
+            feather.replace();
+            timeLeft--;
+        };
+
+        render();
+        bonusTimer = setInterval(render, 1000);
+
+    } else {
+
+        container.innerHTML = `
+            <button class="loyalty-action-btn" id="claim-bonus-btn" onclick="claimDailyBonus()">
+                <i data-feather="gift"></i>
+                Bonus quotidien +10 pts
+            </button>
+        `;
+
+        feather.replace();
+    }
+}
+
+/**
+ * =========================
+ * STATS
+ * =========================
+ */
+function updateStats(points){
+    setText('stats-priere', `${points * 3}m`);
+    setText('stats-lecons', `${Math.floor(points / 12)}`);
+    setText('stats-versets', `${points * 2}`);
+}
+
+/**
+ * =========================
+ * LEVEL SYSTEM
+ * =========================
+ */
+function calculateLevel(points){
+    return Math.floor(points / 100) + 1;
+}
+
+function calculateProgress(points){
+    return points % 100;
+}
+
+/**
+ * =========================
+ * TROPHIES
+ * =========================
+ */
+function generateTrophies(points){
+
+    const trophies = [
+        { icon:'🌱', title:'Graine de Foi', required:10 },
+        { icon:'🕊️', title:'Messager de Paix', required:50 },
+        { icon:'⛪', title:'Pilier d’Église', required:150 },
+        { icon:'🔥', title:'Feu Sacré', required:300 },
+        { icon:'👑', title:'Saint Légendaire', required:500 }
+    ];
+
+    const container = document.querySelector('.trophy-grid');
+    if (!container) return;
+
+    let html = '';
+    let locked = 0;
+
+    trophies.forEach(t => {
+
+        const unlocked = points >= t.required;
+        if (!unlocked) locked++;
+
+        html += `
+            <div class="trophy-card ${unlocked ? '' : 'locked'}">
+                <div class="trophy-top">${t.icon}</div>
+                <div class="trophy-footer">
+                    <h4>${t.title}</h4>
+                    <p>${unlocked ? 'Débloqué' : t.required + ' pts requis'}</p>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    const badge = document.getElementById('header-notif-badge');
+    if (badge) {
+        badge.style.display = locked > 0 ? 'flex' : 'none';
+        badge.innerText = locked;
+    }
+}
+
+/**
+ * =========================
+ * CLAIM BONUS
+ * =========================
+ */
+async function claimDailyBonus(){
+    if (!currentUsername) {
+        alert("Vous devez être connecté pour réclamer le bonus.");
+        return;
+    }
+
+    const btn = document.getElementById('claim-bonus-btn');
+    if (!btn) return;
+
+    btn.disabled = true;
+    btn.innerHTML = `<i data-feather="loader"></i> Traitement...`;
+    feather.replace();
+
+    try{
+        // Envoi du username dans le corps (body) JSON attendu par ton nouveau contrôleur Symfony
+        const response = await fetch(
+            `${API_BASE_URL}/api/premium/claim-bonus`,
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: currentUsername })
+            }
+        );
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.message || "Erreur serveur");
+        }
+
+        // Rechargement immédiat et rafraîchissement propre du timer et de l'interface
+        await loadLoyaltyData();
+
+        showNotification("🎉 Bonus récupéré ! +10 points");
+
+    }catch(error){
+        console.error(error);
+        alert(error.message);
+
+        btn.disabled = false;
+        btn.innerHTML = `<i data-feather="gift"></i> Bonus quotidien +10 pts`;
+        feather.replace();
+    }
+}
+
+/**
+ * =========================
+ * NOTIFICATION
+ * =========================
+ */
+function showNotification(message){
+
+    const div = document.createElement('div');
+
+    Object.assign(div.style, {
+        position: 'fixed',
+        top: '100px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#22c55e',
+        color: 'white',
+        padding: '14px 20px',
+        borderRadius: '16px',
+        fontWeight: '700',
+        zIndex: '99999',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+    });
+
+    div.innerText = message;
+
+    document.body.appendChild(div);
+
+    setTimeout(() => div.remove(), 3000);
+}
+
+/**
+ * =========================
+ * SAFE TEXT
+ * =========================
+ */
+function setText(id, value){
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+}
+
+</script>
 </body>
 </html>

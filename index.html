@@ -9,7 +9,7 @@
                user-scalable=no,
                viewport-fit=cover">
 
-<title>Apokalypsy | Premium Experience</title>
+<title>Apokalypsy | Experience</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -20,38 +20,23 @@
 <style>
 
 :root{
-
     --primary:#1E3A8A;
     --primary-light:#3155c7;
-
     --secondary:#7c3aed;
-
     --accent:#f59e0b;
-
     --pink:#ec4899;
-
     --success:#22c55e;
-
     --danger:#ef4444;
-
     --bg:#eef2ff;
-
     --surface:#ffffff;
-
     --glass:rgba(255,255,255,0.72);
-
     --text-main:#0f172a;
-
     --text-muted:#64748b;
-
     --border:#e2e8f0;
-
     --gradient:
         linear-gradient(135deg, #1E3A8A 0%, #035de3 55%, #122997 100%);
-
     --shadow:
         0 20px 60px rgba(15,23,42,0.12);
-
     --shadow-soft:
         0 10px 30px rgba(15,23,42,0.08);
 }
@@ -62,31 +47,22 @@
 }
 
 body{
-
     margin:0;
-
     font-family:'Plus Jakarta Sans',sans-serif;
-
     background:
-
         radial-gradient(
             circle at top left,
             rgba(124,58,237,0.18),
             transparent 28%
         ),
-
         radial-gradient(
             circle at bottom right,
             rgba(236,72,153,0.12),
             transparent 30%
         ),
-
         var(--bg);
-
     color:var(--text-main);
-
     padding-top:90px;
-
     overflow-x:hidden;
 }
 
@@ -95,210 +71,137 @@ body{
 ========================= */
 
 .navbar-fixed{
-
     position:fixed;
-
     top:0;
-
     left:0;
-
     width:100%;
-
     z-index:9999;
-
     backdrop-filter:blur(16px);
-
     background:
         rgba(15,23,42,0.82);
-
     border-bottom:
         1px solid rgba(255,255,255,0.08);
-
     padding:14px 0;
 }
 
 .nav-top{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     padding:0 16px;
 }
 
 .logo-area{
-
     display:flex;
-
     align-items:center;
-
     gap:12px;
 }
 
 .logo-icon{
-
     width:48px;
-
     height:48px;
-
     border-radius:18px;
-
     background:var(--gradient);
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     color:white;
-
     box-shadow:
         0 10px 25px rgba(124,58,237,0.35);
 }
 
 .logo-icon i{
-
     width:24px;
-
     height:24px;
 }
 
 .logo-text{
-
     display:flex;
-
     flex-direction:column;
 }
 
 .logo{
-
     color:white;
-
     font-size:0.95rem;
-
     font-weight:900;
-
     letter-spacing:2px;
 }
 
 .logo-sub{
-
     color:rgba(255,255,255,0.7);
-
     font-size:0.68rem;
-
     font-weight:700;
 }
 
 .right-zone{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
 }
 
 .lang-select{
-
     background:
         rgba(255,255,255,0.12);
-
     color:white;
-
     border:
         1px solid rgba(255,255,255,0.16);
-
     border-radius:14px;
-
     padding:8px 10px;
-
     font-size:0.74rem;
-
     font-weight:800;
-
     outline:none;
 }
 
 .lang-select option{
-
     color:#1E3A8A;
 }
 
 .auth-buttons{
-
     display:flex;
-
     align-items:center;
-
     gap:8px;
 }
 
 .top-btn{
-
     border:none;
-
     border-radius:15px;
-
     padding:10px 14px;
-
     display:flex;
-
     align-items:center;
-
     gap:6px;
-
     font-size:0.72rem;
-
     font-weight:800;
-
     cursor:pointer;
-
     transition:0.2s;
-
     box-shadow:var(--shadow-soft);
 }
 
 .top-btn:active{
-
     transform:scale(.95);
 }
 
 .top-btn i{
-
     width:15px;
-
     height:15px;
 }
 
 .btn-login{
-
     background:var(--accent);
-
     color:#1E3A8A;
 }
 
 .btn-user{
-
     background:#dbeafe;
-
     color:#1E3A8A;
 }
 
 .btn-dashboard{
-
     background:#ede9fe;
-
     color:#5b21b6;
 }
 
 .btn-logout{
-
     background:var(--danger);
-
     color:white;
 }
 
@@ -307,211 +210,112 @@ body{
 ========================= */
 
 .hero{
-
     margin:0 18px 24px;
-
     border-radius:34px;
-
     overflow:hidden;
-
     position:relative;
-
     background:var(--gradient);
-
     padding:34px 26px;
-
     box-shadow:
         0 30px 60px rgba(124,58,237,0.22);
 }
 
 .hero::before{
-
     content:"";
-
     position:absolute;
-
     width:260px;
-
     height:260px;
-
     border-radius:50%;
-
     background:
         rgba(255,255,255,0.08);
-
     top:-140px;
-
     right:-70px;
 }
 
 .hero::after{
-
     content:"";
-
     position:absolute;
-
     width:180px;
-
     height:180px;
-
     border-radius:50%;
-
     background:
         rgba(255,255,255,0.06);
-
     bottom:-80px;
-
     left:-40px;
 }
 
 .hero-content{
-
     position:relative;
-
     z-index:2;
 }
 
-.hero-mini{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    background:
-        rgba(255,255,255,0.16);
-
-    padding:10px 14px;
-
-    border-radius:999px;
-
-    color:white;
-
-    font-size:0.74rem;
-
-    font-weight:800;
-
-    margin-bottom:18px;
-
-    backdrop-filter:blur(12px);
-}
-
 .hero-title{
-
     font-size:2rem;
-
     line-height:1.15;
-
     color:white;
-
     font-weight:900;
-
     margin-bottom:14px;
 }
 
-.hero-text{
-
-    color:rgba(255,255,255,0.84);
-
-    line-height:1.7;
-
-    font-size:0.95rem;
-}
-
 .hero-buttons{
-
     display:flex;
-
     gap:12px;
-
     flex-wrap:wrap;
-
     margin-top:24px;
 }
 
 .hero-btn{
-
     border:none;
-
     border-radius:18px;
-
     padding:14px 18px;
-
     font-weight:800;
-
     display:flex;
-
     align-items:center;
-
     gap:8px;
-
     cursor:pointer;
 }
 
 .primary-btn{
-
     background:white;
-
     color:#1E3A8A;
 }
 
 .secondary-btn{
-
     background:
         rgba(255,255,255,0.14);
-
     color:white;
-
     border:
         1px solid rgba(255,255,255,0.18);
 }
 
 .hero-stats{
-
     margin-top:28px;
-
     display:grid;
-
     grid-template-columns:repeat(3,1fr);
-
     gap:12px;
 }
 
 .stat-box{
-
     background:
         rgba(255,255,255,0.12);
-
     border:
         1px solid rgba(255,255,255,0.08);
-
     border-radius:22px;
-
     padding:16px;
-
     text-align:center;
-
     backdrop-filter:blur(10px);
 }
 
 .stat-number{
-
     color:white;
-
     font-size:1.2rem;
-
     font-weight:900;
 }
 
 .stat-label{
-
     color:rgba(255,255,255,0.75);
-
     font-size:0.72rem;
-
     margin-top:4px;
-
     font-weight:700;
 }
 
@@ -520,13 +324,9 @@ body{
 ========================= */
 
 .section-label{
-
     padding:10px 22px;
-
     color:var(--primary);
-
     font-size:1rem;
-
     font-weight:900;
 }
 
@@ -535,229 +335,97 @@ body{
 ========================= */
 
 .podium-box{
-
     display:flex;
-
     justify-content:center;
-
     align-items:flex-end;
-
     gap:12px;
-
     padding:12px 16px;
+    min-height:180px;
 }
 
 .rank-card{
-
     background:var(--glass);
-
     backdrop-filter:blur(16px);
-
     border-radius:28px;
-
     padding:20px 10px;
-
     width:32%;
-
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
-
     box-shadow:var(--shadow-soft);
-
     border:
         1px solid rgba(255,255,255,0.4);
-
     opacity:0;
-
     transform:translateY(30px);
-
     transition:0.5s;
 }
 
 .rank-card.animate{
-
     opacity:1;
-
     transform:translateY(0);
 }
 
 .rank-1{
-
     transform:translateY(-10px);
-
     border:
         2px solid var(--gold,#fbbf24);
 }
 
+.rank-card.animated-box {
+    opacity:1 !important;
+    transform:translateY(0) !important;
+}
+.rank-1.animated-box {
+    transform:translateY(-10px) !important;
+}
+
 .avatar{
-
     width:58px;
-
     height:58px;
-
     border-radius:22px;
-
     background:var(--gradient);
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     color:white;
-
     font-weight:900;
-
     position:relative;
-
     margin-bottom:10px;
+    text-transform:uppercase;
 }
 
 .rank-1 .avatar{
-
     width:74px;
-
     height:74px;
 }
 
 .rank-badge{
-
     position:absolute;
-
     right:-6px;
-
     bottom:-6px;
-
     width:24px;
-
     height:24px;
-
     border-radius:10px;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     background:var(--accent);
-
     color:white;
-
     font-size:0.7rem;
-
     font-weight:900;
 }
 
 .name{
-
     font-size:0.78rem;
-
     font-weight:800;
-
     text-align:center;
 }
 
 .user-pts{
-
     margin-top:6px;
-
     color:var(--accent);
-
     font-size:0.7rem;
-
     font-weight:900;
-}
-
-/* =========================
-   FEATURES
-========================= */
-
-.features-section{
-
-    display:grid;
-
-    grid-template-columns:1fr;
-
-    gap:16px;
-
-    padding:20px;
-}
-
-.feature-card{
-
-    background:var(--card-gradient);
-
-    border-radius:28px;
-
-    padding:22px;
-
-    box-shadow:var(--shadow-soft);
-
-    backdrop-filter:blur(20px);
-
-    border:
-        1px solid rgba(255,255,255,0.45);
-
-    transition:0.25s;
-}
-
-.feature-card:hover{
-
-    transform:translateY(-4px);
-}
-
-.feature-icon{
-
-    width:58px;
-
-    height:58px;
-
-    border-radius:20px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    margin-bottom:16px;
-
-    color:white;
-}
-
-.feature-icon.blue{
-    background:linear-gradient(135deg,#1E3A8A,#3155c7);
-}
-
-.feature-icon.purple{
-    background:linear-gradient(135deg,#7c3aed,#8b5cf6);
-}
-
-.feature-icon.pink{
-    background:linear-gradient(135deg,#ec4899,#f472b6);
-}
-
-.feature-title{
-
-    font-size:1rem;
-
-    font-weight:900;
-
-    margin-bottom:8px;
-}
-
-.feature-text{
-
-    color:var(--text-muted);
-
-    line-height:1.6;
-
-    font-size:0.88rem;
 }
 
 /* =========================
@@ -765,50 +433,35 @@ body{
 ========================= */
 
 .category-scroll{
-
     display:flex;
-
     overflow-x:auto;
-
     gap:10px;
-
     padding:0 20px 18px;
-
     scrollbar-width:none;
 }
 
+.category-scroll::-webkit-scrollbar {
+    display:none;
+}
+
 .cat-badge{
-
     background:white;
-
     border:
         1px solid #e2e8f0;
-
     padding:12px 16px;
-
     border-radius:18px;
-
     display:flex;
-
     align-items:center;
-
     gap:8px;
-
     white-space:nowrap;
-
     font-size:0.82rem;
-
     font-weight:800;
-
     color:var(--text-muted);
 }
 
 .cat-badge.active{
-
     background:var(--gradient);
-
     color:white;
-
     border:none;
 }
 
@@ -817,118 +470,76 @@ body{
 ========================= */
 
 .premium-banner{
-
-    margin:0 20px 24px;
-
+    margin:20px 20px 24px;
     background:
         linear-gradient(
             135deg,
             #111827,
             #1e1b4b
         );
-
     border-radius:30px;
-
     padding:26px;
-
     color:white;
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     gap:20px;
-
     overflow:hidden;
-
     position:relative;
 }
 
 .premium-banner::before{
-
     content:"";
-
     position:absolute;
-
     width:180px;
-
     height:180px;
-
     border-radius:50%;
-
     background:
         rgba(255,255,255,0.05);
-
     top:-80px;
-
     right:-50px;
 }
 
 .premium-left{
-
     position:relative;
-
     z-index:2;
 }
 
 .premium-mini-badge{
-
     display:inline-flex;
-
     align-items:center;
-
     gap:8px;
-
     background:
         rgba(255,255,255,0.08);
-
     border:
         1px solid rgba(255,255,255,0.08);
-
     padding:10px 14px;
-
     border-radius:999px;
-
     font-size:0.72rem;
-
     font-weight:800;
-
     margin-bottom:16px;
 }
 
 .premium-title{
-
     font-size:1.3rem;
-
     font-weight:900;
-
     margin-bottom:10px;
 }
 
 .premium-text{
-
     color:rgba(255,255,255,0.74);
-
     line-height:1.6;
-
     font-size:0.88rem;
 }
 
 .premium-right{
-
     position:relative;
-
     z-index:2;
 }
 
 .premium-right i{
-
     width:46px;
-
     height:46px;
-
     color:#fbbf24;
 }
 
@@ -937,96 +548,64 @@ body{
 ========================= */
 
 .container{
-
     padding:0 20px;
 }
 
 .bible-card{
-
     background:var(--surface);
-
     border-radius:28px;
-
     overflow:hidden;
-
     margin-bottom:22px;
-
     box-shadow:var(--shadow-soft);
-
     opacity:0;
-
     transform:translateY(30px);
-
     transition:0.5s;
 }
 
 .bible-card.animate{
-
     opacity:1;
-
     transform:translateY(0);
 }
 
 .card-image{
-
     height:200px;
-
     background-size:cover;
-
     background-position:center;
 }
 
 .card-body{
-
     padding:22px;
 }
 
 .card-meta{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     margin-bottom:14px;
-
     font-size:0.72rem;
-
     font-weight:800;
 }
 
 .card-author{
-
     display:flex;
-
     align-items:center;
-
     gap:6px;
-
     color:var(--primary);
 }
 
 .card-date{
-
     color:var(--text-muted);
 }
 
 .card-title{
-
     font-size:1.1rem;
-
     font-weight:900;
-
     margin-bottom:10px;
 }
 
 .card-text{
-
     color:var(--text-muted);
-
     line-height:1.7;
-
     font-size:0.92rem;
 }
 
@@ -1035,33 +614,25 @@ body{
 ========================= */
 
 #pagination-controls{
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     gap:16px;
-
     margin:10px 0 120px;
 }
 
 .page-btn{
-
     width:50px;
-
     height:50px;
-
     border:none;
-
     border-radius:18px;
-
     background:white;
-
     box-shadow:var(--shadow-soft);
-
     color:var(--primary);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* =========================
@@ -1069,81 +640,50 @@ body{
 ========================= */
 
 .bottom-nav{
-
     position:fixed;
-
     bottom:14px;
-
     left:14px;
-
     right:14px;
-
     background:
         rgba(255,255,255,0.92);
-
     backdrop-filter:blur(18px);
-
     border-radius:28px;
-
     padding:14px;
-
     display:flex;
-
     justify-content:space-around;
-
     box-shadow:
         0 18px 50px rgba(0,0,0,0.16);
-
     z-index:999;
 }
 
 .nav-item{
-
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
-
     gap:6px;
-
     text-decoration:none;
-
     color:var(--text-muted);
-
     font-size:0.68rem;
-
     font-weight:800;
 }
 
 .nav-item i{
-
     width:20px;
-
     height:20px;
 }
 
 .nav-item.active{
-
     color:var(--primary);
 }
 
 .nav-item.active i{
-
     width:42px;
-
     height:42px;
-
     padding:10px;
-
     border-radius:16px;
-
     background:var(--gradient);
-
     color:white;
-
     margin-top:-24px;
-
     box-shadow:
         0 14px 30px rgba(124,58,237,0.35);
 }
@@ -1153,14 +693,7 @@ body{
 ========================= */
 
 @media(min-width:768px){
-
-    .features-section{
-
-        grid-template-columns:repeat(3,1fr);
-    }
-
     .hero-title{
-
         font-size:3rem;
     }
 }
@@ -1170,313 +703,143 @@ body{
 
 <body>
 
-<!-- NAVBAR -->
-
 <header class="navbar-fixed">
-
     <div class="nav-top">
-
         <div class="logo-area">
-
             <div class="logo-icon">
-
                 <i data-feather="book-open"></i>
-
             </div>
-
             <div class="logo-text">
-
-                <div class="logo">
-                    APOKALYPSY
-                </div>
-
-                <div class="logo-sub">
-                    Bible • Chat • Enseignements
-                </div>
-
+                <div class="logo">APOKALYPSY</div>
+                <div class="logo-sub">Bible • Chat • Enseignements</div>
             </div>
-
         </div>
 
         <div class="right-zone">
-
-            <select class="lang-select"
-                    id="langSwitcher"
-                    onchange="changeLanguage()">
-
+            <select class="lang-select" id="langSwitcher" onchange="changeLanguage()">
                 <option value="mg">MG</option>
                 <option value="fr">FR</option>
                 <option value="en">EN</option>
-
             </select>
-
-            <div class="auth-buttons"
-                 id="auth-zone"></div>
-
+            <div class="auth-buttons" id="auth-zone"></div>
         </div>
-
     </div>
-
 </header>
 
-<!-- HERO -->
-
 <section class="hero">
-
     <div class="hero-content">
-
-       
-
-        
-
         <div class="hero-buttons">
-
-            <button class="hero-btn primary-btn"
-                    onclick="window.location.href='bible.html'">
-
-                <i data-feather="book-open"></i>
-
-                Explorer la Bible
-
+            <button class="hero-btn primary-btn" onclick="window.location.href='bible.html'">
+                <i data-feather="book-open"></i> Explorer la Bible
             </button>
-
-            <button class="hero-btn secondary-btn"
-                    onclick="window.location.href='chat.html'">
-
-                <i data-feather="message-circle"></i>
-
-                Rejoindre le Chat
-
+            <button class="hero-btn secondary-btn" onclick="window.location.href='chat.html'">
+                <i data-feather="message-circle"></i> Rejoindre le Chat
             </button>
-
         </div>
 
         <div class="hero-stats">
-
-            <div class="stat-box">
-
-                <div class="stat-number">
-                    +12K
-                </div>
-
-                <div class="stat-label">
-                    Membres
-                </div>
-
-            </div>
-
-            <div class="stat-box">
-
-                <div class="stat-number">
-                    +580
-                </div>
-
-                <div class="stat-label">
-                    Articles
-                </div>
-
-            </div>
-
-            <div class="stat-box">
-
-                <div class="stat-number">
-                    24/7
-                </div>
-
-                <div class="stat-label">
-                    Live Chat
-                </div>
-
-            </div>
-
-        </div>
-
+		<div class="stat-box">
+			<div class="stat-number" id="stat-members">...</div>
+			<div class="stat-label">Membres</div>
+		</div>
+		<div class="stat-box">
+			<div class="stat-number" id="stat-articles">...</div>
+			<div class="stat-label">Articles</div>
+		</div>
+		<div class="stat-box">
+			<div class="stat-number" id="stat-chat">24/7</div>
+			<div class="stat-label">Live Chat</div>
+		</div>
+	</div>
+		
     </div>
-
 </section>
 
-<!-- PODIUM -->
+<div class="section-label" id="label-mavitrika">⭐ Mpikambana mavitrika</div>
 
-<div class="section-label"
-     id="label-mavitrika">
-
-    ⭐ Mpikambana mavitrika
-
+<div class="podium-box" id="leaderboard-podium">
+    <div style="color: var(--text-muted); font-weight: 700; font-size: 0.9rem;">Chargement du podium...</div>
 </div>
 
-<div class="podium-box">
+<div class="section-label" id="label-fampianarana">📚 Fampianarana</div>
 
-    <div class="rank-card rank-2">
+<div class="category-scroll" id="cat-list"></div>
 
-        <div class="avatar">
-
-            DA
-
-            <div class="rank-badge">
-                2
-            </div>
-
+<div class="premium-banner">
+    <div class="premium-left">
+        <div class="premium-mini-badge">
+            <i data-feather="star"></i> Premium Zone
         </div>
-
-        <div class="name">
-            Daniel A.
-        </div>
-
-        <div class="user-pts">
-            950 PTS
-        </div>
-
+        <div class="premium-title" id="premium-banner-title">Espace Fidélité & Récompenses</div>
+        <div class="premium-text" id="premium-banner-text">Suivez votre progression, débloquez des badges spirituels et récupérez vos bonus quotidiens.</div>
     </div>
-
-    <div class="rank-card rank-1">
-
-        <div class="avatar">
-
-            PM
-
-            <div class="rank-badge">
-                1
-            </div>
-
-        </div>
-
-        <div class="name">
-            Pastor Mailhol
-        </div>
-
-        <div class="user-pts">
-            1520 PTS
-        </div>
-
+    <div class="premium-right">
+        <i data-feather="award"></i>
     </div>
-
-    <div class="rank-card rank-3">
-
-        <div class="avatar">
-
-            SM
-
-            <div class="rank-badge">
-                3
-            </div>
-
-        </div>
-
-        <div class="name">
-            Sarah M.
-        </div>
-
-        <div class="user-pts">
-            780 PTS
-        </div>
-
-    </div>
-
 </div>
 
-<!-- FEATURES -->
-
-
-
-<!-- CATEGORIES -->
-
-<div class="section-label"
-     id="label-fampianarana">
-
-    📚 Fampianarana
-
-</div>
-
-<div class="category-scroll"
-     id="cat-list"></div>
-
-<!-- PREMIUM -->
-
-
-
-<!-- ARTICLES -->
-
-<div class="container"
-     id="articles-container"></div>
+<div class="container" id="articles-container"></div>
 
 <div id="pagination-controls"></div>
 
-<!-- BOTTOM NAV -->
-
 <nav class="bottom-nav">
-
-    <a href="index.html"
-       class="nav-item active">
-
+    <a href="index.html" class="nav-item active">
         <i data-feather="home"></i>
-
-        <span id="menu-home">
-            Accueil
-        </span>
-
+        <span id="menu-home">Accueil</span>
     </a>
-
-    <a href="bible.html"
-       class="nav-item">
-
+    <a href="bible.html" class="nav-item">
         <i data-feather="book"></i>
-
-        <span id="menu-bible">
-            Bible
-        </span>
-
+        <span id="menu-bible">Bible</span>
     </a>
-
-    <a href="chat.html"
-       class="nav-item">
-
+    <a href="chat.html" class="nav-item">
         <i data-feather="message-circle"></i>
-
-        <span id="menu-chat">
-            Chat
-        </span>
-
+        <span id="menu-chat">Chat</span>
     </a>
-
 </nav>
 
 <script>
 
 const translations = {
-
     mg:{
         connexion:"Miditra",
         logout:"Hivoaka",
+        confirmLogout:"Hivoaka ny session ve ianao ?",
         dashboard:"Dashboard",
         espace:"Espace",
         labelMavitrika:"⭐ Mpikambana mavitrika",
         labelFampianarana:"📚 Fampianarana",
+        premiumTitle:"Hetsika & Valisoa",
+        premiumText:"Araho ny fandrosoanao, mahazoa mari-boninahitra ary raiso ny bonus isan'andro.",
         home:"Trano",
         bible:"Baiboly",
         chat:"Tafatafa",
         cats:["Rehetra","Toriteny","Faminaniana","Hira"]
     },
-
     fr:{
         connexion:"Connexion",
         logout:"Déconnexion",
+        confirmLogout:"Voulez-vous quitter votre session ?",
         dashboard:"Dashboard",
         espace:"Mon espace",
         labelMavitrika:"⭐ Membres Actifs",
         labelFampianarana:"📚 Enseignements",
+        premiumTitle:"Espace Fidélité & Récompenses",
+        premiumText:"Suivez votre progression, débloquez des badges spirituels et récupérez vos bonus quotidiens.",
         home:"Accueil",
         bible:"Bible",
         chat:"Chat",
         cats:["Tous","Sermons","Prophéties","Chants"]
     },
-
     en:{
         connexion:"Login",
         logout:"Logout",
+        confirmLogout:"Do you want to log out?",
         dashboard:"Dashboard",
         espace:"My Space",
         labelMavitrika:"⭐ Active Members",
         labelFampianarana:"📚 Teachings",
+        premiumTitle:"Loyalty & Rewards Zone",
+        premiumText:"Track your progress, unlock spiritual badges, and claim your daily rewards.",
         home:"Home",
         bible:"Bible",
         chat:"Chat",
@@ -1484,387 +847,305 @@ const translations = {
     }
 };
 
-const API_URL =
-    'https://apokalypsy.com/api/articles/list';
+const API_URL = 'https://apokalypsy.com/api/articles/list';
+// Remplace 'api/user/leaderboard' par 'api/users/leaderboard'
+const LEADERBOARD_API_URL = 'https://apokalypsy.com/api/users/leaderboard';
+const STATS_API_URL = 'https://apokalypsy.com/api/global/stats';
 
 let allArticles = [];
-
 let currentPage = 1;
-
 const itemsPerPage = 5;
 
 /* =========================
    LANG
 ========================= */
-
 function changeLanguage(){
-
-    const lang =
-        document.getElementById('langSwitcher').value;
-
+    const lang = document.getElementById('langSwitcher').value;
     localStorage.setItem('app_lang', lang);
 
-    const t =
-        translations[lang];
+    const t = translations[lang];
 
-    document.getElementById('label-mavitrika')
-        .innerText = t.labelMavitrika;
+    document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
+    document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
+    document.getElementById('premium-banner-title').innerText = t.premiumTitle;
+    document.getElementById('premium-banner-text').innerText = t.premiumText;
+    document.getElementById('menu-home').innerText = t.home;
+    document.getElementById('menu-bible').innerText = t.bible;
+    document.getElementById('menu-chat').innerText = t.chat;
 
-    document.getElementById('label-fampianarana')
-        .innerText = t.labelFampianarana;
-
-    document.getElementById('menu-home')
-        .innerText = t.home;
-
-    document.getElementById('menu-bible')
-        .innerText = t.bible;
-
-    document.getElementById('menu-chat')
-        .innerText = t.chat;
-
-    const catList =
-        document.getElementById('cat-list');
-
-    const icons =
-        ['grid','book-open','zap','music'];
+    const catList = document.getElementById('cat-list');
+    const icons = ['grid','book-open','zap','music'];
 
     catList.innerHTML = t.cats.map((name,i)=>`
-
         <div class="cat-badge ${i===0?'active':''}">
-
             <i data-feather="${icons[i]}"></i>
-
             ${name}
-
         </div>
-
     `).join('');
 
     updateAuthDisplay();
-
     feather.replace();
+}
+
+/* =========================
+   LEADERBOARD
+========================= */
+async function fetchLeaderboard(){
+    try {
+        const response = await fetch(`${LEADERBOARD_API_URL}?t=${Date.now()}`);
+        if (!response.ok) throw new Error("Erreur de récupération");
+        
+        const topUsers = await response.json();
+        renderLeaderboard(topUsers);
+    } catch (error) {
+        console.error("Erreur chargement classement :", error);
+        renderLeaderboard([
+            { username: "Pastor Mailhol", points: 1520 },
+            { username: "Daniel A.", points: 950 },
+            { username: "Sarah M.", points: 780 }
+        ]);
+    }
+}
+
+function renderLeaderboard(users) {
+    const container = document.getElementById('leaderboard-podium');
+    if (!container) return;
+
+    const u1 = users[0] || { username: "-", points: 0 };
+    const u2 = users[1] || { username: "-", points: 0 };
+    const u3 = users[2] || { username: "-", points: 0 };
+
+    const getInitials = (name) => {
+        if (!name || name === "-") return "??";
+        const parts = name.trim().split(" ");
+        if (parts.length > 1) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    };
+
+    container.innerHTML = `
+        <div class="rank-card rank-2 animated-box">
+            <div class="avatar">
+                ${getInitials(u2.username)}
+                <div class="rank-badge">2</div>
+            </div>
+            <div class="name">${escapeHTML(u2.username)}</div>
+            <div class="user-pts">${u2.points} PTS</div>
+        </div>
+
+        <div class="rank-card rank-1 animated-box">
+            <div class="avatar">
+                ${getInitials(u1.username)}
+                <div class="rank-badge">1</div>
+            </div>
+            <div class="name">${escapeHTML(u1.username)}</div>
+            <div class="user-pts">${u1.points} PTS</div>
+        </div>
+
+        <div class="rank-card rank-3 animated-box">
+            <div class="avatar">
+                ${getInitials(u3.username)}
+                <div class="rank-badge">3</div>
+            </div>
+            <div class="name">${escapeHTML(u3.username)}</div>
+            <div class="user-pts">${u3.points} PTS</div>
+        </div>
+    `;
+
+    observeElements();
 }
 
 /* =========================
    ARTICLES
 ========================= */
-
 async function fetchArticles(){
-
     try{
-
-        const response =
-            await fetch(`${API_URL}?t=${Date.now()}`);
-
-        allArticles =
-            await response.json();
-
+        const response = await fetch(`${API_URL}?t=${Date.now()}`);
+        allArticles = await response.json();
         renderArticles();
-
     }catch(e){
-
-        console.log("Erreur API");
+        console.error("Erreur API Articles");
     }
 }
 
 function renderArticles(){
-
-    const container =
-        document.getElementById('articles-container');
-
+    const container = document.getElementById('articles-container');
     container.innerHTML = '';
 
-    const startIndex =
-        (currentPage - 1) * itemsPerPage;
-
-    const pageItems =
-        allArticles.slice(
-            startIndex,
-            startIndex + itemsPerPage
-        );
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
 
     pageItems.forEach(article => {
-
-        const img =
-            article.image_url ||
-            'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=800';
-
-        const dateObj =
-            new Date(article.created_at);
-
-        const formattedDate =
-            dateObj.toLocaleDateString(
-                'fr-FR',
-                {
-                    day:'numeric',
-                    month:'long',
-                    year:'numeric'
-                }
-            );
+        const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=800';
+        const dateObj = new Date(article.created_at);
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+            day:'numeric',
+            month:'long',
+            year:'numeric'
+        });
 
         container.insertAdjacentHTML('beforeend',`
-
             <div class="bible-card">
-
-                <div class="card-image"
-                     style="background-image:url('${img}')">
-
-                </div>
-
+                <div class="card-image" style="background-image:url('${img}')"></div>
                 <div class="card-body">
-
                     <div class="card-meta">
-
                         <div class="card-author">
-
                             <i data-feather="user"></i>
-
                             <span>Admin Apokalypsy</span>
-
                         </div>
-
-                        <div class="card-date">
-
-                            ${formattedDate}
-
-                        </div>
-
+                        <div class="card-date">${formattedDate}</div>
                     </div>
-
-                    <div class="card-title">
-
-                        ${escapeHTML(article.title)}
-
-                    </div>
-
-                    <div class="card-text">
-
-                        ${escapeHTML(article.content).substring(0,110)}...
-
-                    </div>
-
+                    <div class="card-title">${escapeHTML(article.title)}</div>
+                    <div class="card-text">${escapeHTML(article.content).substring(0,110)}...</div>
                 </div>
-
             </div>
-
         `);
     });
 
     updatePaginationControls();
-
     observeElements();
-
     feather.replace();
 }
 
-/* =========================
-   PAGINATION
-========================= */
-
 function updatePaginationControls(){
-
-    const controls =
-        document.getElementById('pagination-controls');
-
-    const totalPages =
-        Math.ceil(allArticles.length / itemsPerPage);
+    const controls = document.getElementById('pagination-controls');
+    const totalPages = Math.ceil(allArticles.length / itemsPerPage);
 
     if(totalPages <= 1){
-
         controls.innerHTML = '';
-
         return;
     }
 
     controls.innerHTML = `
-
-        <button class="page-btn"
-                onclick="changePage(${currentPage - 1})"
-                ${currentPage === 1 ? 'disabled' : ''}>
-
+        <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
             <i data-feather="chevron-left"></i>
-
         </button>
-
-        <span style="font-weight:900;">
-
-            ${currentPage}
-
-        </span>
-
-        <button class="page-btn"
-                onclick="changePage(${currentPage + 1})"
-                ${currentPage === totalPages ? 'disabled' : ''}>
-
+        <span style="font-weight:900;">${currentPage}</span>
+        <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
             <i data-feather="chevron-right"></i>
-
         </button>
-
     `;
-
     feather.replace();
 }
 
 function changePage(page){
-
     currentPage = page;
-
     renderArticles();
-
-    window.scrollTo({
-        top:450,
-        behavior:'smooth'
-    });
+    window.scrollTo({ top:450, behavior:'smooth' });
 }
 
 /* =========================
    ANIMATION
 ========================= */
-
 function observeElements(){
+    const observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                entry.target.classList.add('animate');
+            }
+        });
+    },{ threshold:0.1 });
 
-    const observer =
-        new IntersectionObserver((entries)=>{
-
-            entries.forEach(entry=>{
-
-                if(entry.isIntersecting){
-
-                    entry.target.classList.add('animate');
-                }
-            });
-
-        },{ threshold:0.1 });
-
-    document.querySelectorAll('.rank-card, .bible-card')
-        .forEach(el=>observer.observe(el));
+    document.querySelectorAll('.rank-card, .bible-card').forEach(el=>observer.observe(el));
 }
 
-/* =========================
-   SECURITY
-========================= */
-
 function escapeHTML(str){
-
     return str
         ? str.replace(/[&<>'"]/g, tag => ({
-
             '&':'&amp;',
             '<':'&lt;',
             '>':'&gt;',
             "'":'&#39;',
             '"':'&quot;'
-
         }[tag] || tag))
         : '';
 }
 
 /* =========================
-   AUTH
+   AUTHZONE UI
 ========================= */
-
 function updateAuthDisplay(){
+    const authZone = document.getElementById('auth-zone');
+    const lang = document.getElementById('langSwitcher').value;
+    const t = translations[lang];
 
-    const authZone =
-        document.getElementById('auth-zone');
-
-    const lang =
-        document.getElementById('langSwitcher').value;
-
-    const t =
-        translations[lang];
-
-    const userName =
-        localStorage.getItem('user_name');
-
-    const userRole =
-        localStorage.getItem('user_role');
+    const userName = localStorage.getItem('user_name');
+    const userRole = localStorage.getItem('user_role');
 
     if(userName){
-
         let menuButton = '';
-
         if(userRole === 'ROLE_ADMIN'){
-
             menuButton = `
-
-                <button class="top-btn btn-dashboard"
-                        onclick="window.location.href='admin/dashboard_admin.html'">
-
-                    <i data-feather="layout"></i>
-
-                    ${t.dashboard}
-
+                <button class="top-btn btn-dashboard" onclick="window.location.href='admin/dashboard_admin.html'">
+                    <i data-feather="layout"></i> ${t.dashboard}
                 </button>
-
             `;
-
         }else{
-
             menuButton = `
-
-                <button class="top-btn btn-user"
-                        onclick="window.location.href='utilisateur/espace_personnel.html'">
-
-                    <i data-feather="user"></i>
-
-                    ${t.espace}
-
+                <button class="top-btn btn-user" onclick="window.location.href='utilisateur/espace_personnel.html'">
+                    <i data-feather="user"></i> ${t.espace}
                 </button>
-
             `;
         }
 
         authZone.innerHTML = `
-
             ${menuButton}
-
-            <button class="top-btn btn-logout"
-                    onclick="logout()">
-
-                <i data-feather="log-out"></i>
-
-                OUT
-
+            <button class="top-btn btn-logout" onclick="logout()">
+                <i data-feather="log-out"></i> OUT
             </button>
-
         `;
-
     }else{
-
         authZone.innerHTML = `
-
-            <a href="login/connexion.html"
-               style="text-decoration:none;">
-
+            <a href="login/connexion.html" style="text-decoration:none;">
                 <button class="top-btn btn-login">
-
-                    <i data-feather="log-in"></i>
-
-                    ${t.connexion}
-
+                    <i data-feather="log-in"></i> ${t.connexion}
                 </button>
-
             </a>
-
         `;
     }
-
     feather.replace();
+}
+
+async function fetchGlobalStats() {
+    try {
+        // On appelle l'API Symfony avec un paramètre anti-cache (?t=...)
+        const response = await fetch(`${STATS_API_URL}?t=${Date.now()}`);
+        if (!response.ok) throw new Error("Erreur lors de la récupération des statistiques");
+
+        const stats = await response.json();
+
+        // Formatage pour afficher "+12K" si le nombre dépasse 1000, sinon le chiffre exact
+        const membersCount = stats.total_members >= 1000 
+            ? `+${(stats.total_members / 1000).toFixed(1)}K`.replace('.0', '')
+            : stats.total_members;
+
+        const articlesCount = stats.total_articles >= 1000
+            ? `+${(stats.total_articles / 1000).toFixed(1)}K`.replace('.0', '')
+            : stats.total_articles;
+
+        // On injecte les valeurs dynamiques dans le HTML
+        document.getElementById('stat-members').innerText = membersCount;
+        document.getElementById('stat-articles').innerText = articlesCount;
+
+    } catch (error) {
+        console.error("Erreur stats :", error);
+        // Valeurs de secours si l'API ne répond pas
+        document.getElementById('stat-members').innerText = "+12K";
+        document.getElementById('stat-articles').innerText = "+580";
+    }
 }
 
 /* =========================
    LOGOUT
 ========================= */
-
 function logout(){
+    const lang = document.getElementById('langSwitcher').value;
+    const t = translations[lang];
 
-    if(confirm("Hivoaka ?")){
-
+    if(confirm(t.confirmLogout)){
         localStorage.removeItem('user_name');
-
         localStorage.removeItem('user_role');
-
         window.location.reload();
     }
 }
@@ -1872,26 +1153,20 @@ function logout(){
 /* =========================
    INIT
 ========================= */
-
 window.onload = () => {
-
-    const savedLang =
-        localStorage.getItem('app_lang');
-
-    if(savedLang){
-
-        document.getElementById('langSwitcher').value =
-            savedLang;
+    const savedLang = localStorage.getItem('app_lang');
+    if(savedLang && document.getElementById('langSwitcher')){
+        document.getElementById('langSwitcher').value = savedLang;
     }
 
     changeLanguage();
-
+    fetchLeaderboard();
     fetchArticles();
-
-    feather.replace();
+	fetchGlobalStats();
 };
 
-</script>
 
+
+</script>
 </body>
 </html>
