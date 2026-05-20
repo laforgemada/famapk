@@ -148,9 +148,169 @@ HEADER PREMIUM
     min-width:18px;
     height:18px;
     border-radius:50%;
-    display:flex;
+    display:none;
     align-items:center;
     justify-content:center;
+    border: 2px solid #0f172a;
+}
+
+/* =====================================
+DROPDOWN NOTIFICATIONS (AJOUTÉ)
+===================================== */
+.notif-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.notif-dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: 340px;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10000;
+}
+
+.notif-dropdown.show {
+    display: flex;
+    animation: fadeInNotif 0.2s ease-out;
+}
+
+@keyframes fadeInNotif {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px 10px;
+}
+
+.notif-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.notif-header .mark-all-read {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.notif-tabs {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notif-tab {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.notif-tab.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+.notif-list {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+/* Éléments de la liste verticale */
+.notif-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    position: relative;
+}
+
+.notif-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.notif-item.unread::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    width: 8px;
+    height: 8px;
+    background: #3b82f6;
+    border-radius: 50%;
+}
+
+.notif-item-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Différenciation thématique des icônes */
+.notif-item-icon.article { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.notif-item-icon.badge { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.notif-item-icon.chat { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+
+.notif-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-right: 15px;
+}
+
+.notif-message {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.notif-message strong {
+    color: white;
+    font-weight: 700;
+}
+
+.notif-time {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Animation Pulse à la Facebook */
+.pulse-animation {
+    animation: pulseNotif 0.4s ease-in-out 2;
+}
+
+@keyframes pulseNotif {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); box-shadow: 0 0 10px var(--danger); }
+    100% { transform: scale(1); }
 }
 
 /* =========================
@@ -727,7 +887,16 @@ RESPONSIVE
         width: 100%;
         justify-content: center;
     }
+}
 
+@media (max-width: 480px) {
+    .notif-dropdown {
+        position: fixed;
+        top: 75px;
+        left: 10px;
+        right: 10px;
+        width: calc(100% - 20px);
+    }
 }
 
 </style>
@@ -758,13 +927,24 @@ RESPONSIVE
                 <i data-feather="search"></i>
             </button>
 
-            <button class="nav-btn">
-
-                <i data-feather="bell"></i>
-
-                <span class="notif-badge">3</span>
-
-            </button>
+            <div class="notif-wrapper">
+                <button class="nav-btn" id="notif-btn" onclick="toggleNotifMenu(event)">
+                    <i data-feather="bell"></i>
+                    <span class="notif-badge" id="notif-badge">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <span class="mark-all-read" onclick="markAllAsRead(event)">Tout lire</span>
+                    </div>
+                    <div class="notif-tabs">
+                        <span class="notif-tab active">Tout</span>
+                    </div>
+                    <div class="notif-list" id="notifVerticalList">
+                        </div>
+                </div>
+            </div>
 
             <button class="nav-btn" onclick="logout()">
                 <i data-feather="log-out"></i>
@@ -781,12 +961,12 @@ RESPONSIVE
     <div class="hero-content">
 
         <div class="hero-mini">
-            ✨ Bienvenue sur Apokalypsy
+            释 Bienvenue sur Apokalypsy
         </div>
 
         <h1 class="hero-title" id="welcome-user-title">
-			Bonjour 🙏
-		</h1>
+            Bonjour 🙏
+        </h1>
 
         <p class="hero-text">
             Continuez votre progression spirituelle avec
@@ -866,19 +1046,19 @@ RESPONSIVE
             </div>
 
             <div class="impact-grid">
-				<div class="impact-box box-blue">
-					<span class="box-value" id="stats-priere">0m</span>
-					<span class="box-label">Prière</span>
-				</div>
-				<div class="impact-box box-orange">
-					<span class="box-value" id="stats-lecons">0</span>
-					<span class="box-label">Leçons</span>
-				</div>
-				<div class="impact-box box-green">
-					<span class="box-value" id="stats-versets">0</span>
-					<span class="box-label">Versets</span>
-				</div>
-			</div>
+                <div class="impact-box box-blue">
+                    <span class="box-value" id="stats-priere">0m</span>
+                    <span class="box-label">Prière</span>
+                </div>
+                <div class="impact-box box-orange">
+                    <span class="box-value" id="stats-lecons">0</span>
+                    <span class="box-label">Leçons</span>
+                </div>
+                <div class="impact-box box-green">
+                    <span class="box-value" id="stats-versets">0</span>
+                    <span class="box-label">Versets</span>
+                </div>
+            </div>
 
         </div>
 
@@ -894,68 +1074,16 @@ RESPONSIVE
             Votre activité récente
         </div>
 
-        <div class="activity-list">
-
+        <div class="activity-list" id="activity-realtime-list">
             <div class="activity-item">
-
                 <div class="activity-icon icon-blue">
                     <i data-feather="book-open"></i>
                 </div>
-
                 <div class="activity-content">
-
-                    <div class="activity-title">
-                        Lecture Biblique
-                    </div>
-
-                    <div class="activity-text">
-                        Vous avez terminé Genèse chapitre 3.
-                    </div>
-
+                    <div class="activity-title">Lecture Biblique</div>
+                    <div class="activity-text">Vous avez terminé Genèse chapitre 3.</div>
                 </div>
-
             </div>
-
-            <div class="activity-item">
-
-                <div class="activity-icon icon-purple">
-                    <i data-feather="message-circle"></i>
-                </div>
-
-                <div class="activity-content">
-
-                    <div class="activity-title">
-                        Nouveau message
-                    </div>
-
-                    <div class="activity-text">
-                        La communauté vous a répondu dans le chat.
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="activity-item">
-
-                <div class="activity-icon icon-pink">
-                    <i data-feather="award"></i>
-                </div>
-
-                <div class="activity-content">
-
-                    <div class="activity-title">
-                        Trophée débloqué
-                    </div>
-
-                    <div class="activity-text">
-                        Vous avez gagné le badge "Messager".
-                    </div>
-
-                </div>
-
-            </div>
-
         </div>
 
     </section>
@@ -975,67 +1103,6 @@ RESPONSIVE
         </div>
 
         <div class="trophy-grid">
-
-            <div class="trophy-card">
-
-                <div class="trophy-top">
-                    🌱
-                </div>
-
-                <div class="trophy-footer">
-
-                    <h4>Graine de Foi</h4>
-                    <p>Débloqué</p>
-
-                </div>
-
-            </div>
-
-            <div class="trophy-card">
-
-                <div class="trophy-top">
-                    🕊️
-                </div>
-
-                <div class="trophy-footer">
-
-                    <h4>Messager de Paix</h4>
-                    <p>Débloqué</p>
-
-                </div>
-
-            </div>
-
-            <div class="trophy-card">
-
-                <div class="trophy-top">
-                    ⛪
-                </div>
-
-                <div class="trophy-footer">
-
-                    <h4>Pilier d'Église</h4>
-                    <p>Débloqué</p>
-
-                </div>
-
-            </div>
-
-            <div class="trophy-card locked">
-
-                <div class="trophy-top">
-                    🔥
-                </div>
-
-                <div class="trophy-footer">
-
-                    <h4>Feu Sacré</h4>
-                    <p>En cours...</p>
-
-                </div>
-
-            </div>
-
         </div>
 
     </section>
@@ -1044,59 +1111,130 @@ RESPONSIVE
 
 <nav class="bottom-bar">
 
-    <a href="../../index.html"
-       class="bottom-item active">
-
+    <a href="../../index.html" class="bottom-item active">
         <div class="nav-icon">
             <i data-feather="home"></i>
         </div>
-
         <span>Accueil</span>
-
     </a>
 
-    <a href="../../bible.html"
-       class="bottom-item">
-
+    <a href="../../bible.html" class="bottom-item">
         <i data-feather="book-open"></i>
-
         <span>Bible</span>
-
     </a>
 
-    <a href="../../chat.html"
-       class="bottom-item">
-
+    <a href="../../chat.html" class="bottom-item">
         <i data-feather="message-circle"></i>
-
         <span>Chat</span>
-
     </a>
 
-    <a href="#"
-       class="bottom-item">
-
+    <a href="#" class="bottom-item">
         <i data-feather="user"></i>
-
         <span>Profil</span>
-
     </a>
 
 </nav>
 
 <script>
-
 const API_BASE_URL = 'https://apokalypsy.com';
+const DEBUG = true;
 
 let currentUsername = null;
 let loyaltyData = null;
 let bonusTimer = null;
+//let notificationCount = 0;
+//let loadedNotificationsArray = [];
+
+
+// Déclaration du compteur global et du tableau (assure-toi qu'ils ne sont pas re-déclarés plus haut)
+if (typeof notificationCount === 'undefined') {
+    var notificationCount = 0;
+}
+if (typeof loadedNotificationsArray === 'undefined') {
+    var loadedNotificationsArray = [];
+}
+
+// Initialisation de la connexion SSE vers ton contrôleur PHP
+const eventSource = new EventSource('https://apokalypsy.com/api/notifications/stream');
+//const eventSource = new EventSource('http://localhost:8080/api/notifications/stream');
+// On écoute le flux dynamique du serveur
+eventSource.onmessage = function(event) {
+    // 1. Ignorer les pings ou les messages vides
+    if (!event.data || event.data.trim() === "" || event.data.includes("ping")) {
+        return; 
+    }
+
+    try {
+        // 2. Parser le JSON dynamique envoyé par le PHP
+        const data = JSON.parse(event.data);
+        console.log("🔔 Nouvelle notification dynamique reçue :", data);
+
+        // 3. Ajouter la notification au tableau global de l'application
+        if (typeof loadedNotificationsArray !== 'undefined') {
+            // Éviter les doublons si le réseau bégaie
+            const dejavu = loadedNotificationsArray.some(n => n.id === data.id);
+            if (!dejavu) {
+                loadedNotificationsArray.push(data);
+                notificationCount = loadedNotificationsArray.length;
+            }
+        } else {
+            notificationCount++;
+        }
+
+        // 4. Mettre à jour graphiquement le badge avec le nouveau compte
+        const badge = document.getElementById('notif-badge');
+        if (badge) {
+            badge.textContent = notificationCount;
+            badge.style.setProperty('display', 'flex', 'important');
+            
+            // Animation flash pour attirer l'œil de l'utilisateur
+            badge.classList.remove('pulse');
+            void badge.offsetWidth; // Astuce magique pour reset l'animation CSS
+            badge.classList.add('pulse');
+        }
+
+        // Optionnel : Si tu as une liste déroulante (dropdown) de notifications,
+        // tu peux appeler une fonction ici pour injecter `data.message` dedans.
+
+    } catch (error) {
+        console.error("Erreur lors du traitement de la notification dynamique :", error);
+    }
+};
+
+// Gestion des erreurs de déconnexion ou de routes (comme ton erreur 404 actuelle)
+eventSource.onerror = function(error) {
+    console.error("❌ Erreur de connexion SSE. Raisons possibles : Erreur 404 sur le serveur ou problème de CORS.");
+};
+
+/* =========================
+DEBUG GLOBAL
+========================= */
+function debugState(label = "STATE") {
+    if (!DEBUG) return;
+
+    console.group(`🧪 ${label}`);
+    console.log("currentUsername:", currentUsername);
+    console.log("loyaltyData:", loyaltyData);
+    console.log("bonusTimer:", bonusTimer);
+    console.log("notificationCount:", notificationCount);
+    console.log("loadedNotificationsArray:", loadedNotificationsArray);
+    console.log("localStorage user_name:", localStorage.getItem('user_name'));
+    console.log("localStorage user_role:", localStorage.getItem('user_role'));
+    console.log("localStorage token:", localStorage.getItem('token'));
+    console.log("notif badge DOM:", document.getElementById('notif-badge'));
+    console.log("loyalty DOM:", document.getElementById('loyalty-points-display'));
+    console.groupEnd();
+}
+
+// Fonction utilitaire sécurisée pour injecter du texte
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-
     feather.replace();
 
-    // Récupère l'utilisateur connecté ou null s'il n'existe pas
     currentUsername = localStorage.getItem('user_name');
 
     const welcomeTitle = document.getElementById('welcome-user-title');
@@ -1104,20 +1242,202 @@ document.addEventListener("DOMContentLoaded", () => {
         welcomeTitle.innerText = `Bonjour ${currentUsername || 'Invité'} 🙏`;
     }
 
-    // On ne charge les données que si un vrai utilisateur est connecté
     if (currentUsername) {
         loadLoyaltyData();
+        initRealtimeNotifications();
     } else {
         console.warn("Mode invité : Récupération des points désactivée.");
         setText('loyalty-points-display', '0 Points');
     }
+    
+    // Déclenche un premier log complet pour vérifier l'état au démarrage
+    debugState("DÉMARRAGE");
 });
 
 /**
- * =========================
- * LOGOUT
- * =========================
+ * ==========================================
+ * NOTIFICATIONS EN TEMPS RÉEL (SSE)
+ * ==========================================
  */
+function initRealtimeNotifications() {
+    // 🛠️ FIX 1 : Force l'utilisation du domaine de production si API_BASE_URL est mal configuré en local
+    const baseUrl = (typeof API_BASE_URL !== 'undefined' && API_BASE_URL.includes('localhost')) 
+        ? 'https://apokalypsy.com' 
+        : (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'https://apokalypsy.com');
+
+    console.log("Démarrage du flux SSE sur :", `${baseUrl}/api/notifications/stream`);
+    
+    const eventSource = new EventSource(`${baseUrl}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`);
+
+    eventSource.onmessage = function(event) {
+        // 🛠️ FIX 2 : Ignorer immédiatement les pings, les chaînes vides ou les retours à la ligne
+        if (!event.data || event.data.trim() === "" || event.data.includes("ping")) {
+            return; 
+        }
+
+        try {
+            const data = JSON.parse(event.data);
+            console.log("Flux SSE reçu avec succès :", data);
+
+            // 🛠️ FIX 3 : Sécurité absolue contre les messages mal formés ou vides du serveur
+            if (!data || !data.message) {
+                console.log("Données incomplètes reçues, rejet.");
+                return;
+            }
+
+            // 🛠️ FIX 4 : ANTI-DOUBLON STRICT sur l'ID réel de la base de données
+            if (typeof loadedNotificationsArray !== 'undefined') {
+                const dejavu = loadedNotificationsArray.some(n => n.realId === data.id);
+                if (dejavu) {
+                    console.log(`Notification ID ${data.id} déjà présente dans le tableau, ignorée.`);
+                    return; 
+                }
+            }
+
+            let iconType = 'article'; 
+            let iconName = 'book-open';
+            let directLink = '../../index.html';
+
+            if (data.type === 'new_badge' || data.message.includes('badge') || data.message.includes('Trophée')) {
+                iconType = 'badge';
+                iconName = 'award';
+                directLink = '#';
+            } else if (data.type === 'chat' || data.message.includes('Chat') || data.message.includes('message')) {
+                iconType = 'chat';
+                iconName = 'message-square';
+                directLink = '../../chat.html';
+            }
+
+            // Ajout dans le tableau global
+            loadedNotificationsArray.unshift({
+                id: Date.now(), 
+                realId: data.id, 
+                type: iconType,
+                icon: iconName,
+                message: data.message,
+                time: 'À l\'instant',
+                unread: true,
+                link: directLink
+            });
+
+            // Recalculer le total exact basé uniquement sur les vrais éléments du tableau
+            notificationCount = loadedNotificationsArray.length;
+            renderNotificationBadge();
+            renderVerticalDropdownMenu();
+
+            // Ajout dans l'interface d'activité
+            const activityList = document.getElementById('activity-realtime-list');
+            if (activityList) {
+                const newItem = document.createElement('div');
+                newItem.className = 'activity-item';
+                newItem.style.border = '2px solid var(--secondary)';
+                newItem.innerHTML = `
+                    <div class="activity-icon icon-purple">
+                        <i data-feather="${iconName}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title" style="color:var(--secondary);">Nouveau !</div>
+                        <div class="activity-text">${data.message}</div>
+                    </div>
+                `;
+                activityList.insertBefore(newItem, activityList.firstChild);
+                feather.replace();
+            }
+
+            if (window.Notification && Notification.permission === "granted") {
+                new Notification("Apokalypsy", { body: data.message });
+            }
+
+        } catch (error) {
+            console.error("Erreur lors de l'analyse JSON du flux SSE :", error);
+        }
+    };
+
+    eventSource.onerror = function(err) {
+        // En cas de déconnexion, l'EventSource natif réessaye automatiquement sans détruire l'interface
+        console.log("Le tuyau SSE s'est déconnecté ou cherche à joindre le serveur. En attente...");
+    };
+
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('notifDropdown');
+        const trigger = document.getElementById('notif-btn');
+        if (dropdown && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+function toggleNotifMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('notifDropdown');
+    if (dropdown) dropdown.classList.toggle('show');
+}
+
+function renderNotificationBadge() {
+    const badge = document.getElementById('notif-badge');
+    if (!badge) return;
+
+    if (notificationCount > 0) {
+        badge.innerText = notificationCount;
+        badge.style.display = 'flex';
+        badge.classList.add('pulse-animation');
+        setTimeout(() => badge.classList.remove('pulse-animation'), 500);
+    } else {
+        badge.innerText = '0';
+        badge.style.display = 'none';
+    }
+}
+
+function renderVerticalDropdownMenu() {
+    const container = document.getElementById('notifVerticalList');
+    if (!container) return;
+
+    if (loadedNotificationsArray.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 24px; text-align: center; color: var(--muted); font-size: 0.82rem;">
+                Aucune nouvelle notification reçue.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = loadedNotificationsArray.map(notif => `
+        <a href="${notif.link}" class="notif-item ${notif.unread ? 'unread' : ''}" onclick="markOneAsRead(${notif.id})">
+            <div class="notif-item-icon ${notif.type}">
+                <i data-feather="${notif.icon}"></i>
+            </div>
+            <div class="notif-details">
+                <span class="notif-message">${notif.message}</span>
+                <span class="notif-time">${notif.time}</span>
+            </div>
+        </a>
+    `).join('');
+
+    feather.replace();
+}
+
+function markOneAsRead(id) {
+    const notif = loadedNotificationsArray.find(n => n.id === id);
+    if (notif && notif.unread) {
+        notif.unread = false;
+        if (notificationCount > 0) notificationCount--;
+        renderNotificationBadge();
+        renderVerticalDropdownMenu();
+    }
+}
+
+function markAllAsRead(event) {
+    event.stopPropagation();
+    loadedNotificationsArray.forEach(n => n.unread = false);
+    notificationCount = 0;
+    renderNotificationBadge();
+    renderVerticalDropdownMenu();
+}
+
+if (window.Notification && Notification.permission !== "denied" && Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+
 function logout(){
     if(confirm("Voulez-vous quitter votre session ?")){
         localStorage.removeItem('user_name');
@@ -1129,14 +1449,13 @@ function logout(){
 
 /**
  * =========================
- * LOAD LOYALTY (FIXED VIA USERNAME)
+ * LOAD LOYALTY
  * =========================
  */
 async function loadLoyaltyData(){
     if (!currentUsername) return;
 
     try{
-        // Passage du username en paramètre d'URL (?username=josealain2) pour éviter le problème de 401
         const response = await fetch(
             `${API_BASE_URL}/api/user/loyalty-status?username=${encodeURIComponent(currentUsername)}`,
             {
@@ -1148,9 +1467,7 @@ async function loadLoyaltyData(){
             }
         );
 
-        if(!response.ok){
-            throw new Error("Erreur récupération fidélité");
-        }
+        if(!response.ok) throw new Error("Erreur récupération fidélité");
 
         loyaltyData = await response.json();
         updateLoyaltyUI(loyaltyData);
@@ -1161,13 +1478,7 @@ async function loadLoyaltyData(){
     }
 }
 
-/**
- * =========================
- * UPDATE UI (SAFE)
- * =========================
- */
 function updateLoyaltyUI(data){
-
     const points = Number(data?.points || 0);
 
     setText('loyalty-points-display', `${points} Points`);
@@ -1194,13 +1505,52 @@ function updateLoyaltyUI(data){
     feather.replace();
 }
 
+// Fonctions algorithmiques pour la progression
+function calculateLevel(points) {
+    return Math.floor(points / 100) + 1;
+}
+
+function calculateProgress(points) {
+    return points % 100;
+}
+
+function updateStats(points) {
+    setText('stats-versets', Math.floor(points / 5));
+    setText('stats-lecons', Math.floor(points / 15));
+    setText('stats-priere', `${points * 2}m`);
+}
+
+function generateTrophies(points) {
+    const trophyGrid = document.querySelector('.trophy-grid');
+    if (!trophyGrid) return;
+
+    const trophies = [
+        { name: "Pionnier", desc: "1er pas sur l'app", req: 10, icon: "🌱" },
+        { name: "Fidèle", desc: "Atteindre 50 pts", req: 50, icon: "🔥" },
+        { name: "Sage", desc: "Atteindre 150 pts", req: 150, icon: "👑" },
+        { name: "Apôtre", desc: "Atteindre 500 pts", req: 500, icon: "✨" }
+    ];
+
+    trophyGrid.innerHTML = trophies.map(t => {
+        const isLocked = points < t.req;
+        return `
+            <div class="trophy-card ${isLocked ? 'locked' : ''}">
+                <div class="trophy-top">${t.icon}</div>
+                <div class="trophy-footer">
+                    <h4>${t.name}</h4>
+                    <p>${isLocked ? `Requis: ${t.req} pts` : t.desc}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
 /**
- * =========================
- * BONUS SYSTEM (STABLE TIMER)
- * =========================
+ * ==========================================
+ * COMPTE À REBOURS ET DEMANDE DU BONUS
+ * ==========================================
  */
 function updateBonusButton(data){
-
     const container = document.getElementById('loyalty-action-container');
     if (!container) return;
 
@@ -1212,217 +1562,65 @@ function updateBonusButton(data){
     let timeLeft = Number(data?.nextBonusIn || 0);
 
     if (timeLeft > 0) {
-
-        const render = () => {
-
+        const renderCountdown = () => {
             if (timeLeft <= 0) {
                 clearInterval(bonusTimer);
-
-                container.innerHTML = `
-                    <button class="loyalty-action-btn" id="claim-bonus-btn" onclick="claimDailyBonus()">
-                        <i data-feather="gift"></i>
-                        Bonus quotidien +10 pts
-                    </button>
-                `;
-
+                container.innerHTML = `<button class="loyalty-action-btn" onclick="claimDailyBonus()">🎁 Récupérer mon Bonus</button>`;
                 feather.replace();
                 return;
             }
 
-            const h = Math.floor(timeLeft / 3600);
-            const m = Math.floor((timeLeft % 3600) / 60);
-            const s = timeLeft % 60;
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
 
             container.innerHTML = `
-                <button class="loyalty-action-btn" disabled>
-                    <i data-feather="clock"></i>
-                    Bonus dans ${h}h ${m}m ${s}s
+                <button class="loyalty-action-btn" disabled style="background:#e2e8f0; color:#94a3b8;">
+                    ⏳ ${hours}h ${minutes}m ${seconds}s
                 </button>
             `;
-
-            feather.replace();
             timeLeft--;
         };
-
-        render();
-        bonusTimer = setInterval(render, 1000);
-
+        renderCountdown();
+        bonusTimer = setInterval(renderCountdown, 1000);
     } else {
-
-        container.innerHTML = `
-            <button class="loyalty-action-btn" id="claim-bonus-btn" onclick="claimDailyBonus()">
-                <i data-feather="gift"></i>
-                Bonus quotidien +10 pts
-            </button>
-        `;
-
+        container.innerHTML = `<button class="loyalty-action-btn" onclick="claimDailyBonus()">🎁 Récupérer mon Bonus</button>`;
         feather.replace();
     }
 }
 
-/**
- * =========================
- * STATS
- * =========================
- */
-function updateStats(points){
-    setText('stats-priere', `${points * 3}m`);
-    setText('stats-lecons', `${Math.floor(points / 12)}`);
-    setText('stats-versets', `${points * 2}`);
-}
-
-/**
- * =========================
- * LEVEL SYSTEM
- * =========================
- */
-function calculateLevel(points){
-    return Math.floor(points / 100) + 1;
-}
-
-function calculateProgress(points){
-    return points % 100;
-}
-
-/**
- * =========================
- * TROPHIES
- * =========================
- */
-function generateTrophies(points){
-
-    const trophies = [
-        { icon:'🌱', title:'Graine de Foi', required:10 },
-        { icon:'🕊️', title:'Messager de Paix', required:50 },
-        { icon:'⛪', title:'Pilier d’Église', required:150 },
-        { icon:'🔥', title:'Feu Sacré', required:300 },
-        { icon:'👑', title:'Saint Légendaire', required:500 }
-    ];
-
-    const container = document.querySelector('.trophy-grid');
-    if (!container) return;
-
-    let html = '';
-    let locked = 0;
-
-    trophies.forEach(t => {
-
-        const unlocked = points >= t.required;
-        if (!unlocked) locked++;
-
-        html += `
-            <div class="trophy-card ${unlocked ? '' : 'locked'}">
-                <div class="trophy-top">${t.icon}</div>
-                <div class="trophy-footer">
-                    <h4>${t.title}</h4>
-                    <p>${unlocked ? 'Débloqué' : t.required + ' pts requis'}</p>
-                </div>
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-
-    const badge = document.getElementById('header-notif-badge');
-    if (badge) {
-        badge.style.display = locked > 0 ? 'flex' : 'none';
-        badge.innerText = locked;
-    }
-}
-
-/**
- * =========================
- * CLAIM BONUS
- * =========================
- */
-async function claimDailyBonus(){
-    if (!currentUsername) {
-        alert("Vous devez être connecté pour réclamer le bonus.");
-        return;
-    }
-
-    const btn = document.getElementById('claim-bonus-btn');
-    if (!btn) return;
-
-    btn.disabled = true;
-    btn.innerHTML = `<i data-feather="loader"></i> Traitement...`;
+async function claimDailyBonus() {
+    if (!currentUsername) return;
+    
+    const container = document.getElementById('loyalty-action-container');
+    container.innerHTML = `<button class="loyalty-action-btn" disabled><i data-feather="loader" class="pulse"></i> Traitement...</button>`;
     feather.replace();
 
-    try{
-        // Envoi du username dans le corps (body) JSON attendu par ton nouveau contrôleur Symfony
-        const response = await fetch(
-            `${API_BASE_URL}/api/premium/claim-bonus`,
-            {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: currentUsername })
-            }
-        );
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/user/loyalty-status`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: currentUsername })
+        });
 
-        const data = await response.json();
+        if (!response.ok) throw new Error("Impossible de valider le bonus");
 
-        if(!response.ok){
-            throw new Error(data.message || "Erreur serveur");
-        }
-
-        // Rechargement immédiat et rafraîchissement propre du timer et de l'interface
-        await loadLoyaltyData();
-
-        showNotification("🎉 Bonus récupéré ! +10 points");
-
-    }catch(error){
-        console.error(error);
-        alert(error.message);
-
-        btn.disabled = false;
-        btn.innerHTML = `<i data-feather="gift"></i> Bonus quotidien +10 pts`;
-        feather.replace();
+        const result = await response.json();
+        alert("🎉 Félicitations ! +10 points ajoutés à votre solde.");
+        
+        // Recharger les données fraîches depuis le serveur
+        loadLoyaltyData();
+    } catch (e) {
+        console.error(e);
+        alert("Erreur lors de la récupération du bonus.");
+        loadLoyaltyData();
     }
 }
-
-/**
- * =========================
- * NOTIFICATION
- * =========================
- */
-function showNotification(message){
-
-    const div = document.createElement('div');
-
-    Object.assign(div.style, {
-        position: 'fixed',
-        top: '100px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: '#22c55e',
-        color: 'white',
-        padding: '14px 20px',
-        borderRadius: '16px',
-        fontWeight: '700',
-        zIndex: '99999',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-    });
-
-    div.innerText = message;
-
-    document.body.appendChild(div);
-
-    setTimeout(() => div.remove(), 3000);
-}
-
-/**
- * =========================
- * SAFE TEXT
- * =========================
- */
-function setText(id, value){
-    const el = document.getElementById(id);
-    if (el) el.innerText = value;
-}
-
 </script>
+</body>
+</html>
 </body>
 </html>

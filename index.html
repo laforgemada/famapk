@@ -864,6 +864,7 @@ function changeLanguage(){
     localStorage.setItem('app_lang', lang);
 
     const t = translations[lang];
+	const NOTIF_STREAM_URL = 'https://apokalypsy.com/api/notifications/stream';
 
     document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
     document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
@@ -872,6 +873,7 @@ function changeLanguage(){
     document.getElementById('menu-home').innerText = t.home;
     document.getElementById('menu-bible').innerText = t.bible;
     document.getElementById('menu-chat').innerText = t.chat;
+	
 
     const catList = document.getElementById('cat-list');
     const icons = ['grid','book-open','zap','music'];
