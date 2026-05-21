@@ -1,1469 +1,1078 @@
 <!DOCTYPE html>
-<html lang="mg">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no,
-               viewport-fit=cover">
-
-<title>Apokalypsy Bible | Premium</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet">
-
-<script src="https://unpkg.com/feather-icons"></script>
-
-<style>
-
-:root{
-    --primary:#1E3A8A;
-    --secondary:#7c3aed;
-    --accent:#f59e0b;
-    --pink:#ec4899;
-    --success:#22c55e;
-    --bg:#f3f4f6;
-    --surface:#ffffff;
-    --text-main:#0f172a;
-    --text-muted:#64748b;
-
-    --hero-gradient:
-        linear-gradient(135deg, #1E3A8A 0%, #035de3 55%, #122997 100%);
-
-    --card-gradient:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.98),
-            rgba(255,255,255,0.86)
-        );
-
-    --navbar-bg:
-        rgba(15,23,42,0.94);
-
-    --shadow:
-        0 12px 30px rgba(0,0,0,0.08);
-
-    --shadow-big:
-        0 20px 50px rgba(30,58,138,0.16);
-}
-
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
-
-body{
-    margin:0;
-    background:
-        linear-gradient(
-            180deg,
-            #eef2ff 0%,
-            #f8fafc 50%,
-            #ffffff 100%
-        );
-
-    font-family:'Plus Jakarta Sans',sans-serif;
-    color:var(--text-main);
-
-    padding-top:90px;
-    padding-bottom:110px;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-.header-fixed{
-    position:fixed;
-    top:0;
-    width:100%;
-    z-index:1000;
-
-    padding:14px 16px;
-
-    background:rgba(15,23,42,0.88);
-    backdrop-filter:blur(14px);
-
-    border-bottom:
-        1px solid rgba(255,255,255,0.08);
-}
-
-.header-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.logo-zone{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.logo-icon{
-    width:44px;
-    height:44px;
-
-    border-radius:16px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f59e0b,
-            #ec4899
-        );
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-
-    box-shadow:
-        0 10px 25px rgba(236,72,153,0.35);
-}
-
-.logo-icon i{
-    width:20px;
-    height:20px;
-}
-
-.logo-title{
-    color:white;
-    font-weight:900;
-    letter-spacing:2px;
-    font-size:0.95rem;
-}
-
-.logo-sub{
-    color:rgba(255,255,255,0.7);
-    font-size:0.68rem;
-    margin-top:2px;
-}
-
-.header-actions{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.header-btn{
-    width:42px;
-    height:42px;
-
-    border:none;
-    border-radius:14px;
-
-    background:
-        rgba(255,255,255,0.12);
-
-    color:white;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
-}
-
-.header-btn i{
-    width:18px;
-    height:18px;
-}
-
-/* =========================
-   HERO
-========================= */
-
-.hero{
-    margin:0 18px 24px;
-
-    background:var(--hero-gradient);
-
-    border-radius:34px;
-
-    padding:28px 24px;
-
-    color:white;
-
-    position:relative;
-    overflow:hidden;
-
-    box-shadow:var(--shadow-big);
-}
-
-.hero::before{
-    content:"";
-
-    position:absolute;
-
-    width:240px;
-    height:240px;
-
-    border-radius:50%;
-
-    background:
-        rgba(255,255,255,0.08);
-
-    top:-120px;
-    right:-70px;
-}
-
-.hero::after{
-    content:"";
-
-    position:absolute;
-
-    width:160px;
-    height:160px;
-
-    border-radius:50%;
-
-    background:
-        rgba(255,255,255,0.06);
-
-    bottom:-70px;
-    left:-40px;
-}
-
-.hero-content{
-    position:relative;
-    z-index:2;
-}
-
-.hero-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-
-    padding:8px 14px;
-
-    border-radius:100px;
-
-    background:
-        rgba(255,255,255,0.15);
-
-    font-size:0.75rem;
-    font-weight:800;
-
-    margin-bottom:18px;
-}
-
-.hero-badge i{
-    width:14px;
-    height:14px;
-}
-
-.hero-title{
-    font-size:2rem;
-    line-height:1.15;
-    font-weight:900;
-    margin-bottom:12px;
-}
-
-.hero-text{
-    color:
-        rgba(255,255,255,0.88);
-
-    line-height:1.7;
-    font-size:0.92rem;
-}
-
-.hero-stats{
-    display:flex;
-    gap:12px;
-    margin-top:24px;
-}
-
-.stat-box{
-    flex:1;
-
-    background:
-        rgba(255,255,255,0.12);
-
-    border:
-        1px solid rgba(255,255,255,0.1);
-
-    border-radius:18px;
-
-    padding:14px;
-    text-align:center;
-}
-
-.stat-number{
-    font-size:1.1rem;
-    font-weight:900;
-}
-
-.stat-label{
-    font-size:0.72rem;
-    color:rgba(255,255,255,0.8);
-    margin-top:4px;
-}
-
-/* =========================
-   SEARCH
-========================= */
-
-.search-container{
-    padding:0 18px;
-    margin-top:-5px;
-    position:relative;
-    z-index:10;
-}
-
-.search-box{
-    background:white;
-    border-radius:24px;
-    padding:14px 18px;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    box-shadow:var(--shadow);
-}
-
-.search-box i{
-    color:var(--primary);
-    width:18px;
-    height:18px;
-}
-
-.search-bar{
-    flex:1;
-    border:none;
-    outline:none;
-    background:none;
-
-    font-family:inherit;
-    font-size:0.92rem;
-    color:var(--text-main);
-}
-
-/* =========================
-   LANGUAGE
-========================= */
-
-.lang-zone{
-    padding:22px 18px 12px;
-}
-
-.section-title{
-    font-size:1rem;
-    font-weight:900;
-    color:var(--primary);
-
-    margin-bottom:15px;
-}
-
-.menu{
-    display:flex;
-    gap:10px;
-    overflow-x:auto;
-    scrollbar-width:none;
-}
-
-.menu button{
-    border:none;
-
-    padding:12px 18px;
-
-    border-radius:100px;
-
-    background:white;
-
-    color:var(--text-muted);
-
-    font-weight:800;
-    font-family:inherit;
-
-    cursor:pointer;
-
-    white-space:nowrap;
-
-    box-shadow:var(--shadow);
-
-    transition:0.25s;
-}
-
-.menu button.active{
-    background:var(--primary);
-    color:white;
-}
-
-/* =========================
-   FEATURES
-========================= */
-
-.features{
-    padding:10px 18px 0;
-
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:14px;
-}
-
-.feature-card{
-    background:var(--card-gradient);
-
-    border-radius:24px;
-
-    padding:18px;
-
-    box-shadow:var(--shadow);
-
-    backdrop-filter:blur(10px);
-}
-
-.feature-icon{
-    width:50px;
-    height:50px;
-
-    border-radius:18px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-
-    margin-bottom:14px;
-}
-
-.blue{
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #1E3A8A
-        );
-}
-
-.purple{
-    background:
-        linear-gradient(
-            135deg,
-            #7c3aed,
-            #5b21b6
-        );
-}
-
-.orange{
-    background:
-        linear-gradient(
-            135deg,
-            #f59e0b,
-            #ea580c
-        );
-}
-
-.pink{
-    background:
-        linear-gradient(
-            135deg,
-            #ec4899,
-            #be185d
-        );
-}
-
-.feature-icon i{
-    width:22px;
-    height:22px;
-}
-
-.feature-title{
-    font-size:0.92rem;
-    font-weight:800;
-    margin-bottom:8px;
-}
-
-.feature-text{
-    color:var(--text-muted);
-    line-height:1.5;
-    font-size:0.8rem;
-}
-
-/* =========================
-   TITLE
-========================= */
-
-.title-divider{
-    margin:32px 20px 12px;
-
-    font-size:0.75rem;
-    font-weight:900;
-
-    color:var(--secondary);
-
-    text-transform:uppercase;
-
-    letter-spacing:1px;
-}
-
-/* =========================
-   BOOKS
-========================= */
-
-.book{
-    margin:14px 18px;
-
-    background:var(--card-gradient);
-
-    border-radius:28px;
-
-    overflow:hidden;
-
-    box-shadow:var(--shadow);
-
-    border:
-        1px solid rgba(255,255,255,0.7);
-
-    backdrop-filter:blur(10px);
-
-    transition:0.3s;
-}
-
-.book:hover{
-    transform:translateY(-3px);
-}
-
-.book-header{
-    padding:22px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    cursor:pointer;
-}
-
-.book-left{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.book-icon{
-    width:50px;
-    height:50px;
-
-    border-radius:18px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #1E3A8A,
-            #7c3aed
-        );
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-}
-
-.book-icon i{
-    width:22px;
-    height:22px;
-}
-
-.book-name{
-    font-weight:800;
-    font-size:1rem;
-}
-
-.book-mini{
-    color:var(--text-muted);
-    font-size:0.75rem;
-    margin-top:4px;
-}
-
-.book-content{
-    max-height:0;
-    overflow:hidden;
-
-    transition:0.4s ease-out;
-}
-
-.book.open .book-content{
-    max-height:2500px;
-    padding:0 22px 22px;
-}
-
-.verse{
-    background:white;
-
-    padding:16px 18px;
-
-    border-radius:18px;
-
-    margin-bottom:12px;
-
-    line-height:1.7;
-
-    color:#334155;
-
-    box-shadow:
-        0 5px 15px rgba(0,0,0,0.03);
-
-    animation:fadeUp 0.4s ease;
-}
-
-@keyframes fadeUp{
-    from{
-        opacity:0;
-        transform:translateY(15px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.num{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-
-    width:28px;
-    height:28px;
-
-    border-radius:10px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #1E3A8A,
-            #7c3aed
-        );
-
-    color:white;
-
-    font-size:0.75rem;
-    font-weight:900;
-
-    margin-right:10px;
-}
-
-/* =========================
-   OVERLAY
-========================= */
-
-.overlay{
-    position:fixed;
-    inset:0;
-
-    background:
-        rgba(15,23,42,0.82);
-
-    backdrop-filter:blur(6px);
-
-    display:none;
-
-    justify-content:center;
-    align-items:flex-end;
-
-    z-index:3000;
-}
-
-.selector-card{
-    width:100%;
-    max-width:500px;
-
-    background:white;
-
-    border-radius:34px 34px 0 0;
-
-    overflow:hidden;
-
-    animation:slideUp 0.3s ease;
-}
-
-@keyframes slideUp{
-    from{
-        transform:translateY(100%);
-    }
-    to{
-        transform:translateY(0);
-    }
-}
-
-.selector-header{
-    padding:22px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    border-bottom:
-        1px solid #f1f5f9;
-}
-
-.selector-title{
-    font-weight:900;
-    color:var(--primary);
-}
-
-.grid-container{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-
-    gap:10px;
-
-    padding:20px;
-
-    max-height:350px;
-    overflow-y:auto;
-}
-
-.grid-item{
-    background:#f8fafc;
-
-    padding:15px 5px;
-
-    border-radius:14px;
-
-    text-align:center;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-    border:
-        1px solid #e2e8f0;
-
-    transition:0.25s;
-}
-
-.grid-item.selected{
-    background:var(--primary);
-    color:white;
-}
-
-.grid-item.in-range{
-    background:#dbeafe;
-    color:var(--primary);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.btn-reset{
-    width:100%;
-
-    padding:16px;
-
-    border:none;
-
-    border-radius:18px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #1E3A8A,
-            #7c3aed
-        );
-
-    color:white;
-
-    font-weight:800;
-
-    font-family:inherit;
-
-    cursor:pointer;
-
-    margin-top:10px;
-}
-
-/* =========================
-   NAVIGATION
-========================= */
-
-.bottom-nav{
-    position:fixed;
-
-    bottom:16px;
-    left:16px;
-    right:16px;
-
-    background:
-        rgba(255,255,255,0.92);
-
-    backdrop-filter:blur(14px);
-
-    border-radius:30px;
-
-    display:flex;
-    justify-content:space-around;
-
-    padding:14px;
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,0.14);
-
-    z-index:1000;
-}
-
-.nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-
-    gap:5px;
-
-    text-decoration:none;
-
-    color:var(--text-muted);
-
-    font-size:0.68rem;
-    font-weight:800;
-}
-
-.nav-item i{
-    width:20px;
-    height:20px;
-}
-
-.nav-item.active{
-    color:var(--primary);
-}
-
-.nav-item.active i{
-    background:var(--hero-gradient);
-
-    color:white;
-
-    padding:10px;
-
-    width:42px;
-    height:42px;
-
-    border-radius:14px;
-
-    margin-top:-20px;
-
-    box-shadow:
-        0 10px 25px rgba(124,58,237,0.35);
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(min-width:768px){
-
-    .features{
-        grid-template-columns:repeat(4,1fr);
-    }
-
-    .hero-title{
-        font-size:2.8rem;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Apokalypsy Bible | Premium</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root{
+            --primary:#1E3A8A;
+            --secondary:#7c3aed;
+            --accent:#f59e0b;
+            --pink:#ec4899;
+            --success:#22c55e;
+            --danger:#ef4444;
+            --bg:#f1f5f9;
+            --surface:#ffffff;
+            --text-main:#0f172a;
+            --text-muted:#64748b;
+            --muted:#64748b;
+
+            --hero-gradient:
+                linear-gradient(135deg, #1E3A8A 0%, #035de3 55%, #122997 100%);
+
+            --hero:
+                linear-gradient(135deg, #1E3A8A 0%, #3a4bed 50%, #488aec 100%);
+
+            --card-gradient:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,0.98),
+                    rgba(255,255,255,0.86)
+                );
+
+            --shadow:
+                0 15px 35px rgba(15,23,42,0.08);
+
+            --shadow-big:
+                0 20px 50px rgba(30,58,138,0.16);
+        }
+
+        *{
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+            -webkit-tap-highlight-color:transparent;
+        }
+
+        body{
+            font-family:'Plus Jakarta Sans',sans-serif;
+            background:var(--bg);
+            color:var(--text-main);
+            padding-top:95px;
+            padding-bottom:120px;
+        }
+
+        /* =====================================
+        HEADER PREMIUM (UNIFIÉ)
+        ===================================== */
+        .top-nav{
+            position:fixed;
+            top:0;
+            width:100%;
+            z-index:1000;
+            background:rgba(15,23,42,0.92);
+            backdrop-filter:blur(18px);
+            border-bottom:1px solid rgba(255,255,255,0.08);
+        }
+
+        .nav-content{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:14px 18px;
+        }
+
+        .logo-box{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .logo-icon{
+            width:45px;
+            height:45px;
+            border-radius:16px;
+            background:var(--hero);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            box-shadow:0 10px 20px rgba(124,58,237,0.35);
+        }
+
+        .logo-icon i{
+            width:20px;
+            height:20px;
+        }
+
+        .logo-text{
+            color:white;
+        }
+
+        .logo-title{
+            font-weight:900;
+            letter-spacing:1px;
+            font-size:0.95rem;
+        }
+
+        .logo-sub{
+            font-size:0.7rem;
+            color:rgba(255,255,255,0.65);
+        }
+
+        .nav-right{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .nav-btn{
+            width:42px;
+            height:42px;
+            border-radius:14px;
+            border:none;
+            background:rgba(255,255,255,0.08);
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position:relative;
+            cursor:pointer;
+        }
+
+        .nav-btn i{
+            width:18px;
+            height:18px;
+        }
+
+        .notif-badge{
+            position:absolute;
+            top:-2px;
+            right:-2px;
+            background:var(--danger);
+            color:white;
+            font-size:0.6rem;
+            font-weight:800;
+            min-width:18px;
+            height:18px;
+            border-radius:50%;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            border: 2px solid #0f172a;
+        }
+
+        /* =====================================
+        DROPDOWN NOTIFICATIONS
+        ===================================== */
+        .notif-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notif-dropdown {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            width: 340px;
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10000;
+        }
+
+        .notif-dropdown.show {
+            display: flex;
+            animation: fadeInNotif 0.2s ease-out;
+        }
+
+        @keyframes fadeInNotif {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .notif-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px 10px;
+        }
+
+        .notif-header h3 {
+            margin: 0;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .notif-header .mark-all-read {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .notif-tabs {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .notif-tab {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .notif-tab.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+        }
+
+        .notif-list {
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .notif-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .notif-item.unread::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 50%;
+        }
+
+        .notif-item-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notif-item-icon.article { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .notif-item-icon.badge { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .notif-item-icon.chat { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+
+        .notif-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-right: 15px;
+        }
+
+        .notif-message {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .notif-message strong {
+            color: white;
+            font-weight: 700;
+        }
+
+        .notif-time {
+            color: var(--muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .pulse-animation {
+            animation: pulseNotif 0.4s ease-in-out 2;
+        }
+
+        @keyframes pulseNotif {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); box-shadow: 0 0 10px var(--danger); }
+            100% { transform: scale(1); }
+        }
+
+        /* =========================
+           SEARCH & INTERFACE BIBLE
+        ========================= */
+        .search-container{
+            padding: 0 18px;
+            margin: 20px 0 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-box{
+            background:white;
+            border-radius:24px;
+            padding:14px 18px;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            box-shadow:var(--shadow);
+        }
+
+        .search-box i{
+            color:var(--primary);
+            width:18px;
+            height:18px;
+        }
+
+        .search-bar{
+            flex:1;
+            border:none;
+            outline:none;
+            background:none;
+            font-family:inherit;
+            font-size:0.92rem;
+            color:var(--text-main);
+        }
+
+        .lang-zone{
+            padding:12px 18px 12px;
+        }
+
+        .section-title{
+            font-size:1rem;
+            font-weight:900;
+            color:var(--primary);
+            margin-bottom:15px;
+        }
+
+        .menu{
+            display:flex;
+            gap:10px;
+            overflow-x:auto;
+            scrollbar-width:none;
+        }
+
+        .menu button{
+            border:none;
+            padding:12px 18px;
+            border-radius:100px;
+            background:white;
+            color:var(--text-muted);
+            font-weight:800;
+            font-family:inherit;
+            cursor:pointer;
+            white-space:nowrap;
+            box-shadow:var(--shadow);
+            transition:0.25s;
+        }
+
+        .menu button.active{
+            background:var(--primary);
+            color:white;
+        }
+
+        .title-divider{
+            margin:32px 20px 12px;
+            font-size:0.75rem;
+            font-weight:900;
+            color:var(--secondary);
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+
+        .book{
+            margin:14px 18px;
+            background:var(--card-gradient);
+            border-radius:28px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+            border:1px solid rgba(255,255,255,0.7);
+            backdrop-filter:blur(10px);
+            transition:0.3s;
+        }
+
+        .book:hover{
+            transform:translateY(-3px);
+        }
+
+        .book-header{
+            padding:22px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            cursor:pointer;
+        }
+
+        .book-left{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .book-icon{
+            width:50px;
+            height:50px;
+            border-radius:18px;
+            background:linear-gradient(135deg, #1E3A8A, #7c3aed);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+        }
+
+        .book-icon i{
+            width:22px;
+            height:22px;
+        }
+
+        .book-name{
+            font-weight:800;
+            font-size:1rem;
+        }
+
+        .book-mini{
+            color:var(--text-muted);
+            font-size:0.75rem;
+            margin-top:4px;
+        }
+
+        .book-content{
+            max-height:0;
+            overflow:hidden;
+            transition:0.4s ease-out;
+        }
+
+        .book.open .book-content{
+            max-height:2500px;
+            padding:0 22px 22px;
+        }
+
+        .verse{
+            background:white;
+            padding:16px 18px;
+            border-radius:18px;
+            margin-bottom:12px;
+            line-height:1.7;
+            color:#334155;
+            box-shadow:0 5px 15px rgba(0,0,0,0.03);
+            animation:fadeUp 0.4s ease;
+        }
+
+        @keyframes fadeUp{
+            from{ opacity:0; transform:translateY(15px); }
+            to{ opacity:1; transform:translateY(0); }
+        }
+
+        .num{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:28px;
+            height:28px;
+            border-radius:10px;
+            background:linear-gradient(135deg, #1E3A8A, #7c3aed);
+            color:white;
+            font-size:0.75rem;
+            font-weight:900;
+            margin-right:10px;
+        }
+
+        /* =========================
+           OVERLAY SELECTOR
+        ========================= */
+        .overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(15,23,42,0.82);
+            backdrop-filter:blur(6px);
+            display:none;
+            justify-content:center;
+            align-items:flex-end;
+            z-index:3000;
+        }
+
+        .selector-card{
+            width:100%;
+            max-width:500px;
+            background:white;
+            border-radius:34px 34px 0 0;
+            overflow:hidden;
+            animation:slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp{
+            from{ transform:translateY(100%); }
+            to{ transform:translateY(0); }
+        }
+
+        .selector-header{
+            padding:22px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:1px solid #f1f5f9;
+        }
+
+        .selector-title{
+            font-weight:900;
+            color:var(--primary);
+        }
+
+        .grid-container{
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            gap:10px;
+            padding:20px;
+            max-height:350px;
+            overflow-y:auto;
+        }
+
+        .grid-item{
+            background:#f8fafc;
+            padding:15px 5px;
+            border-radius:14px;
+            text-align:center;
+            font-weight:800;
+            cursor:pointer;
+            border:1px solid #e2e8f0;
+            transition:0.25s;
+        }
+
+        .grid-item.selected{
+            background:var(--primary);
+            color:white;
+        }
+
+        .grid-item.in-range{
+            background:#dbeafe;
+            color:var(--primary);
+        }
+
+        .btn-reset{
+            width:100%;
+            padding:16px;
+            border:none;
+            border-radius:18px;
+            background:linear-gradient(135deg, #1E3A8A, #7c3aed);
+            color:white;
+            font-weight:800;
+            font-family:inherit;
+            cursor:pointer;
+            margin-top:10px;
+        }
+
+        /* =========================
+        BOTTOM BAR PREMIUM (UNIFIÉ)
+        ========================= */
+        .bottom-bar{
+            position:fixed;
+            left:15px;
+            right:15px;
+            bottom:15px;
+            background:rgba(255,255,255,0.96);
+            backdrop-filter:blur(15px);
+            border-radius:28px;
+            display:flex;
+            justify-content:space-around;
+            padding:14px 10px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.12);
+            z-index:1000;
+        }
+
+        .bottom-item{
+            text-decoration:none;
+            color:var(--muted);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:6px;
+            font-size:0.68rem;
+            font-weight:700;
+            position:relative;
+        }
+
+        .bottom-item i{
+            width:20px;
+            height:20px;
+        }
+
+        .bottom-item.active{
+            color:var(--primary);
+        }
+
+        .bottom-item.active .nav-icon{
+            width:46px;
+            height:46px;
+            border-radius:16px;
+            background:var(--hero);
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin-top:-28px;
+            box-shadow:0 12px 24px rgba(124,58,237,0.35);
+        }
+
+        /* =========================
+        RESPONSIVE
+        ========================= */
+        @media (max-width: 480px) {
+            .notif-dropdown {
+                position: fixed;
+                top: 75px;
+                left: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-
-<header class="header-fixed">
-
-    <div class="header-top">
-
-        <div class="logo-zone">
-
+<header class="top-nav">
+    <div class="nav-content">
+        <div class="logo-box">
             <div class="logo-icon">
-                <i data-feather="book-open"></i>
+                <i data-feather="shield"></i>
             </div>
-
-            <div>
-                <div class="logo-title">
-                    APOKALYPSY
-                </div>
-
-                <div class="logo-sub">
-                    Bible Premium Experience
-                </div>
+            <div class="logo-text">
+                <div class="logo-title">APOKALYPSY</div>
+                <div class="logo-sub" id="bible-user-sub">Espace membre</div>
             </div>
-
         </div>
 
-        <div class="header-actions">
-
-            <button class="header-btn">
-                <i data-feather="bell"></i>
+        <div class="nav-right">
+            <button class="nav-btn">
+                <i data-feather="search"></i>
             </button>
 
-            <button class="header-btn">
-                <i data-feather="user"></i>
-            </button>
+            <div class="notif-wrapper">
+                <button class="nav-btn" id="notif-btn" onclick="toggleNotifMenu(event)">
+                    <i data-feather="bell"></i>
+                    <span class="notif-badge" id="notif-badge">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <span class="mark-all-read" onclick="markAllAsRead(event)">Tout lire</span>
+                    </div>
+                    <div class="notif-tabs">
+                        <span class="notif-tab active">Tout</span>
+                    </div>
+                    <div class="notif-list" id="notifVerticalList"></div>
+                </div>
+            </div>
 
+            <button class="nav-btn" onclick="logout()">
+                <i data-feather="log-out"></i>
+            </button>
         </div>
-
     </div>
-
 </header>
 
-<!-- HERO -->
-
-
-
-<!-- SEARCH -->
-
 <div class="search-container">
-
     <div class="search-box">
-
         <i data-feather="search"></i>
-
-        <input type="text"
-               id="search"
-               class="search-bar"
-               placeholder="Hikaroka boky...">
-
+        <input type="text" id="search" class="search-bar" placeholder="Hikaroka boky...">
     </div>
-
 </div>
-
-<!-- LANG -->
 
 <div class="lang-zone">
-
-    <div class="section-title">
-        📖 Choisissez votre langue
-    </div>
-
+    <div class="section-title">📖 Choisissez votre langue / Safidio ny teny</div>
     <div class="menu" id="langMenu">
-
-        <button class="active"
-                onclick="changeLang('mg', this)">
-
-            Malagasy
-
-        </button>
-
-        <button onclick="changeLang('fr', this)">
-
-            Français
-
-        </button>
-
-        <button onclick="changeLang('en', this)">
-
-            English
-
-        </button>
-
+        <button class="active" onclick="changeLang('mg', this)">Malagasy</button>
+        <button onclick="changeLang('fr', this)">Français</button>
+        <button onclick="changeLang('en', this)">English</button>
     </div>
-
 </div>
-
-
-
-<!-- CONTAINER -->
 
 <div id="container"></div>
 
-<!-- OVERLAY -->
-
 <div id="selectorOverlay" class="overlay">
-
     <div class="selector-card">
-
         <div class="selector-header">
-
-            <button onclick="closeSelector()"
-                    style="border:none;background:none;cursor:pointer;">
-
+            <button onclick="closeSelector()" style="border:none;background:none;cursor:pointer;">
                 <i data-feather="x"></i>
-
             </button>
-
-            <div class="selector-title"
-                 id="selectedBookName">
-
-                Sélection
-
-            </div>
-
-            <button id="applyFilter"
-                    onclick="applyFilter()"
-                    style="border:none;background:none;font-weight:900;color:var(--accent);visibility:hidden;">
-
+            <div class="selector-title" id="selectedBookName">Sélection</div>
+            <button id="applyFilter" onclick="applyFilter()" style="border:none;background:none;font-weight:900;color:var(--accent);visibility:hidden;">
                 OK
-
             </button>
-
         </div>
-
-        <div style="
-             padding:15px;
-             text-align:center;
-             color:var(--text-muted);
-             font-size:0.8rem;
-             font-weight:700;">
-
-            Sélectionnez le premier
-            et le dernier verset
-
+        <div style="padding:15px;text-align:center;color:var(--text-muted);font-size:0.8rem;font-weight:700;">
+            Sélectionnez le premier et le dernier verset
         </div>
-
-        <div class="grid-container"
-             id="gridContainer"></div>
-
+        <div class="grid-container" id="gridContainer"></div>
     </div>
-
 </div>
 
-<!-- BOTTOM NAV -->
-
-<nav class="bottom-nav">
-
-    <a href="index.html"
-       class="nav-item">
-
+<nav class="bottom-bar">
+    <a href="../../index.html" class="bottom-item">
         <i data-feather="home"></i>
-
         <span>Accueil</span>
-
     </a>
-
-    <a href="#"
-       class="nav-item active">
-
-        <i data-feather="book-open"></i>
-
+    <a href="#" class="bottom-item active">
+        <div class="nav-icon">
+            <i data-feather="book-open"></i>
+        </div>
         <span>Bible</span>
-
     </a>
-
-    <a href="chat.html"
-       class="nav-item">
-
+    <a href="../../chat.html" class="bottom-item">
         <i data-feather="message-circle"></i>
-
         <span>Chat</span>
-
     </a>
-
+    <a href="espace_personnel.html" class="bottom-item">
+        <i data-feather="user"></i>
+        <span>Profil</span>
+    </a>
 </nav>
 
 <script>
+const API_BASE_URL = 'https://apokalypsy.com';
 
+let currentUsername = null;
+if (typeof notificationCount === 'undefined') { var notificationCount = 0; }
+if (typeof loadedNotificationsArray === 'undefined') { var loadedNotificationsArray = []; }
+
+/* DATA BIBLE */
 const data = {
-
     mg:{
-
-        search:"Hikaroka boky...",
-
-        at:"Testamenta Taloha",
-
-        nt:"Testamenta Vaovao",
-
+        search:"Hikaroka boky...", at:"Testamenta Taloha", nt:"Testamenta Vaovao",
         books:[
-
-            {
-                name:"Genesisy",
-
-                v:[
-                    "Ao am-piandohana Andriamanitra nahary ny lanitra sy ny tany.",
-                    "Ny tany dia tsy mbola nisy endrika.",
-                    "Ary hoy Andriamanitra hoe: Misia mazava.",
-                    "Ary hitan’Andriamanitra fa tsara ny mazava.",
-                    "Dia nataony hoe andro ny mazava."
-                ]
-            },
-
-            {
-                name:"Eksodosy",
-
-                v:[
-                    "Ireto ny anaran'ny zanak'Israely.",
-                    "Nanjaka tany Egypta ny Farao vaovao.",
-                    "Ary nampahory ny vahoaka izy."
-                ]
-            },
-
-            {
-                name:"Apokalypsy",
-
-                v:[
-                    "Fanambaran'i Jesosy Kristy.",
-                    "Sambatra izay mamaky ity faminaniana ity.",
-                    "Izaho no Alfa sy Omega."
-                ]
-            }
+            { name:"Genesisy", v:["Ao am-piandohana Andriamanitra nahary ny lanitra sy ny tany.","Ny tany dia tsy mbola nisy endrika.","Ary hoy Andriamanitra hoe: Misia mazava.","Ary hitan’Andriamanitra fa tsara ny mazava.","Dia nataony hoe andro ny mazava."] },
+            { name:"Eksodosy", v:["Ireto ny anaran'ny zanak'Israely.","Nanjaka tany Egypta ny Farao vaovao.","Ary nampahory ny vahoaka izy."] },
+            { name:"Apokalypsy", v:["Fanambaran'i Jesosy Kristy.","Sambatra izay mamaky ity faminaniana ity.","Izaho no Alfa sy Omega."] }
         ]
     },
-
     fr:{
-
-        search:"Rechercher un livre...",
-
-        at:"Ancien Testament",
-
-        nt:"Nouveau Testament",
-
+        search:"Rechercher un livre...", at:"Ancien Testament", nt:"Nouveau Testament",
         books:[
-
-            {
-                name:"Genèse",
-
-                v:[
-                    "Au commencement Dieu créa le ciel et la terre.",
-                    "La terre était informe et vide.",
-                    "Dieu dit : Que la lumière soit.",
-                    "Dieu vit que la lumière était bonne."
-                ]
-            },
-
-            {
-                name:"Apocalypse",
-
-                v:[
-                    "Révélation de Jésus-Christ.",
-                    "Heureux celui qui lit cette prophétie.",
-                    "Je suis l’Alpha et l’Oméga."
-                ]
-            }
+            { name:"Genèse", v:["Au commencement Dieu créa le ciel et la terre.","La terre était informe et vide.","Dieu dit : Que la lumière soit.","Dieu vit que la lumière était bonne."] },
+            { name:"Apocalypse", v:["Révélation de Jésus-Christ.","Heureux celui qui lit cette prophétie.","Je suis l’Alpha et l’Oméga."] }
         ]
     },
-
     en:{
-
-        search:"Search books...",
-
-        at:"Old Testament",
-
-        nt:"New Testament",
-
+        search:"Search books...", at:"Old Testament", nt:"New Testament",
         books:[
-
-            {
-                name:"Genesis",
-
-                v:[
-                    "In the beginning God created the heaven and the earth.",
-                    "The earth was without form and void.",
-                    "And God said, Let there be light."
-                ]
-            }
+            { name:"Genesis", v:["In the beginning God created the heaven and the earth.","The earth was without form and void.","And God said, Let there be light."] }
         ]
     }
 };
 
 let lang = "mg";
-
 let currentBookIdx = null;
-
 let startRange = null;
-
 let endRange = null;
-
 let activeFilters = {};
 
+document.addEventListener("DOMContentLoaded", () => {
+    feather.replace();
+    currentUsername = localStorage.getItem('user_name');
+    
+    const userSub = document.getElementById('bible-user-sub');
+    if (userSub && currentUsername) {
+        userSub.innerText = `Membre : ${currentUsername}`;
+    }
+
+    if (currentUsername) {
+        initRealtimeNotifications(); 
+    }
+    render();
+});
+
+/* ==========================================
+ * SYSTEME DE NOTIFICATIONS SSE DYNAMIQUE
+ * ========================================== */
+function initRealtimeNotifications() {
+    const baseUrl = API_BASE_URL;
+    const eventSource = new EventSource(`${baseUrl}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`);
+
+    eventSource.onmessage = function(event) {
+        if (!event.data || event.data.trim() === "" || event.data.includes("ping")) return; 
+
+        try {
+            const data = JSON.parse(event.data);
+            if (!data || !data.message) return;
+
+            const dejavu = loadedNotificationsArray.some(n => n.realId === data.id);
+            if (dejavu) return; 
+
+            let iconType = 'article'; 
+            let iconName = 'book-open';
+            let directLink = '../../index.html';
+
+            if (data.type === 'new_badge' || data.message.includes('badge') || data.message.includes('Trophée')) {
+                iconType = 'badge'; iconName = 'award'; directLink = '#';
+            } else if (data.type === 'chat' || data.message.includes('Chat') || data.message.includes('message')) {
+                iconType = 'chat'; iconName = 'message-square'; directLink = '../../chat.html';
+            }
+
+            loadedNotificationsArray.unshift({
+                id: Date.now(), realId: data.id, type: iconType, icon: iconName,
+                message: data.message, time: 'À l\'instant', unread: true, link: directLink
+            });
+
+            notificationCount = loadedNotificationsArray.length;
+            renderNotificationBadge();
+            renderVerticalDropdownMenu();
+
+            if (window.Notification && Notification.permission === "granted") {
+                new Notification("Apokalypsy", { body: data.message });
+            }
+        } catch (e) {
+            console.error("Erreur flux SSE:", e);
+        }
+    };
+
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('notifDropdown');
+        const trigger = document.getElementById('notif-btn');
+        if (dropdown && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+function toggleNotifMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('notifDropdown');
+    if (dropdown) dropdown.classList.toggle('show');
+}
+
+function renderNotificationBadge() {
+    const badge = document.getElementById('notif-badge');
+    if (!badge) return;
+    if (notificationCount > 0) {
+        badge.innerText = notificationCount;
+        badge.style.display = 'flex';
+        badge.classList.add('pulse-animation');
+        setTimeout(() => badge.classList.remove('pulse-animation'), 500);
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function renderVerticalDropdownMenu() {
+    const container = document.getElementById('notifVerticalList');
+    if (!container) return;
+    if (loadedNotificationsArray.length === 0) {
+        container.innerHTML = `<div style="padding:24px; text-align:center; color:var(--muted); font-size:0.82rem;">Aucune notification.</div>`;
+        return;
+    }
+    container.innerHTML = loadedNotificationsArray.map(notif => `
+        <a href="${notif.link}" class="notif-item ${notif.unread ? 'unread' : ''}" onclick="markOneAsRead(${notif.id})">
+            <div class="notif-item-icon ${notif.type}">
+                <i data-feather="${notif.icon}"></i>
+            </div>
+            <div class="notif-details">
+                <span class="notif-message">${notif.message}</span>
+                <span class="notif-time">${notif.time}</span>
+            </div>
+        </a>
+    `).join('');
+    feather.replace();
+}
+
+function markOneAsRead(id) {
+    const notif = loadedNotificationsArray.find(n => n.id === id);
+    if (notif && notif.unread) {
+        notif.unread = false;
+        if (notificationCount > 0) notificationCount--;
+        renderNotificationBadge();
+        renderVerticalDropdownMenu();
+    }
+}
+
+function markAllAsRead(event) {
+    event.stopPropagation();
+    loadedNotificationsArray.forEach(n => n.unread = false);
+    notificationCount = 0;
+    renderNotificationBadge();
+    renderVerticalDropdownMenu();
+}
+
+function logout(){
+    if(confirm("Voulez-vous quitter votre session ?")){
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('token');
+        window.location.href='../../index.html';
+    }
+}
+
+/* ==========================================
+ * LOGIQUE FONCTIONNELLE DE LA BIBLE
+ * ========================================== */
 function changeLang(l, btn){
-
     lang = l;
-
     activeFilters = {};
-
-    document.querySelectorAll('.menu button')
-        .forEach(b => b.classList.remove('active'));
-
+    document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     render();
 }
 
 function openSelector(index){
-
     currentBookIdx = index;
-
     startRange = null;
-
     endRange = null;
-
-    const book =
-        data[lang].books[index];
-
-    document.getElementById('selectedBookName')
-        .innerText = book.name;
-
-    document.getElementById('applyFilter')
-        .style.visibility = 'hidden';
-
+    const book = data[lang].books[index];
+    document.getElementById('selectedBookName').innerText = book.name;
+    document.getElementById('applyFilter').style.visibility = 'hidden';
     updateGrid();
-
-    document.getElementById('selectorOverlay')
-        .style.display = 'flex';
+    document.getElementById('selectorOverlay').style.display = 'flex';
 }
 
 function updateGrid(){
-
-    const grid =
-        document.getElementById('gridContainer');
-
+    const grid = document.getElementById('gridContainer');
     grid.innerHTML = "";
-
-    const book =
-        data[lang].books[currentBookIdx];
+    const book = data[lang].books[currentBookIdx];
 
     book.v.forEach((_, i) => {
-
-        const item =
-            document.createElement('div');
-
+        const item = document.createElement('div');
         item.className = 'grid-item';
-
         if(startRange !== null && endRange !== null){
-
-            if(
-                i >= Math.min(startRange,endRange)
-                &&
-                i <= Math.max(startRange,endRange)
-            ){
-
-                item.className +=
-                    (i === startRange || i === endRange)
-                    ? ' selected'
-                    : ' in-range';
+            if(i >= Math.min(startRange,endRange) && i <= Math.max(startRange,endRange)){
+                item.className += (i === startRange || i === endRange) ? ' selected' : ' in-range';
             }
-
         }else if(i === startRange){
-
             item.className += ' selected';
         }
-
         item.innerText = i + 1;
-
         item.onclick = () => handleSelect(i);
-
         grid.appendChild(item);
     });
-
-    feather.replace();
 }
 
 function handleSelect(i){
-
-    if(
-        startRange === null
-        ||
-        (startRange !== null && endRange !== null)
-    ){
-
+    if(startRange === null || (startRange !== null && endRange !== null)){
         startRange = i;
-
         endRange = null;
-
-        document.getElementById('applyFilter')
-            .style.visibility = 'hidden';
-
+        document.getElementById('applyFilter').style.visibility = 'hidden';
     }else{
-
         endRange = i;
-
-        document.getElementById('applyFilter')
-            .style.visibility = 'visible';
+        document.getElementById('applyFilter').style.visibility = 'visible';
     }
-
     updateGrid();
 }
 
 function closeSelector(){
-
-    document.getElementById('selectorOverlay')
-        .style.display = 'none';
+    document.getElementById('selectorOverlay').style.display = 'none';
 }
 
 function applyFilter(){
-
-    const low =
-        Math.min(startRange,endRange);
-
-    const high =
-        Math.max(startRange,endRange);
-
-    activeFilters[currentBookIdx] = {
-
-        start:low,
-        end:high
-    };
-
+    const low = Math.min(startRange, endRange);
+    const high = Math.max(startRange, endRange);
+    activeFilters[currentBookIdx] = { start: low, end: high };
+    const bookName = data[lang].books[currentBookIdx].name;
+    
     closeSelector();
-
     render(currentBookIdx);
+    
+    sendChapterFinished(bookName, low + 1, high + 1);
+}
+
+async function sendChapterFinished(bookName, startVerse, endVerse) {
+    const username = currentUsername; 
+    if (!username) return;
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/api/bible/finish-chapter`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({
+                username: username,
+                book: bookName,
+                chapters: `v.${startVerse}-v.${endVerse}`
+            })
+        });
+        
+        if (response.status === 401) {
+            console.error("❌ Erreur 401 : Session ou token invalide.");
+        } else if (!response.ok) {
+            console.error(`Erreur API (${response.status})`);
+        } else {
+            const result = await response.json();
+            console.log("✅ Progression enregistrée !", result);
+        }
+    } catch (error) {
+        console.error("Erreur réseau lors du POST vers l'API Bible :", error);
+    }
 }
 
 function render(openIdx = null){
+    const c = document.getElementById('container');
+    const d = data[lang];
+    document.getElementById('search').placeholder = d.search;
 
-    const c =
-        document.getElementById('container');
-
-    const d =
-        data[lang];
-
-    document.getElementById('search')
-        .placeholder = d.search;
-
-    let html =
-        `<div class="title-divider">${d.at}</div>`;
+    let html = `<div class="title-divider">${d.at}</div>`;
 
     d.books.forEach((b,i)=>{
-
-        if(
-            i === d.books.length - 1
-            &&
-            d.books.length > 2
-        ){
-
-            html +=
-                `<div class="title-divider">${d.nt}</div>`;
+        if(i === d.books.length - 1 && d.books.length > 2){
+            html += `<div class="title-divider">${d.nt}</div>`;
         }
-
-        const filter =
-            activeFilters[i];
-
-        const isFiltered =
-            filter !== undefined;
+        const filter = activeFilters[i];
+        const isFiltered = filter !== undefined;
 
         html += `
-
         <div class="book ${openIdx === i ? 'open' : ''}">
-
-            <div class="book-header"
-                 onclick="openSelector(${i})">
-
+            <div class="book-header" onclick="openSelector(${i})">
                 <div class="book-left">
-
-                    <div class="book-icon">
-
-                        <i data-feather="book"></i>
-
-                    </div>
-
+                    <div class="book-icon"><i data-feather="book"></i></div>
                     <div>
-
-                        <div class="book-name">
-
-                            ${b.name}
-
-                        </div>
-
-                        <div class="book-mini">
-
-                            ${b.v.length} versets
-
-                            ${isFiltered
-                                ? ` • Filtré`
-                                : ''}
-
-                        </div>
-
+                        <div class="book-name">${b.name}</div>
+                        <div class="book-mini">${b.v.length} versets ${isFiltered ? ` • Filtré` : ''}</div>
                     </div>
-
                 </div>
-
                 <i data-feather="chevron-down"></i>
-
             </div>
-
             <div class="book-content">
-
                 ${b.v.map((t,vi)=>{
-
-                    if(
-                        isFiltered
-                        &&
-                        (
-                            vi < filter.start
-                            ||
-                            vi > filter.end
-                        )
-                    ) return '';
-
-                    return `
-
-                    <div class="verse">
-
-                        <span class="num">
-
-                            ${vi+1}
-
-                        </span>
-
-                        ${t}
-
-                    </div>
-                    `;
-
+                    if(isFiltered && (vi < filter.start || vi > filter.end)) return '';
+                    return `<div class="verse"><span class="num">${vi+1}</span>${t}</div>`;
                 }).join('')}
-
-                ${isFiltered
-                    ? `
-                    <button class="btn-reset"
-                            onclick="resetFilter(${i})">
-
-                        Voir tous les versets
-
-                    </button>
-                    `
-                    : ''}
-
+                ${isFiltered ? `<button class="btn-reset" onclick="resetFilter(${i})">Voir tous les versets</button>` : ''}
             </div>
-
-        </div>
-        `;
+        </div>`;
     });
 
     c.innerHTML = html;
-
     feather.replace();
 }
 
 function resetFilter(i){
-
     delete activeFilters[i];
-
     render(i);
 }
 
-document.getElementById('search')
-.addEventListener('input', e => {
-
-    const val =
-        e.target.value.toUpperCase();
-
-    document.querySelectorAll('.book')
-        .forEach(book => {
-
-        const name =
-            book.querySelector('.book-name')
-            .innerText;
-
-        book.style.display =
-            name.toUpperCase().includes(val)
-            ? "block"
-            : "none";
+document.getElementById('search').addEventListener('input', e => {
+    const val = e.target.value.toUpperCase();
+    document.querySelectorAll('.book').forEach(book => {
+        const name = book.querySelector('.book-name').innerText;
+        book.style.display = name.toUpperCase().includes(val) ? "block" : "none";
     });
 });
-
-window.onload = () => {
-
-    render();
-
-    feather.replace();
-};
-
 </script>
-
 </body>
 </html>

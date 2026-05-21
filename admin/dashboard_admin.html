@@ -9,6 +9,7 @@
     <!-- On imagine que tu as déplacé ton CSS dans un fichier externe pour gagner en clarté -->
     <link rel="stylesheet" href="../css/admin-style.css"> 
 </head>
+
 <body>
 <!-- MENU BAS ADMIN -->
 <nav class="bottom-bar">
@@ -76,66 +77,137 @@
 	
 
     <script>
-        async function loadComponents() {
-            // Chargement du Menu
-            const menuRes = await fetch('partials/menu.html');
-            document.getElementById('sidebar-placeholder').innerHTML = await menuRes.text();
-            
-            // Chargement du Header
-            const headerRes = await fetch('partials/header.html');
-            document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+    async function loadComponents() {
 
-            // Initialisation des données après chargement
-            initDashboard();
-            setActiveLink();
+        // Vérification sécurité AVANT chargement
+        checkAdminAccess();
+
+        // Chargement du Menu
+        const menuRes = await fetch('partials/menu.html');
+        document.getElementById('sidebar-placeholder').innerHTML = await menuRes.text();
+
+        // Chargement du Header
+        const headerRes = await fetch('partials/header.html');
+        document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+
+        // Initialisation des données
+        initDashboard();
+        setActiveLink();
+    }
+
+    function checkAdminAccess() {
+
+        const userData = JSON.parse(localStorage.getItem('user_full_data'));
+
+        // Pas connecté
+        if (!userData) {
+            alert("Veuillez vous connecter.");
+            window.location.replace('../login/connexion.html');
+            return;
         }
 
-        function initDashboard() {
-            // Date automatique
-            document.getElementById('headerDate').innerText = new Date().toLocaleDateString('fr-FR', { 
-                day: 'numeric', month: 'long', year: 'numeric' 
+        // Vérification des rôles
+        if (
+            !userData.roles ||
+            !Array.isArray(userData.roles) ||
+            !userData.roles.includes('ROLE_ADMIN')
+        ) {
+
+            alert("Accès refusé. Administrateur uniquement.");
+
+            // Redirection utilisateur normal
+            window.location.replace('../../index.html');
+
+            return;
+        }
+    }
+
+    function initDashboard() {
+
+        // Date automatique
+        document.getElementById('headerDate').innerText =
+            new Date().toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
             });
 
-            const userData = JSON.parse(localStorage.getItem('user_full_data'));
-            
-            if (!userData) {
-                window.location.replace('../login/connexion.html');
-                return;
-            }
+        const userData = JSON.parse(localStorage.getItem('user_full_data'));
 
-            document.getElementById('topUsername').textContent = userData.username;
-            document.getElementById('displayUsername').textContent = userData.username;
-            document.getElementById('fullName').textContent = (userData.prenom || '') + ' ' + (userData.nom || '');
-            document.getElementById('infoEmail').textContent = userData.email;
-            document.getElementById('infoTel').textContent = userData.telephone || 'Non renseigné';
-            
-            if (userData.photo && userData.photo !== 'NULL' && userData.photo !== '') {
-                document.getElementById('userPhoto').src = userData.photo;
-            }
-
-            const roleContainer = document.getElementById('roleList');
-            userData.roles.forEach(role => {
-                const span = document.createElement('span');
-                span.className = `badge ${role === 'ROLE_ADMIN' ? 'badge-admin' : 'badge-user'}`;
-                span.textContent = role.replace('ROLE_', '');
-                roleContainer.appendChild(span);
-            });
+        if (!userData) {
+            window.location.replace('../login/connexion.html');
+            return;
         }
 
-        function setActiveLink() {
-            // Marque le lien dashboard comme actif
-            document.getElementById('link-dashboard').classList.add('active');
+        document.getElementById('topUsername').textContent =
+            userData.username;
+
+        document.getElementById('displayUsername').textContent =
+            userData.username;
+
+        document.getElementById('fullName').textContent =
+            (userData.prenom || '') + ' ' + (userData.nom || '');
+
+        document.getElementById('infoEmail').textContent =
+            userData.email;
+
+        document.getElementById('infoTel').textContent =
+            userData.telephone || 'Non renseigné';
+
+        if (
+            userData.photo &&
+            userData.photo !== 'NULL' &&
+            userData.photo !== ''
+        ) {
+            document.getElementById('userPhoto').src =
+                userData.photo;
         }
 
-        function deconnexion() {
-            if (confirm("Voulez-vous fermer votre session ?")) {
-                localStorage.clear();
-                window.location.replace('../login/connexion.html');
-            }
-        }
+        const roleContainer =
+            document.getElementById('roleList');
 
-        // Lancement au chargement de la page
-        window.onload = loadComponents;
-    </script>
+        roleContainer.innerHTML = '';
+
+        userData.roles.forEach(role => {
+
+            const span = document.createElement('span');
+
+            span.className =
+                `badge ${
+                    role === 'ROLE_ADMIN'
+                    ? 'badge-admin'
+                    : 'badge-user'
+                }`;
+
+            span.textContent =
+                role.replace('ROLE_', '');
+
+            roleContainer.appendChild(span);
+        });
+    }
+
+    function setActiveLink() {
+
+        const dashboardLink =
+            document.getElementById('link-dashboard');
+
+        if (dashboardLink) {
+            dashboardLink.classList.add('active');
+        }
+    }
+
+    function deconnexion() {
+
+        if (confirm("Voulez-vous fermer votre session ?")) {
+
+            localStorage.clear();
+
+            window.location.replace('../login/connexion.html');
+        }
+    }
+
+    // Lancement
+    window.onload = loadComponents;
+</script>
 </body>
 </html>

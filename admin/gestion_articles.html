@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apokalypsy - Gestion des Articles</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,6 +13,11 @@
     <link rel="stylesheet" href="../css/admin-style.css">
 
     <style>
+        /* Protection anti-flash : Masque le contenu pendant la vérification du rôle */
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
         .image-mode-selector{
             display:flex;
@@ -146,6 +151,31 @@
             cursor:pointer;
         }
 
+        /* Nouveaux styles pour la sélection multiple */
+        .table-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-bulk-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: none; /* Masqué par défaut */
+            transition: 0.2s;
+        }
+        .btn-bulk-delete:hover {
+            background: #dc2626;
+        }
+        .checkbox-col {
+            width: 40px;
+            text-align: center !important;
+        }
     </style>
 </head>
 
@@ -251,12 +281,18 @@
 
     <div class="crud-container">
 
-        <h3>Mes Publications</h3>
+        <div class="table-header-flex">
+            <h3>Mes Publications</h3>
+            <button id="btnBulkDelete" class="btn-bulk-delete" onclick="deleteSelectedArticles()">
+                <i class="fa-solid fa-trash-can"></i> Supprimer la sélection (<span id="selectedCount">0</span>)
+            </button>
+        </div>
 
         <table class="article-table">
 
             <thead>
             <tr>
+                <th class="checkbox-col"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
                 <th>Image</th>
                 <th>Titre</th>
                 <th>Catégorie</th>
@@ -268,7 +304,7 @@
             <tbody id="articleTableBody">
 
             <tr>
-                <td colspan="5" style="text-align:center;">
+                <td colspan="6" style="text-align:center;">
                     Chargement...
                 </td>
             </tr>
@@ -414,6 +450,10 @@
             allArticles = data;
 
             renderArticles(data);
+            
+            // Réinitialiser la case "Tout sélectionner" et le bouton de suppression multiple
+            document.getElementById('selectAll').checked = false;
+            updateBulkDeleteButton();
 
         }catch(e){
 
@@ -421,7 +461,7 @@
 
             document.getElementById('articleTableBody').innerHTML = `
                 <tr>
-                    <td colspan="5">Erreur chargement.</td>
+                    <td colspan="6">Erreur chargement.</td>
                 </tr>
             `;
         }
@@ -439,7 +479,7 @@
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="5">Aucun article.</td>
+                    <td colspan="6" style="text-align:center;">Aucun article.</td>
                 </tr>
             `;
 
@@ -447,11 +487,13 @@
         }
 
         tbody.innerHTML = articles.map(art => {
-            // Optionnel : Gestion de l'affichage lisible de la catégorie
             const displayCat = art.category ? art.category.charAt(0).toUpperCase() + art.category.slice(1) : '<span style="color:#94a3b8;">Non spécifiée</span>';
             
             return `
                 <tr>
+                    <td class="checkbox-col">
+                        <input type="checkbox" class="article-checkbox" value="${art.id}" onclick="updateBulkDeleteButton()">
+                    </td>
                     <td>
                         <img src="${art.image_url || 'https://via.placeholder.com/50'}"
                              class="thumbnail-list">
@@ -500,6 +542,93 @@
     }
 
     // =========================
+    // BULK SELECTION & DELETE LOGIC
+    // =========================
+
+    // Coche ou décoche toutes les lignes d'un coup
+    function toggleSelectAll(masterCheckbox) {
+        const checkboxes = document.querySelectorAll('.article-checkbox');
+        checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        updateBulkDeleteButton();
+    }
+
+    // Gère la visibilité du bouton de suppression multiple et met à jour le compteur
+    function updateBulkDeleteButton() {
+        const checkboxes = document.querySelectorAll('.article-checkbox');
+        const checkedBoxes = document.querySelectorAll('.article-checkbox:checked');
+        const btnBulkDelete = document.getElementById('btnBulkDelete');
+        const selectedCountSpan = document.getElementById('selectedCount');
+        const masterCheckbox = document.getElementById('selectAll');
+
+        selectedCountSpan.innerText = checkedBoxes.length;
+
+        // Affiche le bouton s'il y a au moins un élément coché
+        if (checkedBoxes.length > 0) {
+            btnBulkDelete.style.display = 'block';
+        } else {
+            btnBulkDelete.style.display = 'none';
+        }
+
+        // Ajuste la case maîtresse si l'utilisateur décoche manuellement un élément
+        if (checkedBoxes.length === 0) {
+            masterCheckbox.checked = false;
+            masterCheckbox.indeterminate = false;
+        } else if (checkedBoxes.length === checkboxes.length) {
+            masterCheckbox.checked = true;
+            masterCheckbox.indeterminate = false;
+        } else {
+            masterCheckbox.checked = false;
+            masterCheckbox.indeterminate = true; // État visuel intermédiaire
+        }
+    }
+
+    // Supprime tous les articles sélectionnés
+   // Supprime tous les articles sélectionnés
+    async function deleteSelectedArticles() {
+        const checkedBoxes = document.querySelectorAll('.article-checkbox:checked');
+        if (checkedBoxes.length === 0) return;
+
+        if (!confirm(`Voulez-vous vraiment supprimer ces ${checkedBoxes.length} articles ?`)) return;
+
+        const btnBulkDelete = document.getElementById('btnBulkDelete');
+        
+        // 1. On sauvegarde le texte initial du bouton ("Supprimer la sélection (X)")
+        const originalBtnHTML = btnBulkDelete.innerHTML;
+
+        btnBulkDelete.disabled = true;
+        btnBulkDelete.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Suppression...`;
+
+        // Récupération de tous les IDs cochés
+        const idsToDelete = Array.from(checkedBoxes).map(cb => cb.value);
+
+        try {
+            // Envoi des requêtes de suppression en parallèle
+            const deletePromises = idsToDelete.map(id => 
+                fetch(`${API_BASE}/delete/${id}`, { method: 'POST' })
+            );
+
+            // On attend que toutes les requêtes soient traitées par le serveur
+            await Promise.all(deletePromises);
+
+            alert("Les articles sélectionnés ont été supprimés.");
+
+        } catch (err) {
+            console.error("Erreur lors de la suppression :", err);
+            alert("Une erreur est survenue lors de la suppression groupée.");
+        } finally {
+            // 2. Quoiqu'il arrive, on remet le bouton à son état normal et on le cache
+            btnBulkDelete.disabled = false;
+            btnBulkDelete.innerHTML = originalBtnHTML;
+            btnBulkDelete.style.display = 'none';
+            
+            // 3. On laisse 300ms au serveur/BDD pour respirer avant de recharger la liste
+            setTimeout(() => {
+                fetchArticles();
+            }, 300);
+        }
+    }
+
+    // =========================
     // VIEW ARTICLE
     // =========================
 
@@ -527,6 +656,16 @@
 
         document.getElementById('viewModal').style.display = 'none';
     }
+	
+	function deconnexion() {
+
+        if (confirm("Voulez-vous fermer votre session ?")) {
+
+            localStorage.clear();
+
+            window.location.replace('../login/connexion.html');
+        }
+    }
 
     // =========================
     // EDIT ARTICLE
@@ -542,7 +681,6 @@
 
         document.getElementById('title').value = art.title;
 
-        // 🛠️ INTEGRATION EDITEUR : Réaffectation de la catégorie de l'article au select
         document.getElementById('category').value = art.category || '';
 
         document.getElementById('content').value = art.content;
@@ -580,7 +718,6 @@
 
             title: document.getElementById('title').value,
 
-            // 🛠️ ENVOI DE LA CATEGORIE A L'API
             category: document.getElementById('category').value,
 
             content: document.getElementById('content').value,
@@ -649,7 +786,7 @@
     });
 
     // =========================
-    // DELETE
+    // DELETE (SINGLE)
     // =========================
 
     async function deleteArticle(id){
@@ -682,9 +819,28 @@
     // =========================
 
     function initPage(){
+        const rawData = localStorage.getItem('user_full_data');
 
-        if(!localStorage.getItem('user_full_data')){
+        if(!rawData){
+            window.location.replace('connexion.html');
+            return;
+        }
 
+        try {
+            const userData = JSON.parse(rawData);
+            const roles = userData.roles || userData.role || [];
+            const isWordAdmin = Array.isArray(roles) 
+                ? roles.some(r => r.trim().toUpperCase() === 'ROLE_ADMIN')
+                : (typeof roles === 'string' && roles.trim().toUpperCase() === 'ROLE_ADMIN');
+
+            if (isWordAdmin) {
+                document.body.style.opacity = "1";
+            } else {
+                alert("Page introuvable.");
+                window.location.replace('connexion.html');
+            }
+        } catch (e) {
+            console.error("Erreur de lecture de session :", e);
             window.location.replace('connexion.html');
         }
     }

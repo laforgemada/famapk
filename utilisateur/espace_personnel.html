@@ -1142,69 +1142,14 @@ const DEBUG = true;
 let currentUsername = null;
 let loyaltyData = null;
 let bonusTimer = null;
-//let notificationCount = 0;
-//let loadedNotificationsArray = [];
 
-
-// Déclaration du compteur global et du tableau (assure-toi qu'ils ne sont pas re-déclarés plus haut)
+// Déclaration unique des variables globales des notifications
 if (typeof notificationCount === 'undefined') {
     var notificationCount = 0;
 }
 if (typeof loadedNotificationsArray === 'undefined') {
     var loadedNotificationsArray = [];
 }
-
-// Initialisation de la connexion SSE vers ton contrôleur PHP
-const eventSource = new EventSource('https://apokalypsy.com/api/notifications/stream');
-//const eventSource = new EventSource('http://localhost:8080/api/notifications/stream');
-// On écoute le flux dynamique du serveur
-eventSource.onmessage = function(event) {
-    // 1. Ignorer les pings ou les messages vides
-    if (!event.data || event.data.trim() === "" || event.data.includes("ping")) {
-        return; 
-    }
-
-    try {
-        // 2. Parser le JSON dynamique envoyé par le PHP
-        const data = JSON.parse(event.data);
-        console.log("🔔 Nouvelle notification dynamique reçue :", data);
-
-        // 3. Ajouter la notification au tableau global de l'application
-        if (typeof loadedNotificationsArray !== 'undefined') {
-            // Éviter les doublons si le réseau bégaie
-            const dejavu = loadedNotificationsArray.some(n => n.id === data.id);
-            if (!dejavu) {
-                loadedNotificationsArray.push(data);
-                notificationCount = loadedNotificationsArray.length;
-            }
-        } else {
-            notificationCount++;
-        }
-
-        // 4. Mettre à jour graphiquement le badge avec le nouveau compte
-        const badge = document.getElementById('notif-badge');
-        if (badge) {
-            badge.textContent = notificationCount;
-            badge.style.setProperty('display', 'flex', 'important');
-            
-            // Animation flash pour attirer l'œil de l'utilisateur
-            badge.classList.remove('pulse');
-            void badge.offsetWidth; // Astuce magique pour reset l'animation CSS
-            badge.classList.add('pulse');
-        }
-
-        // Optionnel : Si tu as une liste déroulante (dropdown) de notifications,
-        // tu peux appeler une fonction ici pour injecter `data.message` dedans.
-
-    } catch (error) {
-        console.error("Erreur lors du traitement de la notification dynamique :", error);
-    }
-};
-
-// Gestion des erreurs de déconnexion ou de routes (comme ton erreur 404 actuelle)
-eventSource.onerror = function(error) {
-    console.error("❌ Erreur de connexion SSE. Raisons possibles : Erreur 404 sur le serveur ou problème de CORS.");
-};
 
 /* =========================
 DEBUG GLOBAL
@@ -1226,7 +1171,6 @@ function debugState(label = "STATE") {
     console.groupEnd();
 }
 
-// Fonction utilitaire sécurisée pour injecter du texte
 function setText(id, value) {
     const el = document.getElementById(id);
     if (el) el.innerText = value;
@@ -1244,13 +1188,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentUsername) {
         loadLoyaltyData();
-        initRealtimeNotifications();
+        initRealtimeNotifications(); 
     } else {
         console.warn("Mode invité : Récupération des points désactivée.");
         setText('loyalty-points-display', '0 Points');
     }
     
-    // Déclenche un premier log complet pour vérifier l'état au démarrage
     debugState("DÉMARRAGE");
 });
 
@@ -1260,7 +1203,6 @@ document.addEventListener("DOMContentLoaded", () => {
  * ==========================================
  */
 function initRealtimeNotifications() {
-    // 🛠️ FIX 1 : Force l'utilisation du domaine de production si API_BASE_URL est mal configuré en local
     const baseUrl = (typeof API_BASE_URL !== 'undefined' && API_BASE_URL.includes('localhost')) 
         ? 'https://apokalypsy.com' 
         : (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'https://apokalypsy.com');
@@ -1270,7 +1212,6 @@ function initRealtimeNotifications() {
     const eventSource = new EventSource(`${baseUrl}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`);
 
     eventSource.onmessage = function(event) {
-        // 🛠️ FIX 2 : Ignorer immédiatement les pings, les chaînes vides ou les retours à la ligne
         if (!event.data || event.data.trim() === "" || event.data.includes("ping")) {
             return; 
         }
@@ -1279,19 +1220,17 @@ function initRealtimeNotifications() {
             const data = JSON.parse(event.data);
             console.log("Flux SSE reçu avec succès :", data);
 
-            // 🛠️ FIX 3 : Sécurité absolue contre les messages mal formés ou vides du serveur
-            if (!data || !data.message) {
-                console.log("Données incomplètes reçues, rejet.");
-                return;
+            if (!data || !data.message) return;
+
+            // Interception en temps réel des lectures bibliques
+            if (data.type === 'bible_read' || data.message.includes('Lecture') || data.message.includes('chapitre')) {
+                addBibleActivityToList(data.message, true);
+                return; // On arrête ici pour ce type d'événement afin d'éviter les doublons dans le menu classique
             }
 
-            // 🛠️ FIX 4 : ANTI-DOUBLON STRICT sur l'ID réel de la base de données
             if (typeof loadedNotificationsArray !== 'undefined') {
                 const dejavu = loadedNotificationsArray.some(n => n.realId === data.id);
-                if (dejavu) {
-                    console.log(`Notification ID ${data.id} déjà présente dans le tableau, ignorée.`);
-                    return; 
-                }
+                if (dejavu) return; 
             }
 
             let iconType = 'article'; 
@@ -1308,7 +1247,6 @@ function initRealtimeNotifications() {
                 directLink = '../../chat.html';
             }
 
-            // Ajout dans le tableau global
             loadedNotificationsArray.unshift({
                 id: Date.now(), 
                 realId: data.id, 
@@ -1320,17 +1258,16 @@ function initRealtimeNotifications() {
                 link: directLink
             });
 
-            // Recalculer le total exact basé uniquement sur les vrais éléments du tableau
             notificationCount = loadedNotificationsArray.length;
             renderNotificationBadge();
             renderVerticalDropdownMenu();
 
-            // Ajout dans l'interface d'activité
             const activityList = document.getElementById('activity-realtime-list');
             if (activityList) {
                 const newItem = document.createElement('div');
                 newItem.className = 'activity-item';
                 newItem.style.border = '2px solid var(--secondary)';
+                newItem.style.animation = 'fadeInNotif 0.4s ease-out';
                 newItem.innerHTML = `
                     <div class="activity-icon icon-purple">
                         <i data-feather="${iconName}"></i>
@@ -1354,7 +1291,6 @@ function initRealtimeNotifications() {
     };
 
     eventSource.onerror = function(err) {
-        // En cas de déconnexion, l'EventSource natif réessaye automatiquement sans détruire l'interface
         console.log("Le tuyau SSE s'est déconnecté ou cherche à joindre le serveur. En attente...");
     };
 
@@ -1448,38 +1384,196 @@ function logout(){
 }
 
 /**
- * =========================
- * LOAD LOYALTY
- * =========================
+ * ==========================================
+ * GESTION DE LA FIDÉLITÉ
+ * ==========================================
  */
-async function loadLoyaltyData(){
+async function loadLoyaltyData() {
     if (!currentUsername) return;
 
-    try{
-        const response = await fetch(
-            `${API_BASE_URL}/api/user/loyalty-status?username=${encodeURIComponent(currentUsername)}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+    const urlHistory = `${API_BASE_URL}/api/points/history?username=${encodeURIComponent(currentUsername)}`;
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(urlHistory, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            }
+        });
+
+        if (response.status === 404) {
+            console.warn(`Route non trouvée ou aucun historique pour ${currentUsername}. Initialisation par défaut.`);
+            updateLoyaltyUI(0);
+            renderLoyaltyActionButton([]);
+            return;
+        }
+
+        if (!response.ok) throw new Error("Erreur récupération de l'historique");
+
+        const data = await response.json();
+        console.log("Données reçues du serveur pour le bible :", data);
+        if (data.success) {
+            updateLoyaltyUI(data.total_points);
+            renderLoyaltyActionButton(data.history || []);
+
+            // --- CHARGEMENT DYNAMIQUE DE L'HISTORIQUE DE LECTURE ---
+            const activityList = document.getElementById('activity-realtime-list');
+            if (activityList && data.history && data.history.length > 0) {
+                // On vide le contenu statique par défaut
+                activityList.innerHTML = '';
+                
+                // Filtrer les actions liées aux lectures de chapitres
+                const bibleReads = data.history
+                    .filter(item => item.actionType === 'BIBLE_READ' || item.actionType === 'DAILY_VERSE')
+                    .slice(0, 5); // Conserver uniquement les 5 plus récentes
+
+                if (bibleReads.length > 0) {
+                    // On inverse pour insérer la plus récente tout en haut de la liste
+                    bibleReads.reverse().forEach(act => {
+                        addBibleActivityToList(act.description || "Lecture d'un chapitre terminée");
+                    });
+                } else {
+                    activityList.innerHTML = `
+                        <div style="padding: 20px; text-align: center; color: var(--muted); font-size: 0.85rem;">
+                            Aucune lecture enregistrée récemment.
+                        </div>`;
                 }
             }
-        );
+        } else {
+            updateLoyaltyUI(0);
+            renderLoyaltyActionButton([]);
+        }
 
-        if(!response.ok) throw new Error("Erreur récupération fidélité");
-
-        loyaltyData = await response.json();
-        updateLoyaltyUI(loyaltyData);
-
-    }catch(error){
-        console.error("LOYALTY ERROR:", error);
-        setText('loyalty-points-display', '0 Points');
+    } catch (error) {
+        console.error("Erreur lors du chargement de la fidélité :", error);
+        updateLoyaltyUI(0);
+        renderLoyaltyActionButton([]);
     }
 }
 
-function updateLoyaltyUI(data){
-    const points = Number(data?.points || 0);
+function renderLoyaltyActionButton(history) {
+    const container = document.getElementById('loyalty-action-container');
+    if (!container) return;
+
+    // Nettoyer l'ancien intervalle s'il existe pour éviter les fuites de mémoire
+    if (window.loyaltyCountdownInterval) {
+        clearInterval(window.loyaltyCountdownInterval);
+    }
+
+    const aujourdhui = new Date().toLocaleDateString('fr-FR');
+    
+    // Trouver l'action d'aujourd'hui
+    const dernierBonus = Array.isArray(history) && history.find(item => {
+        return item.actionType === 'DAILY_VERSE' && item.date && item.date.startsWith(aujourdhui);
+    });
+
+    if (dernierBonus) {
+        // Calculer l'heure exacte du prochain bonus (Date du bonus + 24h)
+        const [datePart, timePart] = dernierBonus.date.split(' ');
+        const [day, month, year] = datePart.split('/');
+        const [hours, minutes] = timePart.split(':');
+        
+        const dateBonus = new Date(year, month - 1, day, hours, minutes);
+        const dateProchainBonus = new Date(dateBonus.getTime() + (24 * 60 * 60 * 1000));
+
+        // Création du conteneur pour le rebours
+        container.innerHTML = `
+            <button class="loyalty-action-btn" style="background: #e2e8f0; color: #94a3b8; cursor: not-allowed; display: flex; flex-direction: column; gap: 4px; padding: 10px 16px;" disabled>
+                <span><i data-feather="check-circle"></i> Bonus validé aujourd'hui</span>
+                <small id="loyalty-countdown-timer" style="font-size: 0.75rem; color: #64748b; font-weight: bold;"></small>
+            </button>
+        `;
+        feather.replace();
+
+        // Fonction de mise à jour du chrono
+        function updateTimer() {
+            const maintenant = new Date();
+            const reste = dateProchainBonus - maintenant;
+
+            const timerEl = document.getElementById('loyalty-countdown-timer');
+            if (!timerEl) return;
+
+            if (reste <= 0) {
+                timerEl.innerText = "Prochain bonus disponible ! Rechargez la page.";
+                clearInterval(window.loyaltyCountdownInterval);
+                loadLoyaltyData(); 
+                return;
+            }
+
+            const h = Math.floor(reste / (1000 * 60 * 60));
+            const m = Math.floor((reste % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((reste % (1000 * 60)) / 1000);
+
+            timerEl.innerText = `Prochain bonus dans : ${h}h ${m}m ${s}s`;
+        }
+
+        // Lancer le compteur immédiatement et toutes les secondes
+        updateTimer();
+        window.loyaltyCountdownInterval = setInterval(updateTimer, 1000);
+
+    } else {
+        // Pas de bonus aujourd'hui : Bouton actif
+        container.innerHTML = `
+            <button class="loyalty-action-btn" onclick="claimDailyLoginReward()">
+                <i data-feather="gift"></i> Réclamer mon bonus (+0.50)
+            </button>
+        `;
+        feather.replace();
+    }
+}
+
+async function claimDailyLoginReward() {
+    const container = document.getElementById('loyalty-action-container');
+    if (!container) return;
+    
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        alert("Votre session a expiré ou vous n'êtes pas connecté. Veuillez vous reconnecter pour réclamer vos points.");
+        return;
+    }
+
+    container.innerHTML = `
+        <button class="loyalty-action-btn" disabled>
+            <i data-feather="loader" class="animate-spin"></i> Traitement...
+        </button>
+    `;
+    feather.replace();
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/reward/daily-login`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ username: currentUsername })
+        });
+
+        if (response.status === 401) {
+            alert("Erreur 401 : Session non autorisée. Veuillez vous reconnecter.");
+            loadLoyaltyData();
+            return;
+        }
+
+        const data = await response.json();
+        alert(data.message || (data.success ? "Opération réussie !" : "Une erreur est survenue."));
+        
+        loadLoyaltyData();
+
+    } catch (error) {
+        console.error("Erreur lors de la réclamation du bonus :", error);
+        alert("Impossible de joindre le serveur de fidélité.");
+        loadLoyaltyData();
+    }
+}
+
+function updateLoyaltyUI(totalPoints) {
+    const points = Number(totalPoints || 0);
 
     setText('loyalty-points-display', `${points} Points`);
 
@@ -1498,20 +1592,17 @@ function updateLoyaltyUI(data){
             `conic-gradient(#7c3aed 0% ${progress}%, #e2e8f0 ${progress}% 100%)`;
     }
 
-    updateBonusButton(data);
     generateTrophies(points);
     updateStats(points);
-
     feather.replace();
 }
 
-// Fonctions algorithmiques pour la progression
 function calculateLevel(points) {
     return Math.floor(points / 100) + 1;
 }
 
 function calculateProgress(points) {
-    return points % 100;
+    return Math.floor(points % 100);
 }
 
 function updateStats(points) {
@@ -1546,78 +1637,39 @@ function generateTrophies(points) {
 }
 
 /**
- * ==========================================
- * COMPTE À REBOURS ET DEMANDE DU BONUS
- * ==========================================
+ * Ajoute visuellement une activité de lecture dans la liste
+ * @param {string} message Le texte à afficher
+ * @param {boolean} isNew Si vrai, applique une animation d'entrée
  */
-function updateBonusButton(data){
-    const container = document.getElementById('loyalty-action-container');
-    if (!container) return;
+function addBibleActivityToList(message, isNew = false) {
+    const activityList = document.getElementById('activity-realtime-list');
+    if (!activityList) return;
 
-    if (bonusTimer) {
-        clearInterval(bonusTimer);
-        bonusTimer = null;
+    // Supprimer le message statique de base s'il est présent
+    if (activityList.innerHTML.includes("Genèse chapitre 3") && !isNew) {
+        activityList.innerHTML = '';
     }
 
-    let timeLeft = Number(data?.nextBonusIn || 0);
-
-    if (timeLeft > 0) {
-        const renderCountdown = () => {
-            if (timeLeft <= 0) {
-                clearInterval(bonusTimer);
-                container.innerHTML = `<button class="loyalty-action-btn" onclick="claimDailyBonus()">🎁 Récupérer mon Bonus</button>`;
-                feather.replace();
-                return;
-            }
-
-            const hours = Math.floor(timeLeft / 3600);
-            const minutes = Math.floor((timeLeft % 3600) / 60);
-            const seconds = timeLeft % 60;
-
-            container.innerHTML = `
-                <button class="loyalty-action-btn" disabled style="background:#e2e8f0; color:#94a3b8;">
-                    ⏳ ${hours}h ${minutes}m ${seconds}s
-                </button>
-            `;
-            timeLeft--;
-        };
-        renderCountdown();
-        bonusTimer = setInterval(renderCountdown, 1000);
-    } else {
-        container.innerHTML = `<button class="loyalty-action-btn" onclick="claimDailyBonus()">🎁 Récupérer mon Bonus</button>`;
-        feather.replace();
-    }
-}
-
-async function claimDailyBonus() {
-    if (!currentUsername) return;
+    const newItem = document.createElement('div');
+    newItem.className = 'activity-item';
     
-    const container = document.getElementById('loyalty-action-container');
-    container.innerHTML = `<button class="loyalty-action-btn" disabled><i data-feather="loader" class="pulse"></i> Traitement...</button>`;
-    feather.replace();
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/user/loyalty-status`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: currentUsername })
-        });
-
-        if (!response.ok) throw new Error("Impossible de valider le bonus");
-
-        const result = await response.json();
-        alert("🎉 Félicitations ! +10 points ajoutés à votre solde.");
-        
-        // Recharger les données fraîches depuis le serveur
-        loadLoyaltyData();
-    } catch (e) {
-        console.error(e);
-        alert("Erreur lors de la récupération du bonus.");
-        loadLoyaltyData();
+    if (isNew) {
+        newItem.style.border = '1px solid var(--success)';
+        newItem.style.animation = 'fadeInNotif 0.4s ease-out';
     }
+
+    newItem.innerHTML = `
+        <div class="activity-icon icon-blue">
+            <i data-feather="book-open"></i>
+        </div>
+        <div class="activity-content">
+            <div class="activity-title">Lecture Biblique</div>
+            <div class="activity-text">${message}</div>
+        </div>
+    `;
+
+    activityList.insertBefore(newItem, activityList.firstChild);
+    feather.replace();
 }
 </script>
 </body>
