@@ -457,12 +457,15 @@ body{
     font-size:0.82rem;
     font-weight:800;
     color:var(--text-muted);
+    cursor:pointer;
+    transition: all 0.2s ease;
 }
 
 .cat-badge.active{
     background:var(--gradient);
     color:white;
     border:none;
+    box-shadow: 0 8px 20px rgba(30, 58, 138, 0.2);
 }
 
 /* =========================
@@ -549,6 +552,7 @@ body{
 
 .container{
     padding:0 20px;
+    min-height: 200px;
 }
 
 .bible-card{
@@ -813,7 +817,7 @@ const translations = {
         home:"Trano",
         bible:"Baiboly",
         chat:"Tafatafa",
-        cats:["Rehetra","Toriteny","Faminaniana","Hira"]
+        cats:["Rehetra","Toriteny","Faminaniana","Hira","Vaovao"]
     },
     fr:{
         connexion:"Connexion",
@@ -828,7 +832,7 @@ const translations = {
         home:"Accueil",
         bible:"Bible",
         chat:"Chat",
-        cats:["Tous","Sermons","Prophéties","Chants"]
+        cats:["Tous","Sermons","Prophéties","Chants","Actualité"]
     },
     en:{
         connexion:"Login",
@@ -843,28 +847,35 @@ const translations = {
         home:"Home",
         bible:"Bible",
         chat:"Chat",
-        cats:["All","Sermons","Prophecies","Songs"]
+        cats:["All","Sermons","Prophecies","Songs","News"]
     }
 };
 
 const API_URL = 'https://apokalypsy.com/api/articles/list';
-// Remplace 'api/user/leaderboard' par 'api/users/leaderboard'
 const LEADERBOARD_API_URL = 'https://apokalypsy.com/api/users/leaderboard';
 const STATS_API_URL = 'https://apokalypsy.com/api/global/stats';
 
 let allArticles = [];
+let currentCategoryIndex = 0; // 0 = Tous / Rehetra
 let currentPage = 1;
 const itemsPerPage = 5;
 
+// 🛠️ ALIGNEMENT DU MAPPAGE AVEC LES VALEURS DE VOTRE FORMULAIRE (SELECT VALUE)
+const categoryMapping = {
+    1: 'sermons',
+    2: 'propheties',
+    3: 'chants',
+    4: 'actualite'
+};
+
 /* =========================
-   LANG
+   LANG & BADGES MANAGEMENT
 ========================= */
 function changeLanguage(){
     const lang = document.getElementById('langSwitcher').value;
     localStorage.setItem('app_lang', lang);
 
     const t = translations[lang];
-	const NOTIF_STREAM_URL = 'https://apokalypsy.com/api/notifications/stream';
 
     document.getElementById('label-mavitrika').innerText = t.labelMavitrika;
     document.getElementById('label-fampianarana').innerText = t.labelFampianarana;
@@ -874,12 +885,13 @@ function changeLanguage(){
     document.getElementById('menu-bible').innerText = t.bible;
     document.getElementById('menu-chat').innerText = t.chat;
 	
-
     const catList = document.getElementById('cat-list');
-    const icons = ['grid','book-open','zap','music'];
+    
+    // Ajout d'une icône 'globe' pour la catégorie Actualité
+    const icons = ['grid','book-open','zap','music','globe'];
 
-    catList.innerHTML = t.cats.map((name,i)=>`
-        <div class="cat-badge ${i===0?'active':''}">
+    catList.innerHTML = t.cats.map((name, i) => `
+        <div class="cat-badge ${i === currentCategoryIndex ? 'active' : ''}" onclick="selectCategory(${i})">
             <i data-feather="${icons[i]}"></i>
             ${name}
         </div>
@@ -887,6 +899,29 @@ function changeLanguage(){
 
     updateAuthDisplay();
     feather.replace();
+
+    if (allArticles.length > 0) {
+        renderArticles();
+    }
+}
+
+/* =========================
+   FILTRAGE DES CATÉGORIES
+========================= */
+function selectCategory(index) {
+    currentCategoryIndex = index;
+    currentPage = 1;
+
+    const badges = document.querySelectorAll('#cat-list .cat-badge');
+    badges.forEach((badge, idx) => {
+        if(idx === index) {
+            badge.classList.add('active');
+        } else {
+            badge.classList.remove('active');
+        }
+    });
+
+    renderArticles();
 }
 
 /* =========================
@@ -975,8 +1010,27 @@ function renderArticles(){
     const container = document.getElementById('articles-container');
     container.innerHTML = '';
 
+    let filteredArticles = allArticles;
+
+    // Prise en compte du filtre
+    if (currentCategoryIndex !== 0) {
+        const targetCategoryValue = categoryMapping[currentCategoryIndex];
+        filteredArticles = allArticles.filter(article => {
+            return article.category === targetCategoryValue;
+        });
+    }
+
+    if (filteredArticles.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:50px 10px; color:var(--text-muted); font-weight:700;">
+                Tsy misy fampianarana mifanaraka amin'ity sokajy ity. / Aucun article dans cette catégorie.
+            </div>`;
+        updatePaginationControls(0);
+        return;
+    }
+
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const pageItems = allArticles.slice(startIndex, startIndex + itemsPerPage);
+    const pageItems = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
 
     pageItems.forEach(article => {
         const img = article.image_url || 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=800';
@@ -1005,14 +1059,14 @@ function renderArticles(){
         `);
     });
 
-    updatePaginationControls();
+    updatePaginationControls(filteredArticles.length);
     observeElements();
     feather.replace();
 }
 
-function updatePaginationControls(){
+function updatePaginationControls(totalItems){
     const controls = document.getElementById('pagination-controls');
-    const totalPages = Math.ceil(allArticles.length / itemsPerPage);
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     if(totalPages <= 1){
         controls.innerHTML = '';
@@ -1023,7 +1077,7 @@ function updatePaginationControls(){
         <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
             <i data-feather="chevron-left"></i>
         </button>
-        <span style="font-weight:900;">${currentPage}</span>
+        <span style="font-weight:900;">${currentPage} / ${totalPages}</span>
         <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
             <i data-feather="chevron-right"></i>
         </button>
@@ -1111,13 +1165,11 @@ function updateAuthDisplay(){
 
 async function fetchGlobalStats() {
     try {
-        // On appelle l'API Symfony avec un paramètre anti-cache (?t=...)
         const response = await fetch(`${STATS_API_URL}?t=${Date.now()}`);
         if (!response.ok) throw new Error("Erreur lors de la récupération des statistiques");
 
         const stats = await response.json();
 
-        // Formatage pour afficher "+12K" si le nombre dépasse 1000, sinon le chiffre exact
         const membersCount = stats.total_members >= 1000 
             ? `+${(stats.total_members / 1000).toFixed(1)}K`.replace('.0', '')
             : stats.total_members;
@@ -1126,13 +1178,11 @@ async function fetchGlobalStats() {
             ? `+${(stats.total_articles / 1000).toFixed(1)}K`.replace('.0', '')
             : stats.total_articles;
 
-        // On injecte les valeurs dynamiques dans le HTML
         document.getElementById('stat-members').innerText = membersCount;
         document.getElementById('stat-articles').innerText = articlesCount;
 
     } catch (error) {
         console.error("Erreur stats :", error);
-        // Valeurs de secours si l'API ne répond pas
         document.getElementById('stat-members').innerText = "+12K";
         document.getElementById('stat-articles').innerText = "+580";
     }
@@ -1164,10 +1214,8 @@ window.onload = () => {
     changeLanguage();
     fetchLeaderboard();
     fetchArticles();
-	fetchGlobalStats();
+    fetchGlobalStats();
 };
-
-
 
 </script>
 </body>

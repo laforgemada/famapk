@@ -163,7 +163,6 @@
         </p>
     </div>
 
-    <!-- FORMULAIRE -->
     <form class="editor-container" id="articleForm">
 
         <input type="hidden" id="articleId">
@@ -175,6 +174,17 @@
                    id="title"
                    placeholder="Ex: Les secrets de la tech..."
                    required>
+        </div>
+
+        <div class="form-group">
+            <label>Catégorie</label>
+            <select id="category" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd;" required>
+                <option value="">-- Sélectionner une catégorie --</option>
+                <option value="sermons">Sermons</option>
+                <option value="propheties">Prophéties</option>
+                <option value="chants">Chants</option>
+                <option value="actualite">Actualité</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -239,7 +249,6 @@
 
     </form>
 
-    <!-- TABLE -->
     <div class="crud-container">
 
         <h3>Mes Publications</h3>
@@ -250,6 +259,7 @@
             <tr>
                 <th>Image</th>
                 <th>Titre</th>
+                <th>Catégorie</th>
                 <th>Date</th>
                 <th>Actions</th>
             </tr>
@@ -258,7 +268,7 @@
             <tbody id="articleTableBody">
 
             <tr>
-                <td colspan="4" style="text-align:center;">
+                <td colspan="5" style="text-align:center;">
                     Chargement...
                 </td>
             </tr>
@@ -271,7 +281,6 @@
 
 </main>
 
-<!-- MODAL -->
 <div class="modal" id="viewModal">
 
     <button class="close-modal"
@@ -412,7 +421,7 @@
 
             document.getElementById('articleTableBody').innerHTML = `
                 <tr>
-                    <td colspan="4">Erreur chargement.</td>
+                    <td colspan="5">Erreur chargement.</td>
                 </tr>
             `;
         }
@@ -430,58 +439,64 @@
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="4">Aucun article.</td>
+                    <td colspan="5">Aucun article.</td>
                 </tr>
             `;
 
             return;
         }
 
-        tbody.innerHTML = articles.map(art => `
+        tbody.innerHTML = articles.map(art => {
+            // Optionnel : Gestion de l'affichage lisible de la catégorie
+            const displayCat = art.category ? art.category.charAt(0).toUpperCase() + art.category.slice(1) : '<span style="color:#94a3b8;">Non spécifiée</span>';
+            
+            return `
+                <tr>
+                    <td>
+                        <img src="${art.image_url || 'https://via.placeholder.com/50'}"
+                             class="thumbnail-list">
+                    </td>
 
-            <tr>
+                    <td>
+                        <strong>${art.title}</strong>
+                    </td>
 
-                <td>
-                    <img src="${art.image_url || 'https://via.placeholder.com/50'}"
-                         class="thumbnail-list">
-                </td>
+                    <td>
+                        <span class="badge-category">${displayCat}</span>
+                    </td>
 
-                <td>
-                    <strong>${art.title}</strong>
-                </td>
+                    <td>
+                        ${new Date(art.created_at).toLocaleDateString()}
+                    </td>
 
-                <td>
-                    ${new Date(art.created_at).toLocaleDateString()}
-                </td>
+                    <td class="actions">
 
-                <td class="actions">
+                        <button class="btn-action btn-view"
+                                onclick="viewArticle(${art.id})">
 
-                    <button class="btn-action btn-view"
-                            onclick="viewArticle(${art.id})">
+                            <i class="fa-solid fa-eye"></i>
 
-                        <i class="fa-solid fa-eye"></i>
+                        </button>
 
-                    </button>
+                        <button class="btn-action btn-edit"
+                                onclick="editArticle(${art.id})">
 
-                    <button class="btn-action btn-edit"
-                            onclick="editArticle(${art.id})">
+                            <i class="fa-solid fa-pen"></i>
 
-                        <i class="fa-solid fa-pen"></i>
+                        </button>
 
-                    </button>
+                        <button class="btn-action btn-delete"
+                                onclick="deleteArticle(${art.id})">
 
-                    <button class="btn-action btn-delete"
-                            onclick="deleteArticle(${art.id})">
+                            <i class="fa-solid fa-trash"></i>
 
-                        <i class="fa-solid fa-trash"></i>
+                        </button>
 
-                    </button>
+                    </td>
 
-                </td>
-
-            </tr>
-
-        `).join('');
+                </tr>
+            `;
+        }).join('');
     }
 
     // =========================
@@ -504,6 +519,10 @@
         document.getElementById('viewModal').style.display = 'flex';
     }
 
+    // =========================
+    // CLOSE MODAL
+    // =========================
+
     function closeModal(){
 
         document.getElementById('viewModal').style.display = 'none';
@@ -522,6 +541,9 @@
         document.getElementById('articleId').value = art.id;
 
         document.getElementById('title').value = art.title;
+
+        // 🛠️ INTEGRATION EDITEUR : Réaffectation de la catégorie de l'article au select
+        document.getElementById('category').value = art.category || '';
 
         document.getElementById('content').value = art.content;
 
@@ -557,6 +579,9 @@
         const articleData = {
 
             title: document.getElementById('title').value,
+
+            // 🛠️ ENVOI DE LA CATEGORIE A L'API
+            category: document.getElementById('category').value,
 
             content: document.getElementById('content').value,
 
@@ -629,28 +654,28 @@
 
     async function deleteArticle(id){
 
-    if(!confirm("Supprimer cet article ?")) return;
+        if(!confirm("Supprimer cet article ?")) return;
 
-    try{
+        try{
 
-        const res = await fetch(`${API_BASE}/delete/${id}`, {
-            method:'POST'
-        });
+            const res = await fetch(`${API_BASE}/delete/${id}`, {
+                method:'POST'
+            });
 
-        if(!res.ok){
-            throw new Error("Erreur suppression");
+            if(!res.ok){
+                throw new Error("Erreur suppression");
+            }
+
+            alert("Article supprimé.");
+
+            fetchArticles();
+
+        }catch(err){
+
+            console.error(err);
+            alert("Erreur suppression.");
         }
-
-        alert("Article supprimé.");
-
-        fetchArticles();
-
-    }catch(err){
-
-        console.error(err);
-        alert("Erreur suppression.");
     }
-}
 
     // =========================
     // AUTH
