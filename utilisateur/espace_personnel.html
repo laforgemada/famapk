@@ -1139,537 +1139,966 @@ RESPONSIVE
 const API_BASE_URL = 'https://apokalypsy.com';
 const DEBUG = true;
 
+/* ==========================================
+VARIABLES GLOBALES
+========================================== */
 let currentUsername = null;
 let loyaltyData = null;
 let bonusTimer = null;
 
-// Déclaration unique des variables globales des notifications
-if (typeof notificationCount === 'undefined') {
-    var notificationCount = 0;
-}
-if (typeof loadedNotificationsArray === 'undefined') {
-    var loadedNotificationsArray = [];
-}
+let notificationCount = 0;
+let loadedNotificationsArray = [];
 
-/* =========================
-DEBUG GLOBAL
-========================= */
-function debugState(label = "STATE") {
-    if (!DEBUG) return;
+let eventSource = null;
 
-    console.group(`🧪 ${label}`);
-    console.log("currentUsername:", currentUsername);
-    console.log("loyaltyData:", loyaltyData);
-    console.log("bonusTimer:", bonusTimer);
-    console.log("notificationCount:", notificationCount);
-    console.log("loadedNotificationsArray:", loadedNotificationsArray);
-    console.log("localStorage user_name:", localStorage.getItem('user_name'));
-    console.log("localStorage user_role:", localStorage.getItem('user_role'));
-    console.log("localStorage token:", localStorage.getItem('token'));
-    console.log("notif badge DOM:", document.getElementById('notif-badge'));
-    console.log("loyalty DOM:", document.getElementById('loyalty-points-display'));
-    console.groupEnd();
+/* ==========================================
+UTILS
+========================================== */
+function debug(...args){
+    if(DEBUG){
+        console.log(...args);
+    }
 }
 
-function setText(id, value) {
+function debugState(label){
+    console.log(`================ ${label} ================`);
+    console.log("👤 Username :", currentUsername);
+    console.log("🔔 Notifications :", loadedNotificationsArray);
+    console.log("📊 Loyalty :", loyaltyData);
+}
+
+function setText(id, value){
     const el = document.getElementById(id);
-    if (el) el.innerText = value;
+
+    if(el){
+        el.innerText = value;
+    }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    feather.replace();
+function safeFeather(){
+
+    if(window.feather){
+        feather.replace();
+    }
+}
+
+/* ==========================================
+INITIALISATION
+========================================== */
+document.addEventListener("DOMContentLoaded", async () => {
+
+    safeFeather();
 
     currentUsername = localStorage.getItem('user_name');
 
-    const welcomeTitle = document.getElementById('welcome-user-title');
-    if (welcomeTitle) {
-        welcomeTitle.innerText = `Bonjour ${currentUsername || 'Invité'} 🙏`;
+    debug("👤 Utilisateur :", currentUsername);
+
+    const welcomeTitle =
+        document.getElementById(
+            'welcome-user-title'
+        );
+
+    if(welcomeTitle){
+
+        welcomeTitle.innerText =
+            `Bonjour ${currentUsername || 'Invité'} 🙏`;
     }
 
-    if (currentUsername) {
-        loadLoyaltyData();
-        initRealtimeNotifications(); 
-    } else {
-        console.warn("Mode invité : Récupération des points désactivée.");
-        setText('loyalty-points-display', '0 Points');
+    if(currentUsername){
+
+        await loadLoyaltyData();
+
+        initRealtimeNotifications();
+
+    }else{
+
+        console.warn("⚠️ Aucun utilisateur connecté");
     }
-    
-    debugState("DÉMARRAGE");
+
+    window.sendBibleReadActivity =
+        sendBibleReadActivity;
+
+    debugState("APPLICATION CHARGÉE");
 });
 
-/**
- * ==========================================
- * NOTIFICATIONS EN TEMPS RÉEL (SSE)
- * ==========================================
- */
-function initRealtimeNotifications() {
-    const baseUrl = (typeof API_BASE_URL !== 'undefined' && API_BASE_URL.includes('localhost')) 
-        ? 'https://apokalypsy.com' 
-        : (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'https://apokalypsy.com');
+/* ==========================================
+NOTIFICATIONS SSE
+========================================== */
+function initRealtimeNotifications(){
 
-    console.log("Démarrage du flux SSE sur :", `${baseUrl}/api/notifications/stream`);
-    
-    const eventSource = new EventSource(`${baseUrl}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`);
+    if(!currentUsername){
+        return;
+    }
 
-    eventSource.onmessage = function(event) {
-        if (!event.data || event.data.trim() === "" || event.data.includes("ping")) {
-            return; 
+    if(eventSource){
+        eventSource.close();
+    }
+
+    const sseUrl =
+        `${API_BASE_URL}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`;
+
+    debug("📡 SSE URL :", sseUrl);
+
+    eventSource = new EventSource(sseUrl);
+
+    eventSource.onopen = () => {
+
+        console.log("✅ SSE connecté");
+    };
+
+    eventSource.onmessage = (event) => {
+
+        debug("📩 SSE BRUT :", event.data);
+
+        if(
+            !event.data ||
+            event.data.includes('ping')
+        ){
+            return;
         }
 
-        try {
-            const data = JSON.parse(event.data);
-            console.log("Flux SSE reçu avec succès :", data);
+        try{
 
-            if (!data || !data.message) return;
+            const data =
+                JSON.parse(event.data);
 
-            // Interception en temps réel des lectures bibliques
-            if (data.type === 'bible_read' || data.message.includes('Lecture') || data.message.includes('chapitre')) {
-                addBibleActivityToList(data.message, true);
-                return; // On arrête ici pour ce type d'événement afin d'éviter les doublons dans le menu classique
+            console.log("📨 Notification reçue :", data);
+
+            if(!data.message){
+                return;
             }
 
-            if (typeof loadedNotificationsArray !== 'undefined') {
-                const dejavu = loadedNotificationsArray.some(n => n.realId === data.id);
-                if (dejavu) return; 
+            const alreadyExists =
+                loadedNotificationsArray.some(
+                    n => n.realId === data.id
+                );
+
+            if(alreadyExists){
+                return;
             }
 
-            let iconType = 'article'; 
-            let iconName = 'book-open';
-            let directLink = '../../index.html';
+            let iconType = 'article';
+            let iconName = 'bell';
+            let link = '../../index.html';
 
-            if (data.type === 'new_badge' || data.message.includes('badge') || data.message.includes('Trophée')) {
+            if(data.type === 'chat'){
+
+                iconType = 'chat';
+                iconName = 'message-circle';
+                link = '../../chat.html';
+            }
+
+            if(data.type === 'new_badge'){
+
                 iconType = 'badge';
                 iconName = 'award';
-                directLink = '#';
-            } else if (data.type === 'chat' || data.message.includes('Chat') || data.message.includes('message')) {
-                iconType = 'chat';
-                iconName = 'message-square';
-                directLink = '../../chat.html';
             }
 
             loadedNotificationsArray.unshift({
-                id: Date.now(), 
-                realId: data.id, 
+                id: Date.now(),
+                realId: data.id,
                 type: iconType,
                 icon: iconName,
                 message: data.message,
-                time: 'À l\'instant',
+                time: 'À l’instant',
                 unread: true,
-                link: directLink
+                link
             });
 
-            notificationCount = loadedNotificationsArray.length;
             renderNotificationBadge();
+
             renderVerticalDropdownMenu();
 
-            const activityList = document.getElementById('activity-realtime-list');
-            if (activityList) {
-                const newItem = document.createElement('div');
-                newItem.className = 'activity-item';
-                newItem.style.border = '2px solid var(--secondary)';
-                newItem.style.animation = 'fadeInNotif 0.4s ease-out';
-                newItem.innerHTML = `
-                    <div class="activity-icon icon-purple">
-                        <i data-feather="${iconName}"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title" style="color:var(--secondary);">Nouveau !</div>
-                        <div class="activity-text">${data.message}</div>
-                    </div>
-                `;
-                activityList.insertBefore(newItem, activityList.firstChild);
-                feather.replace();
+            addRealtimeActivity(data);
+
+            if(
+                window.Notification &&
+                Notification.permission === 'granted'
+            ){
+
+                new Notification(
+                    "Apokalypsy",
+                    {
+                        body: data.message
+                    }
+                );
             }
 
-            if (window.Notification && Notification.permission === "granted") {
-                new Notification("Apokalypsy", { body: data.message });
-            }
+        }catch(error){
 
-        } catch (error) {
-            console.error("Erreur lors de l'analyse JSON du flux SSE :", error);
+            console.error(
+                "❌ Erreur JSON SSE :",
+                error
+            );
         }
     };
 
-    eventSource.onerror = function(err) {
-        console.log("Le tuyau SSE s'est déconnecté ou cherche à joindre le serveur. En attente...");
+    eventSource.onerror = (error) => {
+
+        console.error(
+            "❌ SSE erreur :",
+            error
+        );
     };
 
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('notifDropdown');
-        const trigger = document.getElementById('notif-btn');
-        if (dropdown && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
-            dropdown.classList.remove('show');
+    document.addEventListener(
+        'click',
+        (event)=>{
+
+            const dropdown =
+                document.getElementById(
+                    'notifDropdown'
+                );
+
+            const trigger =
+                document.getElementById(
+                    'notif-btn'
+                );
+
+            if(
+                dropdown &&
+                trigger &&
+                !dropdown.contains(event.target) &&
+                !trigger.contains(event.target)
+            ){
+                dropdown.classList.remove('show');
+            }
         }
-    });
+    );
 }
 
-function toggleNotifMenu(event) {
+/* ==========================================
+MENU NOTIFICATIONS
+========================================== */
+function toggleNotifMenu(event){
+
     event.stopPropagation();
-    const dropdown = document.getElementById('notifDropdown');
-    if (dropdown) dropdown.classList.toggle('show');
+
+    const dropdown =
+        document.getElementById(
+            'notifDropdown'
+        );
+
+    if(dropdown){
+
+        dropdown.classList.toggle('show');
+    }
 }
 
-function renderNotificationBadge() {
-    const badge = document.getElementById('notif-badge');
-    if (!badge) return;
+function renderNotificationBadge(){
 
-    if (notificationCount > 0) {
-        badge.innerText = notificationCount;
+    const badge =
+        document.getElementById(
+            'notif-badge'
+        );
+
+    if(!badge){
+        return;
+    }
+
+    const unread =
+        loadedNotificationsArray.filter(
+            n => n.unread
+        ).length;
+
+    notificationCount = unread;
+
+    if(unread > 0){
+
+        badge.innerText = unread;
+
         badge.style.display = 'flex';
-        badge.classList.add('pulse-animation');
-        setTimeout(() => badge.classList.remove('pulse-animation'), 500);
-    } else {
-        badge.innerText = '0';
+
+        badge.classList.add(
+            'pulse-animation'
+        );
+
+        setTimeout(()=>{
+
+            badge.classList.remove(
+                'pulse-animation'
+            );
+
+        },500);
+
+    }else{
+
         badge.style.display = 'none';
     }
 }
 
-function renderVerticalDropdownMenu() {
-    const container = document.getElementById('notifVerticalList');
-    if (!container) return;
+function renderVerticalDropdownMenu(){
 
-    if (loadedNotificationsArray.length === 0) {
-        container.innerHTML = `
-            <div style="padding: 24px; text-align: center; color: var(--muted); font-size: 0.82rem;">
-                Aucune nouvelle notification reçue.
-            </div>
-        `;
+    const container =
+        document.getElementById(
+            'notifVerticalList'
+        );
+
+    if(!container){
         return;
     }
 
-    container.innerHTML = loadedNotificationsArray.map(notif => `
-        <a href="${notif.link}" class="notif-item ${notif.unread ? 'unread' : ''}" onclick="markOneAsRead(${notif.id})">
-            <div class="notif-item-icon ${notif.type}">
-                <i data-feather="${notif.icon}"></i>
-            </div>
-            <div class="notif-details">
-                <span class="notif-message">${notif.message}</span>
-                <span class="notif-time">${notif.time}</span>
-            </div>
-        </a>
-    `).join('');
+    if(
+        loadedNotificationsArray.length === 0
+    ){
 
-    feather.replace();
+        container.innerHTML = `
+            <div style="
+                padding:24px;
+                text-align:center;
+                color:var(--muted);
+                font-size:0.82rem;
+            ">
+                Aucune notification
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        loadedNotificationsArray.map(notif => `
+
+            <a href="${notif.link}"
+               class="notif-item ${notif.unread ? 'unread' : ''}"
+               onclick="markOneAsRead(${notif.id})">
+
+                <div class="notif-item-icon ${notif.type}">
+                    <i data-feather="${notif.icon}"></i>
+                </div>
+
+                <div class="notif-details">
+
+                    <span class="notif-message">
+                        ${notif.message}
+                    </span>
+
+                    <span class="notif-time">
+                        ${notif.time}
+                    </span>
+
+                </div>
+
+            </a>
+
+        `).join('');
+
+    safeFeather();
 }
 
-function markOneAsRead(id) {
-    const notif = loadedNotificationsArray.find(n => n.id === id);
-    if (notif && notif.unread) {
+function markOneAsRead(id){
+
+    const notif =
+        loadedNotificationsArray.find(
+            n => n.id === id
+        );
+
+    if(notif){
+
         notif.unread = false;
-        if (notificationCount > 0) notificationCount--;
+
         renderNotificationBadge();
+
         renderVerticalDropdownMenu();
     }
 }
 
-function markAllAsRead(event) {
+function markAllAsRead(event){
+
     event.stopPropagation();
-    loadedNotificationsArray.forEach(n => n.unread = false);
-    notificationCount = 0;
+
+    loadedNotificationsArray.forEach(
+        n => n.unread = false
+    );
+
     renderNotificationBadge();
+
     renderVerticalDropdownMenu();
 }
 
-if (window.Notification && Notification.permission !== "denied" && Notification.permission !== "granted") {
-    Notification.requestPermission();
-}
-
+/* ==========================================
+LOGOUT
+========================================== */
 function logout(){
-    if(confirm("Voulez-vous quitter votre session ?")){
-        localStorage.removeItem('user_name');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('token');
-        window.location.href='../../index.html';
-    }
-}
 
-/**
- * ==========================================
- * GESTION DE LA FIDÉLITÉ
- * ==========================================
- */
-async function loadLoyaltyData() {
-    if (!currentUsername) return;
+    const confirmLogout =
+        confirm(
+            "Voulez-vous quitter votre session ?"
+        );
 
-    const urlHistory = `${API_BASE_URL}/api/points/history?username=${encodeURIComponent(currentUsername)}`;
-
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(urlHistory, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-            }
-        });
-
-        if (response.status === 404) {
-            console.warn(`Route non trouvée ou aucun historique pour ${currentUsername}. Initialisation par défaut.`);
-            updateLoyaltyUI(0);
-            renderLoyaltyActionButton([]);
-            return;
-        }
-
-        if (!response.ok) throw new Error("Erreur récupération de l'historique");
-
-        const data = await response.json();
-        console.log("Données reçues du serveur pour le bible :", data);
-        if (data.success) {
-            updateLoyaltyUI(data.total_points);
-            renderLoyaltyActionButton(data.history || []);
-
-            // --- CHARGEMENT DYNAMIQUE DE L'HISTORIQUE DE LECTURE ---
-            const activityList = document.getElementById('activity-realtime-list');
-            if (activityList && data.history && data.history.length > 0) {
-                // On vide le contenu statique par défaut
-                activityList.innerHTML = '';
-                
-                // Filtrer les actions liées aux lectures de chapitres
-                const bibleReads = data.history
-                    .filter(item => item.actionType === 'BIBLE_READ' || item.actionType === 'DAILY_VERSE')
-                    .slice(0, 5); // Conserver uniquement les 5 plus récentes
-
-                if (bibleReads.length > 0) {
-                    // On inverse pour insérer la plus récente tout en haut de la liste
-                    bibleReads.reverse().forEach(act => {
-                        addBibleActivityToList(act.description || "Lecture d'un chapitre terminée");
-                    });
-                } else {
-                    activityList.innerHTML = `
-                        <div style="padding: 20px; text-align: center; color: var(--muted); font-size: 0.85rem;">
-                            Aucune lecture enregistrée récemment.
-                        </div>`;
-                }
-            }
-        } else {
-            updateLoyaltyUI(0);
-            renderLoyaltyActionButton([]);
-        }
-
-    } catch (error) {
-        console.error("Erreur lors du chargement de la fidélité :", error);
-        updateLoyaltyUI(0);
-        renderLoyaltyActionButton([]);
-    }
-}
-
-function renderLoyaltyActionButton(history) {
-    const container = document.getElementById('loyalty-action-container');
-    if (!container) return;
-
-    // Nettoyer l'ancien intervalle s'il existe pour éviter les fuites de mémoire
-    if (window.loyaltyCountdownInterval) {
-        clearInterval(window.loyaltyCountdownInterval);
-    }
-
-    const aujourdhui = new Date().toLocaleDateString('fr-FR');
-    
-    // Trouver l'action d'aujourd'hui
-    const dernierBonus = Array.isArray(history) && history.find(item => {
-        return item.actionType === 'DAILY_VERSE' && item.date && item.date.startsWith(aujourdhui);
-    });
-
-    if (dernierBonus) {
-        // Calculer l'heure exacte du prochain bonus (Date du bonus + 24h)
-        const [datePart, timePart] = dernierBonus.date.split(' ');
-        const [day, month, year] = datePart.split('/');
-        const [hours, minutes] = timePart.split(':');
-        
-        const dateBonus = new Date(year, month - 1, day, hours, minutes);
-        const dateProchainBonus = new Date(dateBonus.getTime() + (24 * 60 * 60 * 1000));
-
-        // Création du conteneur pour le rebours
-        container.innerHTML = `
-            <button class="loyalty-action-btn" style="background: #e2e8f0; color: #94a3b8; cursor: not-allowed; display: flex; flex-direction: column; gap: 4px; padding: 10px 16px;" disabled>
-                <span><i data-feather="check-circle"></i> Bonus validé aujourd'hui</span>
-                <small id="loyalty-countdown-timer" style="font-size: 0.75rem; color: #64748b; font-weight: bold;"></small>
-            </button>
-        `;
-        feather.replace();
-
-        // Fonction de mise à jour du chrono
-        function updateTimer() {
-            const maintenant = new Date();
-            const reste = dateProchainBonus - maintenant;
-
-            const timerEl = document.getElementById('loyalty-countdown-timer');
-            if (!timerEl) return;
-
-            if (reste <= 0) {
-                timerEl.innerText = "Prochain bonus disponible ! Rechargez la page.";
-                clearInterval(window.loyaltyCountdownInterval);
-                loadLoyaltyData(); 
-                return;
-            }
-
-            const h = Math.floor(reste / (1000 * 60 * 60));
-            const m = Math.floor((reste % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((reste % (1000 * 60)) / 1000);
-
-            timerEl.innerText = `Prochain bonus dans : ${h}h ${m}m ${s}s`;
-        }
-
-        // Lancer le compteur immédiatement et toutes les secondes
-        updateTimer();
-        window.loyaltyCountdownInterval = setInterval(updateTimer, 1000);
-
-    } else {
-        // Pas de bonus aujourd'hui : Bouton actif
-        container.innerHTML = `
-            <button class="loyalty-action-btn" onclick="claimDailyLoginReward()">
-                <i data-feather="gift"></i> Réclamer mon bonus (+0.50)
-            </button>
-        `;
-        feather.replace();
-    }
-}
-
-async function claimDailyLoginReward() {
-    const container = document.getElementById('loyalty-action-container');
-    if (!container) return;
-    
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-        alert("Votre session a expiré ou vous n'êtes pas connecté. Veuillez vous reconnecter pour réclamer vos points.");
+    if(!confirmLogout){
         return;
     }
 
-    container.innerHTML = `
-        <button class="loyalty-action-btn" disabled>
-            <i data-feather="loader" class="animate-spin"></i> Traitement...
-        </button>
-    `;
-    feather.replace();
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('user_role');
+    localStorage.removeItem('token');
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/reward/daily-login`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ username: currentUsername })
-        });
+    if(eventSource){
+        eventSource.close();
+    }
 
-        if (response.status === 401) {
-            alert("Erreur 401 : Session non autorisée. Veuillez vous reconnecter.");
-            loadLoyaltyData();
-            return;
+    window.location.href =
+        '../../index.html';
+}
+
+/* ==========================================
+FIDÉLITÉ
+========================================== */
+async function loadLoyaltyData(){
+
+    if(!currentUsername){
+        return;
+    }
+
+    try{
+
+        const token =
+            localStorage.getItem('token');
+
+        console.log("🔑 TOKEN :", token);
+
+        const response = await fetch(
+            `${API_BASE_URL}/api/points/history?username=${encodeURIComponent(currentUsername)}`,
+            {
+                method:'GET',
+                headers:{
+                    'Accept':'application/json',
+                    ...(token
+                        ? {
+                            'Authorization':
+                            `Bearer ${token}`
+                        }
+                        : {}
+                    )
+                }
+            }
+        );
+
+        console.log(
+            "📡 STATUS POINTS :",
+            response.status
+        );
+
+        const data =
+            await response.json();
+
+        console.log(
+            "📊 DONNÉES FIDÉLITÉ :",
+            data
+        );
+
+        loyaltyData = data;
+
+        if(data.success){
+
+            updateLoyaltyUI(
+                data.total_points || 0
+            );
+
+            renderLoyaltyActionButton(
+                data.history || []
+            );
+
+            loadActivities(
+                data.history || []
+            );
         }
 
-        const data = await response.json();
-        alert(data.message || (data.success ? "Opération réussie !" : "Une erreur est survenue."));
-        
-        loadLoyaltyData();
+    }catch(error){
 
-    } catch (error) {
-        console.error("Erreur lors de la réclamation du bonus :", error);
-        alert("Impossible de joindre le serveur de fidélité.");
-        loadLoyaltyData();
+        console.error(
+            "❌ Erreur fidélité :",
+            error
+        );
     }
 }
 
-function updateLoyaltyUI(totalPoints) {
-    const points = Number(totalPoints || 0);
+/* ==========================================
+LECTURE BIBLE
+========================================== */
+async function sendBibleReadActivity(
+    livre,
+    chapitre
+){
 
-    setText('loyalty-points-display', `${points} Points`);
+    const token =
+        localStorage.getItem('token');
 
-    const level = calculateLevel(points);
-    const progress = calculateProgress(points);
+    console.log("📖 Lecture Bible envoyée");
 
-    const levelBtn = document.querySelector('.progress-btn');
-    if (levelBtn) levelBtn.innerText = `Niveau ${level}`;
+    console.log("📚 Livre :", livre);
 
-    const circleText = document.querySelector('.circle-text');
-    if (circleText) circleText.innerText = `${progress}%`;
+    console.log("📄 Chapitre :", chapitre);
 
-    const progressCircle = document.querySelector('.progress-circle');
-    if (progressCircle) {
-        progressCircle.style.background =
-            `conic-gradient(#7c3aed 0% ${progress}%, #e2e8f0 ${progress}% 100%)`;
+    console.log("👤 Username :", currentUsername);
+
+    console.log("🔑 Token :", token);
+
+    if(!token){
+
+        alert(
+            "Veuillez vous reconnecter."
+        );
+
+        return;
     }
+
+    try{
+
+        const payload = {
+            livre: livre,
+            chapitre: chapitre,
+            username: currentUsername
+        };
+
+        console.log(
+            "📦 Payload envoyé :",
+            payload
+        );
+
+        const response = await fetch(
+            `${API_BASE_URL}/api/bible/finish-chapter`,
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'Accept':'application/json',
+                    'Authorization':
+                        `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        console.log(
+            "📡 STATUS API BIBLE :",
+            response.status
+        );
+
+        const data =
+            await response.json();
+
+        console.log(
+            "✅ Réponse API Bible :",
+            data
+        );
+
+        if(data.success){
+
+            addBibleActivityToList({
+                description:
+                    data.message,
+                points:0.25,
+                date:"À l'instant"
+            });
+
+            await loadLoyaltyData();
+
+            if(
+                window.Notification &&
+                Notification.permission === 'granted'
+            ){
+
+                new Notification(
+                    "Lecture enregistrée",
+                    {
+                        body:data.message
+                    }
+                );
+            }
+
+        }else{
+
+            alert(
+                data.message ||
+                "Limite atteinte."
+            );
+        }
+
+    }catch(error){
+
+        console.error(
+            "❌ Erreur lecture bible :",
+            error
+        );
+
+        alert(
+            "Erreur serveur."
+        );
+    }
+}
+
+/* ==========================================
+BONUS QUOTIDIEN
+========================================== */
+function renderLoyaltyActionButton(history){
+
+    const container =
+        document.getElementById(
+            'loyalty-action-container'
+        );
+
+    if(!container){
+        return;
+    }
+
+    const alreadyClaimed =
+        history.some(
+            item =>
+                item.actionType ===
+                'DAILY_VERSE'
+        );
+
+    if(alreadyClaimed){
+
+        container.innerHTML = `
+            <button
+                class="loyalty-action-btn"
+                disabled>
+
+                <i data-feather="check-circle"></i>
+
+                Bonus déjà récupéré
+
+            </button>
+        `;
+
+    }else{
+
+        container.innerHTML = `
+            <button
+                class="loyalty-action-btn"
+                onclick="claimDailyLoginReward()">
+
+                <i data-feather="gift"></i>
+
+                Réclamer mon bonus (+0.50)
+
+            </button>
+        `;
+    }
+
+    safeFeather();
+}
+
+async function claimDailyLoginReward(){
+
+    const token =
+        localStorage.getItem('token');
+
+    if(!token){
+
+        alert(
+            "Veuillez vous reconnecter."
+        );
+
+        return;
+    }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE_URL}/api/reward/daily-login`,
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'Authorization':
+                        `Bearer ${token}`
+                },
+                body:JSON.stringify({
+                    username: currentUsername
+                })
+            }
+        );
+
+        const data =
+            await response.json();
+
+        console.log(
+            "🎁 BONUS :",
+            data
+        );
+
+        alert(
+            data.message ||
+            "Bonus récupéré"
+        );
+
+        loadLoyaltyData();
+
+    }catch(error){
+
+        console.error(
+            "❌ Bonus erreur :",
+            error
+        );
+    }
+}
+
+/* ==========================================
+UI FIDÉLITÉ
+========================================== */
+function updateLoyaltyUI(points){
+
+    points = Number(points || 0);
+
+    setText(
+        'loyalty-points-display',
+        `${points} Points`
+    );
+
+    const level =
+        Math.floor(points / 100) + 1;
+
+    const progress =
+        Math.floor(points % 100);
+
+    const levelBtn =
+        document.querySelector(
+            '.progress-btn'
+        );
+
+    if(levelBtn){
+
+        levelBtn.innerText =
+            `Niveau ${level}`;
+    }
+
+    const circleText =
+        document.querySelector(
+            '.circle-text'
+        );
+
+    if(circleText){
+
+        circleText.innerText =
+            `${progress}%`;
+    }
+
+    const progressCircle =
+        document.querySelector(
+            '.progress-circle'
+        );
+
+    if(progressCircle){
+
+        progressCircle.style.background =
+            `conic-gradient(
+                #7c3aed 0% ${progress}%,
+                #e2e8f0 ${progress}% 100%
+            )`;
+    }
+
+    updateStats(points);
 
     generateTrophies(points);
-    updateStats(points);
-    feather.replace();
 }
 
-function calculateLevel(points) {
-    return Math.floor(points / 100) + 1;
+function updateStats(points){
+
+    setText(
+        'stats-versets',
+        Math.floor(points / 5)
+    );
+
+    setText(
+        'stats-lecons',
+        Math.floor(points / 15)
+    );
+
+    setText(
+        'stats-priere',
+        `${Math.floor(points * 2)}m`
+    );
 }
 
-function calculateProgress(points) {
-    return Math.floor(points % 100);
-}
+/* ==========================================
+TROPHÉES
+========================================== */
+function generateTrophies(points){
 
-function updateStats(points) {
-    setText('stats-versets', Math.floor(points / 5));
-    setText('stats-lecons', Math.floor(points / 15));
-    setText('stats-priere', `${points * 2}m`);
-}
+    const trophyGrid =
+        document.querySelector(
+            '.trophy-grid'
+        );
 
-function generateTrophies(points) {
-    const trophyGrid = document.querySelector('.trophy-grid');
-    if (!trophyGrid) return;
+    if(!trophyGrid){
+        return;
+    }
 
     const trophies = [
-        { name: "Pionnier", desc: "1er pas sur l'app", req: 10, icon: "🌱" },
-        { name: "Fidèle", desc: "Atteindre 50 pts", req: 50, icon: "🔥" },
-        { name: "Sage", desc: "Atteindre 150 pts", req: 150, icon: "👑" },
-        { name: "Apôtre", desc: "Atteindre 500 pts", req: 500, icon: "✨" }
+        {
+            name:"Pionnier",
+            req:10,
+            icon:"🌱"
+        },
+        {
+            name:"Fidèle",
+            req:50,
+            icon:"🔥"
+        },
+        {
+            name:"Sage",
+            req:150,
+            icon:"👑"
+        },
+        {
+            name:"Apôtre",
+            req:500,
+            icon:"✨"
+        }
     ];
 
-    trophyGrid.innerHTML = trophies.map(t => {
-        const isLocked = points < t.req;
-        return `
-            <div class="trophy-card ${isLocked ? 'locked' : ''}">
-                <div class="trophy-top">${t.icon}</div>
-                <div class="trophy-footer">
-                    <h4>${t.name}</h4>
-                    <p>${isLocked ? `Requis: ${t.req} pts` : t.desc}</p>
+    trophyGrid.innerHTML =
+        trophies.map(t => {
+
+            const locked =
+                points < t.req;
+
+            return `
+                <div class="
+                    trophy-card
+                    ${locked ? 'locked' : ''}
+                ">
+
+                    <div class="trophy-top">
+                        ${t.icon}
+                    </div>
+
+                    <div class="trophy-footer">
+
+                        <h4>${t.name}</h4>
+
+                        <p>
+                            ${
+                                locked
+                                ? `Requis : ${t.req} pts`
+                                : 'Débloqué'
+                            }
+                        </p>
+
+                    </div>
+
                 </div>
-            </div>
-        `;
-    }).join('');
+            `;
+
+        }).join('');
 }
 
-/**
- * Ajoute visuellement une activité de lecture dans la liste
- * @param {string} message Le texte à afficher
- * @param {boolean} isNew Si vrai, applique une animation d'entrée
- */
-function addBibleActivityToList(message, isNew = false) {
-    const activityList = document.getElementById('activity-realtime-list');
-    if (!activityList) return;
+/* ==========================================
+ACTIVITÉS
+========================================== */
+function loadActivities(history){
 
-    // Supprimer le message statique de base s'il est présent
-    if (activityList.innerHTML.includes("Genèse chapitre 3") && !isNew) {
-        activityList.innerHTML = '';
+    const activityList =
+        document.getElementById(
+            'activity-realtime-list'
+        );
+
+    if(!activityList){
+        return;
     }
 
-    const newItem = document.createElement('div');
-    newItem.className = 'activity-item';
-    
-    if (isNew) {
-        newItem.style.border = '1px solid var(--success)';
-        newItem.style.animation = 'fadeInNotif 0.4s ease-out';
+    activityList.innerHTML = '';
+
+    history.slice(0,5).forEach(act => {
+
+        addBibleActivityToList({
+            description:
+                act.description ||
+                "Lecture biblique",
+            points:
+                act.points || 0,
+            date:
+                act.date || "Récemment"
+        });
+    });
+}
+
+function addBibleActivityToList(act){
+
+    const activityList =
+        document.getElementById(
+            'activity-realtime-list'
+        );
+
+    if(!activityList){
+        return;
     }
 
-    newItem.innerHTML = `
+    const item =
+        document.createElement('div');
+
+    item.className =
+        'activity-item';
+
+    item.innerHTML = `
         <div class="activity-icon icon-blue">
+
             <i data-feather="book-open"></i>
+
         </div>
+
         <div class="activity-content">
-            <div class="activity-title">Lecture Biblique</div>
-            <div class="activity-text">${message}</div>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+            ">
+
+                <span class="activity-title">
+                    Lecture Biblique
+                </span>
+
+                <span style="
+                    color:#22c55e;
+                    font-weight:800;
+                ">
+                    +${act.points || 0}
+                </span>
+
+            </div>
+
+            <div class="activity-text">
+                ${act.description}
+            </div>
+
+            <div style="
+                font-size:0.7rem;
+                color:#94a3b8;
+                margin-top:5px;
+            ">
+                ${act.date}
+            </div>
+
         </div>
     `;
 
-    activityList.insertBefore(newItem, activityList.firstChild);
-    feather.replace();
+    activityList.prepend(item);
+
+    safeFeather();
+}
+
+function addRealtimeActivity(data){
+
+    addBibleActivityToList({
+        description:data.message,
+        points:5,
+        date:"À l'instant"
+    });
+}
+
+/* ==========================================
+PERMISSION NOTIFICATIONS
+========================================== */
+if(
+    window.Notification &&
+    Notification.permission !== 'granted' &&
+    Notification.permission !== 'denied'
+){
+    Notification.requestPermission();
 }
 </script>
 </body>

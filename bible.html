@@ -745,333 +745,535 @@
 </nav>
 
 <script>
+/* ==========================================
+ * 1. CONFIGURATION ET VARIABLES GLOBALES
+ * ========================================== */
 const API_BASE_URL = 'https://apokalypsy.com';
 
 let currentUsername = null;
-if (typeof notificationCount === 'undefined') { var notificationCount = 0; }
-if (typeof loadedNotificationsArray === 'undefined') { var loadedNotificationsArray = []; }
+let lang = "mg";
 
-/* DATA BIBLE */
+let currentBookIdx = null;
+let startRange = null;
+let endRange = null;
+
+let activeFilters = {};
+
+let notificationCount = 0;
+let loadedNotificationsArray = [];
+
+/* ==========================================
+ * 2. DONNÉES BIBLE
+ * ========================================== */
 const data = {
     mg:{
-        search:"Hikaroka boky...", at:"Testamenta Taloha", nt:"Testamenta Vaovao",
+        search:"Hikaroka boky...",
+        at:"Testamenta Taloha",
+        nt:"Testamenta Vaovao",
         books:[
-            { name:"Genesisy", v:["Ao am-piandohana Andriamanitra nahary ny lanitra sy ny tany.","Ny tany dia tsy mbola nisy endrika.","Ary hoy Andriamanitra hoe: Misia mazava.","Ary hitan’Andriamanitra fa tsara ny mazava.","Dia nataony hoe andro ny mazava."] },
-            { name:"Eksodosy", v:["Ireto ny anaran'ny zanak'Israely.","Nanjaka tany Egypta ny Farao vaovao.","Ary nampahory ny vahoaka izy."] },
-            { name:"Apokalypsy", v:["Fanambaran'i Jesosy Kristy.","Sambatra izay mamaky ity faminaniana ity.","Izaho no Alfa sy Omega."] }
+            {
+                name:"Genesisy",
+                v:[
+                    "Ao am-piandohana Andriamanitra nahary ny lanitra sy ny tany.",
+                    "Ny tany dia tsy mbola nisy endrika.",
+                    "Ary hoy Andriamanitra hoe: Misia mazava.",
+                    "Ary hitan’Andriamanitra fa tsara ny mazava.",
+                    "Dia nataony hoe andro ny mazava."
+                ]
+            },
+            {
+                name:"Eksodosy",
+                v:[
+                    "Ireto ny anaran'ny zanak'Israely.",
+                    "Nanjaka tany Egypta ny Farao vaovao.",
+                    "Ary nampahory ny vahoaka izy."
+                ]
+            },
+            {
+                name:"Apokalypsy",
+                v:[
+                    "Fanambaran'i Jesosy Kristy.",
+                    "Sambatra izay mamaky ity faminaniana ity.",
+                    "Izaho no Alfa sy Omega."
+                ]
+            }
         ]
     },
+
     fr:{
-        search:"Rechercher un livre...", at:"Ancien Testament", nt:"Nouveau Testament",
+        search:"Rechercher un livre...",
+        at:"Ancien Testament",
+        nt:"Nouveau Testament",
         books:[
-            { name:"Genèse", v:["Au commencement Dieu créa le ciel et la terre.","La terre était informe et vide.","Dieu dit : Que la lumière soit.","Dieu vit que la lumière était bonne."] },
-            { name:"Apocalypse", v:["Révélation de Jésus-Christ.","Heureux celui qui lit cette prophétie.","Je suis l’Alpha et l’Oméga."] }
+            {
+                name:"Genèse",
+                v:[
+                    "Au commencement Dieu créa le ciel et la terre.",
+                    "La terre était informe et vide.",
+                    "Dieu dit : Que la lumière soit.",
+                    "Dieu vit que la lumière était bonne."
+                ]
+            },
+            {
+                name:"Apocalypse",
+                v:[
+                    "Révélation de Jésus-Christ.",
+                    "Heureux celui qui lit cette prophétie.",
+                    "Je suis l’Alpha et l’Oméga."
+                ]
+            }
         ]
     },
+
     en:{
-        search:"Search books...", at:"Old Testament", nt:"New Testament",
+        search:"Search books...",
+        at:"Old Testament",
+        nt:"New Testament",
         books:[
-            { name:"Genesis", v:["In the beginning God created the heaven and the earth.","The earth was without form and void.","And God said, Let there be light."] }
+            {
+                name:"Genesis",
+                v:[
+                    "In the beginning God created the heaven and the earth.",
+                    "The earth was without form and void.",
+                    "And God said, Let there be light."
+                ]
+            }
         ]
     }
 };
 
-let lang = "mg";
-let currentBookIdx = null;
-let startRange = null;
-let endRange = null;
-let activeFilters = {};
+/* ==========================================
+ * 3. CHANGEMENT LANGUE
+ * ========================================== */
+function changeLang(newLang, btn){
 
-document.addEventListener("DOMContentLoaded", () => {
-    feather.replace();
-    currentUsername = localStorage.getItem('user_name');
-    
-    const userSub = document.getElementById('bible-user-sub');
-    if (userSub && currentUsername) {
-        userSub.innerText = `Membre : ${currentUsername}`;
-    }
+    lang = newLang;
 
-    if (currentUsername) {
-        initRealtimeNotifications(); 
-    }
+    document.querySelectorAll('#langMenu button').forEach(b=>{
+        b.classList.remove('active');
+    });
+
+    btn.classList.add('active');
+
     render();
+}
+
+/* ==========================================
+ * 4. NOTIFICATIONS
+ * ========================================== */
+function renderNotificationBadge(){
+
+    const badge = document.getElementById('notif-badge');
+
+    const unreadCount = loadedNotificationsArray.filter(n => n.unread).length;
+
+    notificationCount = unreadCount;
+
+    if(unreadCount > 0){
+        badge.style.display = 'flex';
+        badge.innerText = unreadCount;
+        badge.classList.add('pulse-animation');
+
+        setTimeout(()=>{
+            badge.classList.remove('pulse-animation');
+        },600);
+
+    }else{
+        badge.style.display = 'none';
+    }
+
+    renderNotifications();
+}
+
+function renderNotifications(){
+
+    const container = document.getElementById('notifVerticalList');
+
+    if(!container) return;
+
+    if(loadedNotificationsArray.length === 0){
+
+        container.innerHTML = `
+            <div style="padding:25px;text-align:center;color:#94a3b8;">
+                Aucune notification
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = loadedNotificationsArray.map(n => `
+        <div class="notif-item ${n.unread ? 'unread' : ''}">
+            <div class="notif-item-icon article">
+                <i data-feather="bell"></i>
+            </div>
+
+            <div class="notif-details">
+                <div class="notif-message">
+                    ${n.message}
+                </div>
+
+                <div class="notif-time">
+                    Maintenant
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    feather.replace();
+}
+
+function toggleNotifMenu(event){
+
+    event.stopPropagation();
+
+    const menu = document.getElementById('notifDropdown');
+
+    menu.classList.toggle('show');
+}
+
+function markAllAsRead(event){
+
+    event.stopPropagation();
+
+    loadedNotificationsArray = loadedNotificationsArray.map(n => ({
+        ...n,
+        unread:false
+    }));
+
+    renderNotificationBadge();
+}
+
+document.addEventListener('click', () => {
+
+    const menu = document.getElementById('notifDropdown');
+
+    if(menu){
+        menu.classList.remove('show');
+    }
 });
 
 /* ==========================================
- * SYSTEME DE NOTIFICATIONS SSE DYNAMIQUE
+ * 5. API BIBLE
  * ========================================== */
-function initRealtimeNotifications() {
-    const baseUrl = API_BASE_URL;
-    const eventSource = new EventSource(`${baseUrl}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`);
+async function sendChapterFinished(bookName, startVerse, endVerse){
 
-    eventSource.onmessage = function(event) {
-        if (!event.data || event.data.trim() === "" || event.data.includes("ping")) return; 
-
-        try {
-            const data = JSON.parse(event.data);
-            if (!data || !data.message) return;
-
-            const dejavu = loadedNotificationsArray.some(n => n.realId === data.id);
-            if (dejavu) return; 
-
-            let iconType = 'article'; 
-            let iconName = 'book-open';
-            let directLink = '../../index.html';
-
-            if (data.type === 'new_badge' || data.message.includes('badge') || data.message.includes('Trophée')) {
-                iconType = 'badge'; iconName = 'award'; directLink = '#';
-            } else if (data.type === 'chat' || data.message.includes('Chat') || data.message.includes('message')) {
-                iconType = 'chat'; iconName = 'message-square'; directLink = '../../chat.html';
-            }
-
-            loadedNotificationsArray.unshift({
-                id: Date.now(), realId: data.id, type: iconType, icon: iconName,
-                message: data.message, time: 'À l\'instant', unread: true, link: directLink
-            });
-
-            notificationCount = loadedNotificationsArray.length;
-            renderNotificationBadge();
-            renderVerticalDropdownMenu();
-
-            if (window.Notification && Notification.permission === "granted") {
-                new Notification("Apokalypsy", { body: data.message });
-            }
-        } catch (e) {
-            console.error("Erreur flux SSE:", e);
-        }
-    };
-
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('notifDropdown');
-        const trigger = document.getElementById('notif-btn');
-        if (dropdown && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
-            dropdown.classList.remove('show');
-        }
-    });
-}
-
-function toggleNotifMenu(event) {
-    event.stopPropagation();
-    const dropdown = document.getElementById('notifDropdown');
-    if (dropdown) dropdown.classList.toggle('show');
-}
-
-function renderNotificationBadge() {
-    const badge = document.getElementById('notif-badge');
-    if (!badge) return;
-    if (notificationCount > 0) {
-        badge.innerText = notificationCount;
-        badge.style.display = 'flex';
-        badge.classList.add('pulse-animation');
-        setTimeout(() => badge.classList.remove('pulse-animation'), 500);
-    } else {
-        badge.style.display = 'none';
-    }
-}
-
-function renderVerticalDropdownMenu() {
-    const container = document.getElementById('notifVerticalList');
-    if (!container) return;
-    if (loadedNotificationsArray.length === 0) {
-        container.innerHTML = `<div style="padding:24px; text-align:center; color:var(--muted); font-size:0.82rem;">Aucune notification.</div>`;
+    if(!currentUsername){
+        console.warn("Utilisateur non connecté");
         return;
     }
-    container.innerHTML = loadedNotificationsArray.map(notif => `
-        <a href="${notif.link}" class="notif-item ${notif.unread ? 'unread' : ''}" onclick="markOneAsRead(${notif.id})">
-            <div class="notif-item-icon ${notif.type}">
-                <i data-feather="${notif.icon}"></i>
-            </div>
-            <div class="notif-details">
-                <span class="notif-message">${notif.message}</span>
-                <span class="notif-time">${notif.time}</span>
-            </div>
-        </a>
-    `).join('');
-    feather.replace();
-}
 
-function markOneAsRead(id) {
-    const notif = loadedNotificationsArray.find(n => n.id === id);
-    if (notif && notif.unread) {
-        notif.unread = false;
-        if (notificationCount > 0) notificationCount--;
-        renderNotificationBadge();
-        renderVerticalDropdownMenu();
-    }
-}
+    const payload = {
+        username: currentUsername,
+        livre: bookName,
+        chapitre: `v.${startVerse}-v.${endVerse}`
+    };
 
-function markAllAsRead(event) {
-    event.stopPropagation();
-    loadedNotificationsArray.forEach(n => n.unread = false);
-    notificationCount = 0;
-    renderNotificationBadge();
-    renderVerticalDropdownMenu();
-}
+    console.log("📤 Envoi API :", payload);
 
-function logout(){
-    if(confirm("Voulez-vous quitter votre session ?")){
-        localStorage.removeItem('user_name');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('token');
-        window.location.href='../../index.html';
+    try{
+
+        const response = await fetch(`${API_BASE_URL}/api/bible/finish-chapter`,{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+            },
+            body:JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        console.log("📥 Réponse serveur :", result);
+
+        if(result.success){
+
+            loadedNotificationsArray.unshift({
+                id:Date.now(),
+                message:`Lecture validée : ${bookName}`,
+                unread:true
+            });
+
+            renderNotificationBadge();
+
+        }else{
+
+            alert(result.message || "Erreur serveur");
+        }
+
+    }catch(error){
+
+        console.error("Erreur API :", error);
     }
 }
 
 /* ==========================================
- * LOGIQUE FONCTIONNELLE DE LA BIBLE
+ * 6. REALTIME NOTIFICATIONS
  * ========================================== */
-function changeLang(l, btn){
-    lang = l;
-    activeFilters = {};
-    document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-}
+function initRealtimeNotifications(){
 
-function openSelector(index){
-    currentBookIdx = index;
-    startRange = null;
-    endRange = null;
-    const book = data[lang].books[index];
-    document.getElementById('selectedBookName').innerText = book.name;
-    document.getElementById('applyFilter').style.visibility = 'hidden';
-    updateGrid();
-    document.getElementById('selectorOverlay').style.display = 'flex';
-}
+    if(!currentUsername) return;
 
-function updateGrid(){
-    const grid = document.getElementById('gridContainer');
-    grid.innerHTML = "";
-    const book = data[lang].books[currentBookIdx];
+    const url =
+        `${API_BASE_URL}/api/notifications/stream?username=${encodeURIComponent(currentUsername)}`;
 
-    book.v.forEach((_, i) => {
-        const item = document.createElement('div');
-        item.className = 'grid-item';
-        if(startRange !== null && endRange !== null){
-            if(i >= Math.min(startRange,endRange) && i <= Math.max(startRange,endRange)){
-                item.className += (i === startRange || i === endRange) ? ' selected' : ' in-range';
+    console.log("Connexion SSE :", url);
+
+    const eventSource = new EventSource(url);
+
+    eventSource.onmessage = (event) => {
+
+        try{
+
+            const response = JSON.parse(event.data);
+
+            console.log("📩 Notification reçue :", response);
+
+            if(response.message){
+
+                loadedNotificationsArray.unshift({
+                    id:Date.now(),
+                    message:response.message,
+                    unread:true
+                });
+
+                renderNotificationBadge();
             }
-        }else if(i === startRange){
-            item.className += ' selected';
+
+        }catch(e){
+
+            console.error("Erreur notification :", e);
         }
-        item.innerText = i + 1;
-        item.onclick = () => handleSelect(i);
-        grid.appendChild(item);
-    });
+    };
+
+    eventSource.onerror = (e) => {
+
+        console.error("Erreur SSE :", e);
+    };
 }
 
-function handleSelect(i){
-    if(startRange === null || (startRange !== null && endRange !== null)){
-        startRange = i;
-        endRange = null;
-        document.getElementById('applyFilter').style.visibility = 'hidden';
-    }else{
-        endRange = i;
-        document.getElementById('applyFilter').style.visibility = 'visible';
-    }
-    updateGrid();
-}
-
-function closeSelector(){
-    document.getElementById('selectorOverlay').style.display = 'none';
-}
-
-function applyFilter(){
-    const low = Math.min(startRange, endRange);
-    const high = Math.max(startRange, endRange);
-    activeFilters[currentBookIdx] = { start: low, end: high };
-    const bookName = data[lang].books[currentBookIdx].name;
-    
-    closeSelector();
-    render(currentBookIdx);
-    
-    sendChapterFinished(bookName, low + 1, high + 1);
-}
-
-async function sendChapterFinished(bookName, startVerse, endVerse) {
-    const username = currentUsername; 
-    if (!username) return;
-
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/api/bible/finish-chapter`, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Accept': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-            },
-            body: JSON.stringify({
-                username: username,
-                book: bookName,
-                chapters: `v.${startVerse}-v.${endVerse}`
-            })
-        });
-        
-        if (response.status === 401) {
-            console.error("❌ Erreur 401 : Session ou token invalide.");
-        } else if (!response.ok) {
-            console.error(`Erreur API (${response.status})`);
-        } else {
-            const result = await response.json();
-            console.log("✅ Progression enregistrée !", result);
-        }
-    } catch (error) {
-        console.error("Erreur réseau lors du POST vers l'API Bible :", error);
-    }
-}
-
+/* ==========================================
+ * 7. RENDU BIBLE
+ * ========================================== */
 function render(openIdx = null){
+
     const c = document.getElementById('container');
     const d = data[lang];
+
     document.getElementById('search').placeholder = d.search;
 
     let html = `<div class="title-divider">${d.at}</div>`;
 
     d.books.forEach((b,i)=>{
+
         if(i === d.books.length - 1 && d.books.length > 2){
             html += `<div class="title-divider">${d.nt}</div>`;
         }
+
         const filter = activeFilters[i];
         const isFiltered = filter !== undefined;
 
         html += `
         <div class="book ${openIdx === i ? 'open' : ''}">
+
             <div class="book-header" onclick="openSelector(${i})">
+
                 <div class="book-left">
-                    <div class="book-icon"><i data-feather="book"></i></div>
+
+                    <div class="book-icon">
+                        <i data-feather="book"></i>
+                    </div>
+
                     <div>
                         <div class="book-name">${b.name}</div>
-                        <div class="book-mini">${b.v.length} versets ${isFiltered ? ` • Filtré` : ''}</div>
                     </div>
+
                 </div>
+
                 <i data-feather="chevron-down"></i>
             </div>
+
             <div class="book-content">
+
                 ${b.v.map((t,vi)=>{
-                    if(isFiltered && (vi < filter.start || vi > filter.end)) return '';
-                    return `<div class="verse"><span class="num">${vi+1}</span>${t}</div>`;
+
+                    if(isFiltered && (vi < filter.start || vi > filter.end)){
+                        return '';
+                    }
+
+                    return `
+                        <div class="verse">
+                            <span class="num">${vi+1}</span>
+                            ${t}
+                        </div>
+                    `;
                 }).join('')}
-                ${isFiltered ? `<button class="btn-reset" onclick="resetFilter(${i})">Voir tous les versets</button>` : ''}
+
+                ${
+                    isFiltered
+                    ? `<button class="btn-reset" onclick="resetFilter(${i})">
+                        Voir tous les versets
+                       </button>`
+                    : ''
+                }
+
             </div>
-        </div>`;
+        </div>
+        `;
     });
 
     c.innerHTML = html;
+
     feather.replace();
 }
 
+/* ==========================================
+ * 8. SELECTEUR VERSETS
+ * ========================================== */
+function openSelector(index){
+
+    currentBookIdx = index;
+
+    startRange = null;
+    endRange = null;
+
+    document.getElementById('applyFilter').style.visibility = 'hidden';
+
+    document.getElementById('selectorOverlay').style.display = 'flex';
+
+    document.getElementById('selectedBookName').innerText =
+        data[lang].books[index].name;
+
+    updateGrid();
+}
+
+function updateGrid(){
+
+    const grid = document.getElementById('gridContainer');
+
+    grid.innerHTML = "";
+
+    const book = data[lang].books[currentBookIdx];
+
+    book.v.forEach((_, i) => {
+
+        const item = document.createElement('div');
+
+        item.className = 'grid-item';
+
+        if(startRange !== null && endRange !== null){
+
+            if(i >= Math.min(startRange,endRange)
+                && i <= Math.max(startRange,endRange)){
+
+                item.className +=
+                    (i === startRange || i === endRange)
+                    ? ' selected'
+                    : ' in-range';
+            }
+
+        }else if(i === startRange){
+
+            item.className += ' selected';
+        }
+
+        item.innerText = i + 1;
+
+        item.onclick = () => handleSelect(i);
+
+        grid.appendChild(item);
+    });
+}
+
+function handleSelect(i){
+
+    if(startRange === null || endRange !== null){
+
+        startRange = i;
+        endRange = null;
+
+        document.getElementById('applyFilter').style.visibility = 'hidden';
+
+    }else{
+
+        endRange = i;
+
+        document.getElementById('applyFilter').style.visibility = 'visible';
+    }
+
+    updateGrid();
+}
+
+function applyFilter(){
+
+    if(startRange === null || endRange === null){
+        return;
+    }
+
+    const low = Math.min(startRange,endRange);
+    const high = Math.max(startRange,endRange);
+
+    const bookName =
+        data[lang].books[currentBookIdx].name;
+
+    console.log("Livre :", bookName);
+    console.log("Versets :", low + 1, "→", high + 1);
+
+    sendChapterFinished(bookName, low + 1, high + 1);
+
+    activeFilters[currentBookIdx] = {
+        start: low,
+        end: high
+    };
+
+    closeSelector();
+
+    render(currentBookIdx);
+}
+
+function closeSelector(){
+
+    document.getElementById('selectorOverlay').style.display = 'none';
+}
+
 function resetFilter(i){
+
     delete activeFilters[i];
+
     render(i);
 }
 
-document.getElementById('search').addEventListener('input', e => {
-    const val = e.target.value.toUpperCase();
-    document.querySelectorAll('.book').forEach(book => {
-        const name = book.querySelector('.book-name').innerText;
-        book.style.display = name.toUpperCase().includes(val) ? "block" : "none";
-    });
+/* ==========================================
+ * 9. LOGOUT
+ * ========================================== */
+function logout(){
+
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_name');
+
+    window.location.href = '../../login.html';
+}
+
+/* ==========================================
+ * 10. INITIALISATION
+ * ========================================== */
+document.addEventListener("DOMContentLoaded", () => {
+
+    feather.replace();
+
+    currentUsername = localStorage.getItem('user_name');
+
+    if(currentUsername){
+
+        document.getElementById('bible-user-sub').innerText =
+            currentUsername;
+
+        initRealtimeNotifications();
+    }
+
+    render();
+
+    renderNotificationBadge();
 });
 </script>
 </body>
