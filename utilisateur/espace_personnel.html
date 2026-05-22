@@ -1186,41 +1186,42 @@ function safeFeather(){
 INITIALISATION
 ========================================== */
 document.addEventListener("DOMContentLoaded", async () => {
-
+    // 1. Initialisation des icônes
     safeFeather();
 
+    // 2. Initialisation de l'utilisateur
     currentUsername = localStorage.getItem('user_name');
-
     debug("👤 Utilisateur :", currentUsername);
 
-    const welcomeTitle =
-        document.getElementById(
-            'welcome-user-title'
-        );
-
-    if(welcomeTitle){
-
-        welcomeTitle.innerText =
-            `Bonjour ${currentUsername || 'Invité'} 🙏`;
+    const welcomeTitle = document.getElementById('welcome-user-title');
+    if(welcomeTitle) {
+        welcomeTitle.innerText = `Bonjour ${currentUsername || 'Invité'} 🙏`;
     }
 
-    if(currentUsername){
-
+    // 3. Initialisation des systèmes
+    // 3. Initialisation des systèmes
+    if(currentUsername) {
         await loadLoyaltyData();
-
         initRealtimeNotifications();
-
-    }else{
-
+        
+        // VÉRIFICATION DU TIMER EN PRIORITÉ
+        const cooldownEnd = localStorage.getItem('bonus_cooldown_end');
+        
+        if (cooldownEnd && Date.now() < parseInt(cooldownEnd)) {
+            console.log("Timer actif, affichage du compte à rebours.");
+            renderCooldownTimer(parseInt(cooldownEnd));
+        } else {
+            // Si pas de timer, on affiche le système de bonus normal
+            console.log("Aucun timer actif, affichage du bouton normal.");
+            initBonusSystem(); 
+        }
+    } else {
         console.warn("⚠️ Aucun utilisateur connecté");
     }
 
-    window.sendBibleReadActivity =
-        sendBibleReadActivity;
-
+    window.sendBibleReadActivity = sendBibleReadActivity;
     debugState("APPLICATION CHARGÉE");
 });
-
 /* ==========================================
 NOTIFICATIONS SSE
 ========================================== */
@@ -1544,6 +1545,10 @@ function logout(){
 
 /* ==========================================
 FIDÉLITÉ
+
+function renderBonus() {
+    renderBonusButton();
+}
 ========================================== */
 async function loadLoyaltyData(){
 
@@ -1782,58 +1787,48 @@ function renderLoyaltyActionButton(history){
     safeFeather();
 }
 
-async function claimDailyLoginReward(){
-
-    const token =
-        localStorage.getItem('token');
-
-    if(!token){
-
-        alert(
-            "Veuillez vous reconnecter."
-        );
-
-        return;
+async function claimDailyLoginReward() {
+    console.log("1. Démarrage de la fonction...");
+    
+    const token = localStorage.getItem('token');
+    
+    if (!token) { console.error("ERREUR: Token absent"); return alert("Session expirée."); }
+    if (typeof currentUsername === 'undefined' || !currentUsername) { 
+        console.error("ERREUR: Username absent"); 
+        return alert("Session invalide."); 
     }
 
-    try{
+    console.log("2. Tentative de requête vers:", `${API_BASE_URL}/api/reward/daily-login`);
 
-        const response = await fetch(
-            `${API_BASE_URL}/api/reward/daily-login`,
-            {
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization':
-                        `Bearer ${token}`
-                },
-                body:JSON.stringify({
-                    username: currentUsername
-                })
-            }
-        );
+    try {
+        console.log("3. Envoi du fetch vers l'API...");
+        
+        const response = await fetch(`${API_BASE_URL}/api/reward/daily-login`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ username: currentUsername })
+        });
+        
+        console.log("4. Fetch terminé. Statut HTTP :", response.status);
+        
+        const data = await response.json();
+        console.log("5. Réponse reçue du serveur :", data);
 
-        const data =
-            await response.json();
-
-        console.log(
-            "🎁 BONUS :",
-            data
-        );
-
-        alert(
-            data.message ||
-            "Bonus récupéré"
-        );
-
-        loadLoyaltyData();
-
-    }catch(error){
-
-        console.error(
-            "❌ Bonus erreur :",
-            error
-        );
+        if (data.success) {
+            console.log("6. Succès ! Lancement du timer...");
+            const end = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem('bonus_cooldown_end', end.toString());
+            renderCooldownTimer(end);
+            loadLoyaltyData();
+        } else {
+            console.log("6. Le serveur a refusé le bonus :", data.message);
+            alert("Erreur serveur : " + data.message);
+        }
+    } catch (e) { 
+        console.error("7. Erreur réseau fatale (problème de connexion ou CORS) :", e);
     }
 }
 
@@ -2089,6 +2084,151 @@ function addRealtimeActivity(data){
         date:"À l'instant"
     });
 }
+/* ==========================================
+BONUS COOLDOWN FIX (STABLE 24H SYSTEM)
+========================================== */
+
+/* ==========================================
+BONUS SYSTEME PROPRE (FIX COMPLET)
+========================================== */
+
+let bonusInterval = null;
+const COOLDOWN_KEY = 'bonus_cooldown_end';
+
+function getCooldownEnd() {
+    return parseInt(localStorage.getItem(COOLDOWN_KEY));
+}
+
+function setCooldown() {
+    const end = Date.now() + 24 * 60 * 60 * 1000;
+    localStorage.setItem(COOLDOWN_KEY, String(end));
+    return end;
+}
+
+function clearCooldown() {
+    localStorage.removeItem(COOLDOWN_KEY);
+}
+
+function initBonusSystem() {
+    const rawValue = localStorage.getItem('bonus_cooldown_end');
+    
+    // Si la valeur est null ou vide, on affiche le bouton
+    if (!rawValue) {
+        console.log("Aucun cooldown trouvé, affichage du bouton.");
+        renderBonusButton();
+        return;
+    }
+
+    const cooldownEnd = parseInt(rawValue);
+
+    // Vérification si le chiffre est valide et dans le futur
+    if (!isNaN(cooldownEnd) && Date.now() < cooldownEnd) {
+        console.log("Cooldown actif trouvé:", cooldownEnd);
+        renderCooldownTimer(cooldownEnd);
+    } else {
+        console.log("Cooldown périmé ou invalide.");
+        localStorage.removeItem('bonus_cooldown_end');
+        renderBonusButton();
+    }
+}
+
+async function claimDailyLoginReward() {
+    if (!currentUsername) return alert("Session invalide.");
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/reward/daily-login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            body: JSON.stringify({ username: currentUsername })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            // Calcul du temps de fin (24 heures à partir de maintenant)
+            const end = Date.now() + (24 * 60 * 60 * 1000);
+            
+            // SAUVEGARDE STRICTE
+            localStorage.setItem('bonus_cooldown_end', end.toString()); 
+            
+            console.log("Valeur enregistrée :", end); // À garder temporairement pour vérifier
+            
+            renderCooldownTimer(end);
+            loadLoyaltyData();
+        } else {
+            alert(data.message);
+        }
+    } catch (e) { console.error(e); alert("Erreur réseau."); }
+}
+
+function renderBonusButton() {
+    const container = document.getElementById('loyalty-action-container');
+    if (!container) return;
+
+    // 1. On vide le conteneur
+    container.innerHTML = '';
+
+    // 2. On crée le bouton en tant qu'élément HTML
+    const btn = document.createElement('button');
+    btn.className = 'loyalty-action-btn';
+    btn.innerHTML = '<i data-feather="gift"></i> Réclamer mon bonus (+0.50)';
+
+    // 3. On ajoute l'événement de manière robuste (la méthode professionnelle)
+    btn.addEventListener('click', function() {
+        console.log("Clic détecté sur le bouton généré dynamiquement !");
+        claimDailyLoginReward();
+    });
+
+    // 4. On ajoute le bouton au conteneur
+    container.appendChild(btn);
+
+    // 5. On rafraîchit les icônes
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+}
+
+function renderCooldownTimer(cooldownEnd) {
+    const container = document.getElementById('loyalty-action-container');
+    if (!container) return;
+
+    const interval = setInterval(() => {
+        const remaining = cooldownEnd - Date.now();
+        
+        if (remaining <= 0) {
+            clearInterval(interval);
+            localStorage.removeItem('bonus_cooldown_end');
+            // Recharger la page ou réafficher le bouton original
+            window.location.reload(); 
+            return;
+        }
+
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        
+        // On injecte un bouton qui est "disabled" pour qu'il soit grisé et non cliquable
+        container.innerHTML = `
+            <button class="loyalty-action-btn" style="background-color: #9ca3af; cursor: not-allowed; width: 100%; padding: 15px; border: none; border-radius: 10px; color: white;">
+                ${String(h).padStart(2,'0')}h : ${String(m).padStart(2,'0')}m : ${String(s).padStart(2,'0')}s
+            </button>`;
+    }, 1000);
+}
+
+
+function renderBonusButton() {
+
+    const container = document.getElementById('loyalty-action-container');
+
+    if (!container) return;
+
+    container.innerHTML = `
+        <button class="loyalty-action-btn" onclick="claimDailyLoginReward()">
+            <i data-feather="gift"></i>
+            Réclamer mon bonus (+0.50)
+        </button>
+    `;
+
+    safeFeather();
+}
 
 /* ==========================================
 PERMISSION NOTIFICATIONS
@@ -2100,6 +2240,26 @@ if(
 ){
     Notification.requestPermission();
 }
+</script>
+<script>
+document.addEventListener('click', function(event) {
+    // 1. On vérifie si l'élément cliqué est bien votre bouton
+    if (event.target.closest('.loyalty-action-btn')) {
+        
+        // 2. On empêche le comportement par défaut (navigation ou soumission de formulaire)
+        event.preventDefault();
+        event.stopPropagation();
+        
+        console.log("Clic capturé par l'espion. Préparation de la requête...");
+        
+        // 3. Délai de 100ms pour laisser le navigateur finaliser la requête OPTIONS (CORS)
+        // avant d'envoyer la requête POST réelle.
+        setTimeout(() => {
+            console.log("Exécution de claimDailyLoginReward...");
+            claimDailyLoginReward();
+        }, 100);
+    }
+}, true); // Le 'true' force la capture de l'événement dès le début
 </script>
 </body>
 </html>

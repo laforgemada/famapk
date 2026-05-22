@@ -5,104 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apokalypsy - Connexion</title>
     <style>
-        :root {
-            --primary: #1E3A8A;
-            --bg: #f3f4f6;
-        }
-
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            background: var(--bg); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-        }
-
-        .login-card {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .logo-login {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
+        :root { --primary: #1E3A8A; --bg: #f3f4f6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { background: white; width: 90%; max-width: 400px; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        .logo-login { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
         h2 { margin-bottom: 30px; color: #333; font-size: 1.2rem; }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-sizing: border-box;
-            background: #f9f9f9;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        button:active { transform: scale(0.98); }
-
-        /* --- STYLES AJOUTÉS POUR LES BOUTONS SOCIAUX --- */
-        .social-separator {
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            color: #9ca3af;
-            font-size: 0.8rem;
-        }
-        .social-separator::before, .social-separator::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e5e7eb;
-            margin: 0 10px;
-        }
-        .btn-social {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: white;
-            color: #3c4043;
-            border: 1px solid #dadce0;
-            margin-bottom: 12px;
-            padding: 12px;
-        }
+        input { width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; background: #f9f9f9; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
+        .social-separator { margin: 20px 0; display: flex; align-items: center; color: #9ca3af; font-size: 0.8rem; }
+        .social-separator::before, .social-separator::after { content: ''; flex: 1; border-bottom: 1px solid #e5e7eb; margin: 0 10px; }
+        .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #3c4043; border: 1px solid #dadce0; margin-bottom: 12px; padding: 12px; width: 100%; }
         .btn-social img { width: 18px; }
         .btn-facebook { background-color: #1877F2; color: white; border: none; }
-        /* ---------------------------------------------- */
-
         .footer-links { margin-top: 25px; font-size: 0.9rem; color: #666; }
         .footer-links a { color: var(--primary); text-decoration: none; font-weight: bold; }
-        
-        .back-home { margin-top: 20px; display: block; color: #999; text-decoration: none; font-size: 0.8rem; }
-        
         #error-msg { color: #dc2626; font-size: 0.9rem; margin-bottom: 15px; display: none; }
     </style>
 </head>
@@ -111,13 +28,11 @@
     <div class="login-card">
         <div class="logo-login">APOKALYPSY</div>
         <h2>Espace Membre</h2>
-
         <div id="error-msg"></div>
 
         <form id="loginForm">
             <input type="text" id="identifier" placeholder="Email ou Pseudo" required>
             <input type="password" id="password" placeholder="Mot de passe" required>
-            
             <button type="submit" id="btnSubmit">SE CONNECTER</button>
         </form>
 
@@ -132,21 +47,17 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="">
             <span>Continuer avec Facebook</span>
         </button>
+
         <div class="footer-links">
             Pas encore membre ? <a href="inscription.html">S'inscrire</a>
         </div>
-
-        <a href="/" class="back-home">← Retour à l'accueil</a>
     </div>
 
     <script>
-        // Fonction pour le login social (Google/Facebook)
         function handleSocialLogin(provider) {
-            // Redirection vers votre serveur Symfony
             window.location.href = `https://apokalypsy.com/connect/${provider}`;
         }
 
-        // Votre code de login classique qui fonctionne déjà
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -163,26 +74,27 @@
                 const response = await fetch('https://apokalypsy.com/api/mobile/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        username: identifier, 
-                        password: password 
-                    })
+                    body: JSON.stringify({ username: identifier, password: password })
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.status === 'success') {
+                    // Sauvegarde propre des informations
                     localStorage.setItem('user_name', data.userData.username);
                     localStorage.setItem('user_full_data', JSON.stringify(data.userData));
                     
-                    const roles = data.userData.roles;
+                    // Sauvegarde du token (si présent dans la réponse)
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                    }
 
+                    const roles = data.userData.roles || [];
                     if (roles.includes('ROLE_ADMIN') || roles.includes('ROLE_REDACTEUR')) {
                         window.location.replace('../admin/dashboard_admin.html');
                     } else {
                         window.location.replace('../utilisateur/espace_personnel.html');
                     }
-
                 } else {
                     errorDiv.textContent = data.message || "Identifiants incorrects.";
                     errorDiv.style.display = "block";
@@ -196,12 +108,6 @@
                 btn.innerText = "SE CONNECTER";
             }
         });
-		
-		
-		// Exemple à mettre dans ton script de login après succès de l'API
-localStorage.setItem('user_name', response.pseudo); 
-window.location.href = '../chat.html'; // Redirige directement vers le chat
     </script>
-
 </body>
 </html>
