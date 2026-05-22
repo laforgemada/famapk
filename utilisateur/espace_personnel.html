@@ -1521,26 +1521,25 @@ function markAllAsRead(event){
 LOGOUT
 ========================================== */
 function logout(){
-
-    const confirmLogout =
-        confirm(
-            "Voulez-vous quitter votre session ?"
-        );
+    const confirmLogout = confirm("Voulez-vous quitter votre session ?");
 
     if(!confirmLogout){
         return;
     }
 
+    // SUPPRIMEZ UNIQUEMENT les infos de session, PAS le bonus
     localStorage.removeItem('user_name');
     localStorage.removeItem('user_role');
     localStorage.removeItem('token');
+    
+    // Gardez bonus_cooldown_end ! C'est ce qui permet au timer de continuer 
+    // à tourner pour cet utilisateur même après une reconnexion.
 
     if(eventSource){
         eventSource.close();
     }
 
-    window.location.href =
-        '../../index.html';
+    window.location.href = '../../index.html';
 }
 
 /* ==========================================
@@ -1618,6 +1617,8 @@ async function loadLoyaltyData(){
         );
     }
 }
+
+
 
 /* ==========================================
 LECTURE BIBLE
@@ -2186,17 +2187,51 @@ function renderBonusButton() {
     }
 }
 
+
+
 function renderCooldownTimer(cooldownEnd) {
     const container = document.getElementById('loyalty-action-container');
     if (!container) return;
 
+    // 1. Mise en forme du conteneur parent (COMPACT)
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+    container.style.justifyContent = 'center';
+    container.style.padding = '10px';
+    container.style.borderRadius = '12px';
+    container.style.backgroundColor = '#1a1a1a';
+    container.style.maxWidth = '300px';
+    container.style.margin = '0 auto';
+
+    // 2. Génération de la structure HTML fixe
+    container.innerHTML = `
+        <div style="font-family: Arial, sans-serif; text-align: center; width: 100%;">
+            <h3 style="color: #ffffff; margin-bottom: 8px; font-size: 1.1rem;">Prochain bonus dans</h3>
+            <div style="height: 2px; width: 50px; background-color: #ec4899; margin: 0 auto 10px auto;"></div>
+            
+            <div id="timer-text" style="
+                background-color: #ec4899;
+                color: #000000; /* TEXTE NOIR */
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-family: monospace;
+                font-size: 1.5rem;
+                border: none; /* BORDURE ENLEVÉE */
+                display: inline-block;
+                box-shadow: 0 0 10px rgba(236, 72, 153, 0.2);
+            ">00h:00m:00s</div>
+        </div>
+    `;
+
+    const timerText = document.getElementById('timer-text');
+
+    // 3. Mise à jour du temps
     const interval = setInterval(() => {
         const remaining = cooldownEnd - Date.now();
-        
         if (remaining <= 0) {
             clearInterval(interval);
             localStorage.removeItem('bonus_cooldown_end');
-            // Recharger la page ou réafficher le bouton original
             window.location.reload(); 
             return;
         }
@@ -2205,11 +2240,7 @@ function renderCooldownTimer(cooldownEnd) {
         const m = Math.floor((remaining % 3600000) / 60000);
         const s = Math.floor((remaining % 60000) / 1000);
         
-        // On injecte un bouton qui est "disabled" pour qu'il soit grisé et non cliquable
-        container.innerHTML = `
-            <button class="loyalty-action-btn" style="background-color: #9ca3af; cursor: not-allowed; width: 100%; padding: 15px; border: none; border-radius: 10px; color: white;">
-                ${String(h).padStart(2,'0')}h : ${String(m).padStart(2,'0')}m : ${String(s).padStart(2,'0')}s
-            </button>`;
+        timerText.innerText = `${String(h).padStart(2,'0')}h:${String(m).padStart(2,'0')}m:${String(s).padStart(2,'0')}s`;
     }, 1000);
 }
 
